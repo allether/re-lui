@@ -2,7 +2,7 @@
 
 Want more ui consistency but don't really dig the currently available ui libraries and dont feel like writing stuff from scratch? Then maybe try this barebones collection of *not so awefully generic* general purpose preact ui components...
 
--> DEMO <-
+[homepage](http://arxii.github.io/preact-lui)
 
 
 ------
