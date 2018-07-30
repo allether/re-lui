@@ -16,8 +16,6 @@
     "css-loader": "^1.0.0",
     "less": "^3.8.0",
     "less-loader": "^4.1.0",
-    "preact": "^8.2.9",
-    "preact-slide": "^0.4.4",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.21.0",
     "webpack": "^4.16.2",
@@ -26,8 +24,8 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "css": "^2.2.3",
-    "css-select": "^2.0.0",
-    "css-tree": "^1.0.0-alpha.29",
+    "preact": "^8.2.9",
+    "preact-slide": "^0.4.4",
     "normalize.css": "^8.0.0"
   }
 }
