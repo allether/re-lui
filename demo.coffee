@@ -3,7 +3,6 @@ require 'normalize.css'
 window.log = console.log.bind(console)
 Style = require './components/Style.coffee'
 AlertDot = require './components/AlertDot.coffee'
-Button = require './components/Button.coffee'
 Input = require './components/Input.coffee'
 Section = require './components/Section.coffee'
 Bar = require './components/Bar.coffee'
@@ -23,8 +22,9 @@ class SelectPresetButton extends Component
 	render: (props)->
 		h 'div',
 			className: css['color-preset-button-wrap']
-			h Button,
-				select: props.focus
+			h Input,
+				type: 'button'
+				select: props.select
 				onClick: =>
 					@props.onPresetSelect(@props.primary,@props.secondary) 
 				label: 'select'
@@ -90,72 +90,84 @@ class Demo extends Component
 				h Section,
 					title: 'buttons'
 					h 'p',{},'Examples of buttons containing text, an <AlertDot> is added to the primary button.'
-					h Button,
+					h Input,
+						type: 'button'
 						onClick: @onBtnClick
 						select: state.btn_select
-						label: 'default'
+						label: 'toggle select'
 					
-					h Button,
+					h Input,
+						type: 'button'
 						btn_type: 'primary'
 						select: state.btn_select
 						label: 'primary'
-						# onClick: @onBtnClick
 						h AlertDot
-					h Button,
+					h Input,
+						type: 'button'
 						btn_type: 'flat'
 						select: state.btn_select
-						# onClick: @onBtnClick
 						label: 'flat'
-					h Button,
+					h Input,
+						type: 'button'
 						btn_type: 'flat'
 						i: 'star'
 						select: state.btn_select
-					h Button,
+					h Input,
+						type: 'button'
 						btn_type: 'primary'
 						i: 'face'
 						select: state.btn_select
-					h Button,
+					h Input,
+						type: 'button'
 						i: 'accessibility'
 						select: state.btn_select
 					h 'p',{},'disabled buttons by type'
-					h Button,
+					h Input,
+						type: 'button'
 						btn_type: 'primary'
 						disabled: yes
 						select: state.btn_select
 						# onClick: @onBtnClick
 						label: 'disabled primary'
-					h Button,
+					h Input,
+						type: 'button'
 						btn_type: 'flat'
 						disabled: yes
 						select: state.btn_select
 						label: 'disabled flat'
-					h Button,
+					h Input,
+						type: 'button'
 						disabled: yes
 						select: state.btn_select
 						label: 'disabled default'
 
 					h 'p',{},'set buttons to be bigger with `big:true` '
-					h Button,
+					h Input,
+						type: 'button'
 						i: 'bookmark'
 						big: true
 						label: 'bookmark'
 						h AlertDot
-					h Button,
+					h Input,
+						type: 'button'
 						i: 'done'
 						big: true
 						btn_type: 'primary'
 						label: 'done'
-					h Button,
+					h Input,
+						type: 'button'
 						i: 'save'
 						big: true
 						select: state.btn_select
 					h 'p',{},'buttons with alternative icon colors `i_type:primary` and `i_type:highlight`'
-					h Button,
+					h Input,
+						type: 'button'
 						i: 'bookmark'
 						i_type: 'primary'
 						label: 'bookmark'
 						h AlertDot
-					h Button,
+					h Input,
+						type: 'button'
 						i: 'done'
 						i_type: 'highlight'
 						btn_type: 'primary'
@@ -263,24 +275,29 @@ class Demo extends Component
 					h 'p',{},'buttons inside bar dont have margins unless specified'
 					h Bar,
 						big: state.bar_big
-						h Button,
+						h Input,
+							type: 'button'
 							i: 'settings'
 							select: state.bar_big
 							onClick: @toggleBarBig
 							label: 'toggle big'
 							h AlertDot
-						h Button,
+						h Input,
+							type: 'button'
 							btn_type: 'flat'
 							label: 'flat'
-						h Button,
+						h Input,
+							type: 'button'
 							i: 'favorite'
 							btn_type: 'primary'
 							label: 'like'
-						h Button,
+						h Input,
+							type: 'button'
 							i: 'save'
 							# i_type: 'primary'
 							btn_type: 'flat'
 						h Input,
+							type: 'button'
 							btn_type: 'default'
 							# i_type: 'primary'
 							i: 'search'
@@ -291,16 +308,19 @@ class Demo extends Component
 					h Bar,
 						big: state.bar_big
 						vert: yes
-						h Button,
+						h Input,
+							type: 'button'
 							i: 'settings'
 							select: state.bar_big
 							onClick: @toggleBarBig 
 							label: 'toggle big'
 							h AlertDot
-						h Button,
+						h Input,
+							type: 'button'
 							btn_type: 'flat'
 							label: 'flat'
-						h Button,
+						h Input,
+							type: 'button'
 							i: 'favorite'
 							btn_type: 'primary'
 							label: 'like'

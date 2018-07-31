@@ -13,7 +13,8 @@ class Input extends Component
 		super(props)
 		@state=
 			value: null
-		@state.is_dark = Color(props.value).isDark()
+		if props.type == 'color'
+			@state.is_dark = Color(props.value).isDark()
 		@list = []
 	onInput: (e)=>
 		if !@props.onInput
@@ -37,6 +38,7 @@ class Input extends Component
 		@props.onMouseEnter?(e)
 	onMouseLeave: (e)=>
 		@setState
+			focus: if @props.type == 'color' || @props.type == 'button' || @props.type == 'checkbox' then no else @state.focus
 			hover: no
 		@props.onMouseLeave?(e)
 	onKeyDown: (e)=>
@@ -58,6 +60,7 @@ class Input extends Component
 		log 'click'
 		@_input.click()
 		@_input.focus()
+		@props.onClick?(e)
 	
 	onInputClick: (e)=>
 		# e.preventDefault()
@@ -71,28 +74,32 @@ class Input extends Component
 		if props.type == 'color' && props.value != @props.value
 			@state.is_dark = Color(props.value).isDark()
 	
-	getButtonStyle: (props,state,offset)->
+	getButtonStyle: (props,state)->
 		offset = offset || 0
 		value = if props.value? then props.value else state.value
 		select = props.select
-		focus = state.focus || state.hover
+		focus = (state.focus) || state.hover
+
+
 
 		btn_style = {}
+		if props.type == 'button'
+			btn_style.cursor = 'pointer'
 		if props.btn_type == 'primary'
 			if select
-				btn_style.color = @context.__theme.secondary.inv[0+offset]
-				btn_style.background = @context.__theme.secondary.color[0+offset]
+				btn_style.color = @context.__theme.secondary.inv[0]
+				btn_style.background = @context.__theme.secondary.color[0]
 			else if focus
-				btn_style.color = @context.__theme.secondary.inv[0+offset]
-				btn_style.background = @context.__theme.secondary.color[0+offset]
+				btn_style.color = @context.__theme.secondary.inv[0]
+				btn_style.background = @context.__theme.secondary.color[0]
 			else
-				btn_style.color = @context.__theme.secondary.inv[1-offset]
-				btn_style.background = @context.__theme.secondary.color[1-offset]
+				btn_style.color = @context.__theme.secondary.inv[1]
+				btn_style.background = @context.__theme.secondary.color[1]
 		
 		else if props.btn_type == 'flat'
 			if select
 				btn_style.color = @context.__theme.primary.color[0]
-				btn_style.background = @context.__theme.primary.inv[2]
+				btn_style.background = @context.__theme.primary.inv[1]
 			else if focus
 				btn_style.color = @context.__theme.primary.color[0]
 				btn_style.background = @context.__theme.primary.inv[1]
@@ -102,14 +109,14 @@ class Input extends Component
 		
 		else
 			if select
-				btn_style.color = @context.__theme.primary.color[0+offset]
-				btn_style.background = @context.__theme.primary.inv[2-offset]
+				btn_style.color = @context.__theme.primary.color[0]
+				btn_style.background = @context.__theme.primary.inv[2]
 			else if focus
-				btn_style.color = @context.__theme.primary.color[0+offset]
-				btn_style.background = @context.__theme.primary.inv[2-offset]
+				btn_style.color = @context.__theme.primary.color[0]
+				btn_style.background = @context.__theme.primary.inv[2]
 			else
-				btn_style.color = @context.__theme.primary.color[1+offset]
-				btn_style.background = @context.__theme.primary.inv[1+offset]
+				btn_style.color = @context.__theme.primary.color[1]
+				btn_style.background = @context.__theme.primary.inv[1]
 
 		return btn_style
 	
@@ -227,9 +234,9 @@ class Input extends Component
 	render: (props,state)->
 		value = if props.value? then props.value else state.value
 		select = props.select
-		focus = state.focus || state.hover
+		focus = state.focus || state.hover || select
 
-		if props.type == 'color' || props.type == 'checkbox'
+		if props.type == 'color' || props.type == 'checkbox' || props.type == 'button'
 			input_hidden = true
 
 		if props.type == 'checkbox'
@@ -317,8 +324,13 @@ class Input extends Component
 			onBlur: @onBlur
 			value: value
 
+
+
 		
 		input_props = Object.assign {},props,self_input_props
+
+		if props.type == 'button'
+			input_props.style = cursor: 'pointer'
 
 		input_props.onClick = @onInputClick
 
@@ -326,7 +338,7 @@ class Input extends Component
 
 
 	
-			
+
 
 
 		if props.invalid
@@ -337,7 +349,7 @@ class Input extends Component
 			onClick: @onClick
 			onMouseEnter: @onMouseEnter
 			onMouseLeave: @onMouseLeave
-			className: cn(props.big && css['btn-big'],css['btn'],css['input'])
+			className: cn(props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'])
 			style: @getButtonStyle(props,state)
 			chips
 			icon
@@ -348,6 +360,7 @@ class Input extends Component
 			input
 			color_circle
 			alert
+			props.children
 
 
 
