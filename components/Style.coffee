@@ -66,7 +66,7 @@ class Style extends Component
 	renderStyle: (props)=>
 		primary_c = Color(props.primary)
 		secondary_c = Color(props.secondary)
-
+		log primary_c
 		if primary_c.isLight()
 			@primary = @darkenPallet(primary_c)
 		else

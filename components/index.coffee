@@ -1,0 +1,7 @@
+module.exports.Header = require './Header.coffee'
+module.exports.Input = require './Input.coffee'
+module.exports.Menu = require './Menu.coffee'
+module.exports.MenuTab = require './MenuTab.coffee'
+module.exports.Section = require './Section.coffee'
+module.exports.Style = require './Style.coffee'
+module.exports.AlertDot = require './AlertDot.coffee'
