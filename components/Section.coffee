@@ -1,5 +1,5 @@
 {h} = require 'preact'
-css = require './Style.module.less'
+css = require './Style.less'
 class Section
 	render: (props)->
 		h 'div',

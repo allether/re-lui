@@ -1,5 +1,5 @@
 {render,h,Component} = require 'preact'
-require 'normalize.css'
+
 window.log = console.log.bind(console)
 Style = require './components/Style.coffee'
 AlertDot = require './components/AlertDot.coffee'

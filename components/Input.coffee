@@ -1,7 +1,7 @@
-css = require './Style.module.less'
+css = require './Style.less'
 cn = require 'classnames'
 Color = require 'color'
-Slide = require 'preact-slide/dist/preact-slide'
+Slide = require 'preact-slide'
 AlertDot = require './AlertDot.coffee'
 {h,Component} = require 'preact'
 

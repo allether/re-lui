@@ -17,13 +17,12 @@ var cfg = {
 	},
 	entry: {
 		demo: "./demo.coffee",
+		index: "./components/index.coffee",
 	},
 	resolve: {
 		// "modules": [__dirname+"/node_modules"],
 	},
-	// externals: process.env.NODE_ENV == 'production' && {
- //    	preact: 'preact'
- //  	},
+	externals: process.env.NODE_ENV == 'production' && ["preact","preact-slide","classnames","color","css"] || [],
 	output: {
 		path: path.join(__dirname,'..','/'),
 		publicPath: '/',

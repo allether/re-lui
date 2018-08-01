@@ -1,4 +1,4 @@
-css = require './Style.module.less'
+css = require './Style.less'
 cn = require 'classnames'
 {h,Component} = require 'preact'
 

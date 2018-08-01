@@ -2,7 +2,7 @@
   "name": "preact-lui",
   "version": "1.0.0",
   "description": "not so generic collection of general purpose preact ui components",
-  "main": "./components/index.coffee",
+  "main": "./index.js",
   "scripts": {
     "client-dev": "NODE_ENV=development webpack-dev-server --config ./scripts/dev.config.js --progress --mode development",
     "client-prod": "NODE_ENV=production webpack --config ./scripts/dev.config.js --progress --mode production"
@@ -26,6 +26,6 @@
     "css": "^2.2.3",
     "normalize.css": "^8.0.0",
     "preact": "^8.2.9",
-    "preact-slide": "^0.4.4"
+    "preact-slide": "git+https://git@github.com/arxii/preact-slide.git"
   }
 }

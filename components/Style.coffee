@@ -1,6 +1,7 @@
 Color = require 'color'
 {Component} = require 'preact'
-css = require './Style.module.less'
+require 'normalize.css'
+css = require './Style.less'
 
 class Style extends Component
 	constructor: ->
