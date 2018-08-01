@@ -27,8 +27,8 @@ var cfg = {
 		path: path.join(__dirname,'..','/'),
 		publicPath: '/',
 		filename: "[name].js",
-		library: 'LerpUI',
-		libraryTarget: 'commonjs'
+		// library: 'LerpUI',
+		libraryTarget: process.env.NODE_ENV == 'production' && 'commonjs2' || 'window'
 	},
 	devServer: {
 		port: 3234
