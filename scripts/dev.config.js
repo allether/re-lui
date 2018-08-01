@@ -26,10 +26,12 @@ var cfg = {
 	output: {
 		path: path.join(__dirname,'..','/'),
 		publicPath: '/',
-		filename: "[name].js"
+		filename: "[name].js",
+		library: 'LerpUI',
+		libraryTarget: 'commonjs'
 	},
 	devServer: {
 		port: 3234
-	}
+	},
 }
 module.exports = cfg;
