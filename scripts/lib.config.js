@@ -16,22 +16,14 @@ var cfg = {
 		]
 	},
 	entry: {
-		demo: "./demo.coffee",
 		index: "./components/index.coffee",
 	},
-	resolve: {
-		// "modules": [__dirname+"/node_modules"],
-	},
-	externals: process.env.NODE_ENV == 'production' && ["preact","preact-slide","classnames","color","css"] || [],
+	externals: ["preact","preact-slide","classnames","color"],
 	output: {
 		path: path.join(__dirname,'..','/'),
 		publicPath: '/',
-		filename: "[name].js",
-		// library: 'LerpUI',
-		libraryTarget: process.env.NODE_ENV == 'production' && 'commonjs2' || 'window'
-	},
-	devServer: {
-		port: 3234
-	},
+		filename: "index.js",
+		libraryTarget: 'commonjs2'
+	}
 }
 module.exports = cfg;
