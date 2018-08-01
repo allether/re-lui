@@ -5,6 +5,8 @@ Slide = require 'preact-slide'
 AlertDot = require './AlertDot.coffee'
 {h,Component} = require 'preact'
 
+
+
 class Input extends Component
 	constructor: (props)->
 		super(props)

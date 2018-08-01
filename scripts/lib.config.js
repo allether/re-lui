@@ -20,7 +20,7 @@ var cfg = {
 	},
 	externals: ["preact","preact-slide","classnames","color"],
 	output: {
-		path: path.join(__dirname,'..','/'),
+		path: path.join(__dirname,'..','/dist'),
 		publicPath: '/',
 		filename: "index.js",
 		libraryTarget: 'commonjs2'

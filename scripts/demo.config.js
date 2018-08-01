@@ -19,7 +19,7 @@ var cfg = {
 		demo: "./demo.coffee",
 	},
 	output: {
-		path: path.join(__dirname,'..','/'),
+		path: path.join(__dirname,'..','/dist'),
 		publicPath: '/',
 		filename: "demo.js",
 	},
