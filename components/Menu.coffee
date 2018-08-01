@@ -1,8 +1,9 @@
 {h,Component} = require 'preact'
+Bar = require './Bar.coffee'
 DEFAULT_DIM = 30
 
 
-class PreactContextMenu extends Component
+class Menu extends Component
 	constructor: (props)->
 		super(props)
 		@state=
@@ -101,7 +102,7 @@ class PreactContextMenu extends Component
 			force_split_top: true
 			force_split_top_y: overflow
 		
-PreactContextMenu.defaultProps = 
+Menu.defaultProps = 
 	x: 0
 	y: 0
 	min_x: 0
@@ -110,7 +111,7 @@ PreactContextMenu.defaultProps =
 	tabClassName: 'menu-tab'
 	className: 'menu'
 
-class PreactContextMenuTab extends Component
+class MenuTab extends Component
 	constructor: (props)->
 		super(props)
 		@state =
@@ -255,7 +256,7 @@ class PreactContextMenuTab extends Component
 					bottom = null
 
 
-		if split_vert 
+		if split_vert
 			if @state.y2 + @state.ch > @context.max_y || @context.force_split_top
 				flex_dir = 'column-reverse'
 			else
@@ -266,20 +267,16 @@ class PreactContextMenuTab extends Component
 			else
 				flex_dir = 'row'
 
-
-
 		h 'div',
 			style:
 				position: 'relative'
 			onMouseLeave: hover_reveal && @onMouseLeave
 			h 'div',
 				className: tabClassName
-				onClick: @onClick
 				onMouseEnter: hover_reveal && @onMouseEnter
 				props.content
-			h 'div',
-				ref: @childContainer
-				className: tabsClassName
+			h Bar,
+				vert: split_vert
 				style:
 					zIndex: @context.level
 					position: 'absolute'
@@ -292,4 +289,4 @@ class PreactContextMenuTab extends Component
 					flexDirection: flex_dir
 				props.children
 
-module.exports = {PreactContextMenu,PreactContextMenuTab}
+module.exports = {Menu,MenuTab}

@@ -4,6 +4,7 @@ window.log = console.log.bind(console)
 Style = require './components/Style.coffee'
 AlertDot = require './components/AlertDot.coffee'
 Input = require './components/Input.coffee'
+{Menu,MenuTab} = require './components/Menu.coffee'
 Section = require './components/Section.coffee'
 Bar = require './components/Bar.coffee'
 css = require './demo.less'
@@ -367,11 +368,36 @@ class Demo extends Component
 						select: state.primary == '#FFFFFF'
 						secondary: '#5F9B9D'
 						onPresetSelect: @onPresetSelect
-					
 
 				h Section,
 					title: 'context menu'
 					h 'p',{},'context menu made out of bars'
+					h Menu,
+						vert: false
+						alternate: yes
+						h MenuTab,
+							content: h Input,
+								btn_type: 'button'
+								label: 'option 1'
+								h Input,
+									btn_type: 'button'
+									label: 'option 1 a'
+								h Input,
+									btn_type: 'button'
+									label: 'option 1 b'
+								h Input,
+									btn_type: 'button'
+									label: 'option 1 c'
+						h MenuTab,
+							content: h Input,
+								btn_type: 'button'
+								label: 'option 1'
+						h MenuTab,
+							content: h Input,
+								btn_type: 'button'
+								label: 'option 1'
+
+
 
 
 render(h(Demo),document.body)
