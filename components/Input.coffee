@@ -91,7 +91,7 @@ class Input extends Component
 				btn_style.color = @context.__theme.secondary.inv[0]
 				btn_style.background = @context.__theme.secondary.color[0]
 			else
-				btn_style.color = @context.__theme.secondary.inv[1]
+				btn_style.color = @context.__theme.secondary.inv[2]
 				btn_style.background = @context.__theme.secondary.color[1]
 		
 		else if props.btn_type == 'flat'
@@ -102,7 +102,7 @@ class Input extends Component
 				btn_style.color = @context.__theme.primary.color[0]
 				btn_style.background = @context.__theme.primary.inv[1]
 			else
-				btn_style.color = @context.__theme.primary.color[1]
+				btn_style.color = @context.__theme.primary.color[2]
 				btn_style.background = @context.__theme.primary.inv[0]			
 		
 		else
@@ -113,7 +113,7 @@ class Input extends Component
 				btn_style.color = @context.__theme.primary.color[0]
 				btn_style.background = @context.__theme.primary.inv[2]
 			else
-				btn_style.color = @context.__theme.primary.color[1]
+				btn_style.color = @context.__theme.primary.color[2]
 				btn_style.background = @context.__theme.primary.inv[1]
 
 		return btn_style
@@ -147,24 +147,24 @@ class Input extends Component
 	getIconStyle: (props,state)->
 		i_style = {}
 		select = props.select
-		focus = state.focus
+		focus = (state.focus) || state.hover
 		if props.i_type == 'primary'
 			i_style.color = @context.__theme.secondary.color[0]
 		else if props.i_type == 'highlight'
 			i_style.color = @context.__theme.secondary.highlight
 		else
 			if props.btn_type == 'primary'
-				i_style.color = @context.__theme.secondary.inv[0]
+				i_style.color = @context.__theme.secondary.inv[1]
 			else if props.btn_type == 'flat'
 				if focus || select
-					i_style.color = @context.__theme.primary.color[1]
+					i_style.color = @context.__theme.primary.color[0]
 				else
 					i_style.color = @context.__theme.primary.color[2]
 			else
 				if focus || select
 					i_style.color = @context.__theme.primary.color[0]
 				else
-					i_style.color = @context.__theme.primary.color[1]
+					i_style.color = @context.__theme.primary.color[2]
 		
 		return i_style
 

@@ -59,8 +59,8 @@ class Style extends Component
 		return c
 
 
-	darkenPallet: (color,inv)->
-		c = @createPallet(color,@black,1,6)
+	darkenPallet: (color,factor)->
+		c = @createPallet(color,@black,factor || 1,6)
 		c.highlight = color.darken(0.5).saturate(.85)
 		c.true = color.darken(0.5).mix(@true,0.7);
 		c.false = color.darken(0.5).mix(@false,0.7);
@@ -77,7 +77,7 @@ class Style extends Component
 			@primary = @lightenPallet(primary_c)
 
 		if secondary_c.isLight()
-			@secondary = @darkenPallet(secondary_c)
+			@secondary = @darkenPallet(secondary_c,0.5)
 		else
 			@secondary = @lightenPallet(secondary_c)
 
