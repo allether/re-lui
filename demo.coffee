@@ -8,6 +8,7 @@ Input = require './components/Input.coffee'
 # MenuTab = require './components/MenuTab.coffee'
 Section = require './components/Section.coffee'
 Bar = require './components/Bar.coffee'
+Chip = require './components/Chip.coffee'
 AlertOverlay = require './components/AlertOverlay.coffee'
 css = require './demo.less'
 lerp_logo = require './lerp-logo-40.svg'
@@ -283,6 +284,19 @@ class Demo extends Component
 					h Input,
 						type: 'list'
 						placeholder: 'comma seperated list'
+					
+					h Chip,
+						btn_type: 'primary'
+						'chip A'
+					
+					h Chip,
+						btn_type: 'flat'
+						'chip B'
+					
+					h Chip,
+						btn_type: undefined
+						'chip C'
+
 					h 'p',{},'the two types of boolean inputs are checkbox followed by radio. Set `alt_label`'
 					h Input,
 						checked: state.toggle_checked
@@ -302,6 +316,14 @@ class Demo extends Component
 						btn_type: 'primary'
 						type: 'checkbox'
 						label: 'toggle me!'
+					h 'p',{},'you can also input into a large text area'
+					h Input,
+						# checked: state.toggle_checked
+						# onInput:@onToggle
+						type: 'textarea'
+						label: 'Messsage:'
+						bar: yes
+						placeholder: 'type text...'
 
 				h Section,
 					title: 'bar'

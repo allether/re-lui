@@ -38,8 +38,8 @@ class Style extends Component
 		c = {}
 		c.color = [
 			color.hex()
-			color.mix(inv,0.2*color_factor).hex()
-			color.mix(inv,0.4*color_factor).hex()
+			color.mix(inv,.1*color_factor).hex()
+			color.mix(inv,.3*color_factor).hex()
 		]
 
 		c.inv = [
@@ -60,7 +60,7 @@ class Style extends Component
 
 
 	darkenPallet: (color,inv)->
-		c = @createPallet(color,@black,.5,6)
+		c = @createPallet(color,@black,1,6)
 		c.highlight = color.darken(0.5).saturate(.85)
 		c.true = color.darken(0.5).mix(@true,0.7);
 		c.false = color.darken(0.5).mix(@false,0.7);

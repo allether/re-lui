@@ -99,6 +99,17 @@ body{
 
 
 
+a{
+	text-decoration: none;
+}
+.input-bar{
+	transition: inherit;
+	height: 18px;
+	width: 4;
+	flex-shrink: 0;
+	margin: 0 @margin-size*2;
+	border-radius: @border-radius;
+}
 
 
 .btn{
@@ -108,9 +119,10 @@ body{
 	padding: 0 @padding-size;
 	height: 30;
 	min-width: 30;
-	margin: 4 6;
-	margin-left: 0;
+	margin: 4 4;
+	// margin-left: 0;
 	display: inline-flex;
+
 	align-items: center;
 	position: relative;
 	justify-content: flex-start;
@@ -118,12 +130,24 @@ body{
 	border-radius: @border-radius;
 	font-weight: 400;
 	transition: filter @ease,background @ease, color @ease;
-	
-	
+	textarea{
+		border: none;
+		background: none;
+		padding: 3 @margin-size;
+		// width: 100%;
+		min-width: 100%;
+		width: 100%;
+		min-height: 100;
+		outline: none;
+	}
+	.chip{
+		margin-top: 0;
+	}
 	.label{
 		flex-shrink: 0;
 		margin: 0 @margin-size;
 	}
+
 	i{
 		font-size: 20;
 		transition: inherit;
@@ -131,6 +155,24 @@ body{
 		margin-left: 0;
 	}	
 
+	&.btn-textarea{
+		padding: @padding-size;
+		flex-wrap: wrap;
+		height: auto;
+		min-height: 100;
+		width: 300;
+		.input-bar{
+			width: 30%;
+			height: 4;
+			margin-right: 0;
+			margin-left: 0;
+			margin-top: @margin-size*2;
+			margin-bottom: @margin-size;
+		}
+		.label{
+			width: 100%;
+		}
+	}
 	&.btn-big{
 		height: 40;
 		padding: 0 @padding-size*2;
@@ -164,35 +206,37 @@ body{
 
 	::placeholder{
 		color: inherit;
-		opacity: 0.65;
+		opacity: 0.5;
 	}
 }
 
+.label-opaque{
+	opacity: 0.5;
+}
 
 .hidden{
 	opacity: 0 !important;
 	width: 0 !important;
 	margin: 0 !important;
 }
-.input-bar{
-	transition: inherit;
-	height: 18px;
-	width: 4;
-	flex-shrink: 0;
-	margin: 0 @margin-size*2;
-	border-radius: @border-radius;
-}
 
 .chip{
-	height: 70%;
+	height: 20;
 	border-radius: @border-radius;
-	margin: 0 @margin-size;
+	// margin: 0 @margin-size;
+	margin-right: @margin-size*2;
+	margin-top: @margin-size*2;
 	padding: 0 @margin-size*2;
 	display: flex;
 	flex-shrink: 0;
+	font-size: 11;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+}
+.chip-inline{
+	margin-right: 0;
+	margin-top: 0;
 }
 
 .toggle{

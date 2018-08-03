@@ -4,7 +4,7 @@ Color = require 'color'
 Slide = require 'preact-slide'
 AlertDot = require './AlertDot.coffee'
 {h,Component} = require 'preact'
-
+require './MaterialIcons.css'
 
 
 class Input extends Component
@@ -293,7 +293,7 @@ class Input extends Component
 
 		if props.label
 			label = h 'div',
-				className: css['label']
+				className: cn(value && css['label-opaque'],css['label'])
 				props.label
 
 		if props.bar
@@ -303,7 +303,7 @@ class Input extends Component
 	
 		if props.type == 'color'
 			color_circle = h 'div',
-				className: css['input-color-circle']
+				className: cn(css['input-color-circle'],css['chip'])
 				style:
 					background: props.value || '#fff'
 				h 'span',
@@ -337,7 +337,11 @@ class Input extends Component
 
 		input_props.onClick = @onInputClick
 
-		input = h 'input',input_props
+
+		if props.type == 'textarea'
+			input = h 'textarea',input_props
+		else
+			input = h 'input',input_props
 
 
 	
@@ -348,11 +352,12 @@ class Input extends Component
 			alert = h AlertDot,
 				error: yes
 
-		h 'div',
+		h (props.href && 'a' || 'div'),
 			onClick: @onClick
 			onMouseEnter: @onMouseEnter
 			onMouseLeave: @onMouseLeave
-			className: cn(props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
+			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
+			href: props.href	
 			style: @getButtonStyle(props,state)
 			chips
 			icon
