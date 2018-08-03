@@ -5,7 +5,7 @@ class Section
 		h 'div',
 			style:
 				background: @context.__theme.primary.inv[0]
-				color: @context.__theme.primary.color[2]
+				color: @context.__theme.primary.color[1]
 			className: css['section']
 			h 'h2',
 				className: css['section-title']

@@ -10,16 +10,19 @@ class Style extends Component
 		@black = Color('#000')
 		@false = Color('#FC0020')
 		@true = Color('#21FF48')
+
+
 	componentWillMount: ->
 		@setRef()
 		@renderStyle(@props)
 
+
 	getChildContext: =>
-		
 		__theme:
 			primary: @primary
 			secondary: @secondary
-		
+
+
 	setRef: ->
 		@_head_el = document.head.querySelector('#lerp-style')
 		if !@_head_el
@@ -41,8 +44,8 @@ class Style extends Component
 
 		c.inv = [
 			inv.mix(color,.02*inv_factor).hex()
-			inv.mix(color,.04*inv_factor).hex()
-			inv.mix(color,.08*inv_factor).hex()
+			inv.mix(color,.03*inv_factor).hex()
+			inv.mix(color,.05*inv_factor).hex()
 		]
 
 		return c
@@ -57,7 +60,7 @@ class Style extends Component
 
 
 	darkenPallet: (color,inv)->
-		c = @createPallet(color,@black,.5,4)
+		c = @createPallet(color,@black,.5,6)
 		c.highlight = color.darken(0.5).saturate(.85)
 		c.true = color.darken(0.5).mix(@true,0.7);
 		c.false = color.darken(0.5).mix(@false,0.7);
@@ -78,24 +81,14 @@ class Style extends Component
 		else
 			@secondary = @lightenPallet(secondary_c)
 
+		log @props.onSetStyle?
+		@props.onSetStyle?(@primary,@secondary)
 
-		# str = "body{color:#{primary[0]};background:#{primary[5]};}"
-		# str += ".#{css["secondary-b-highlight"]}{background:#{secondary.highlight};}"
-		# str += ".#{css["secondary-b-error"]}{background:#{secondary.error};}"
-		# str += ".#{css["secondary-c-highlight"]}{color:#{secondary.highlight};}"
 
-		# for i in [0...6]
-		# 	str += ".#{css["primary-c-"+i]}{color:#{primary[i]};}"
-		# 	str += ".#{css["primary-b-"+i]}{background:#{primary[i]};}"
-		# 	str += ".#{css["secondary-c-"+i]}{color:#{secondary[i]};}"
-		# 	str += ".#{css["secondary-b-"+i]}{background:#{secondary[i]};}"
-
-		# @_head_el.innerHTML = str
-		
 	componentWillUpdate: (props)->
-		# log props.primary,@props.primary
 		if @props.primary != props.primary || @props.secondary != props.secondary || @props.tertiary != props.tertiary
 			@renderStyle(props)
+
 
 	render: (props)->
 		return props.children[0]

@@ -56,7 +56,6 @@ class Input extends Component
 			
 
 	onClick: (e)=>
-		log 'click'
 		@_input.click()
 		@_input.focus()
 		@props.onClick?(e)
@@ -286,6 +285,11 @@ class Input extends Component
 				className: 'material-icons'
 				style: @getIconStyle(props,state)
 				props.i 
+		else if props.i_class
+			icon = h 'i',
+				className: props.i_class
+				style: @getIconStyle(props,state)
+
 
 		if props.label
 			label = h 'div',
@@ -348,7 +352,7 @@ class Input extends Component
 			onClick: @onClick
 			onMouseEnter: @onMouseEnter
 			onMouseLeave: @onMouseLeave
-			className: cn(props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'])
+			className: cn(props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
 			style: @getButtonStyle(props,state)
 			chips
 			icon

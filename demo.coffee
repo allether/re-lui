@@ -4,12 +4,16 @@ window.log = console.log.bind(console)
 Style = require './components/Style.coffee'
 AlertDot = require './components/AlertDot.coffee'
 Input = require './components/Input.coffee'
-Menu = require './components/Menu.coffee'
-MenuTab = require './components/MenuTab.coffee'
+# Menu = require './components/Menu.coffee'
+# MenuTab = require './components/MenuTab.coffee'
 Section = require './components/Section.coffee'
 Bar = require './components/Bar.coffee'
+AlertOverlay = require './components/AlertOverlay.coffee'
 css = require './demo.less'
 lerp_logo = require './lerp-logo-40.svg'
+
+
+
 
 
 class SvgIcon extends Component
@@ -68,18 +72,38 @@ class Demo extends Component
 		@setState
 			input_value: e.target.value
 
+
 	setPrimaryColor: (e)=>
 		@setState
 			primary: e.target.value
+
 
 	setSecondaryColor: (e)=>
 		@setState
 			secondary: e.target.value
 
+
 	onPresetSelect: (primary,secondary)=>
 		@setState
 			primary:primary
 			secondary: secondary
+
+
+	showOverlay: =>
+		@setState
+			show_overlay: yes
+			show_overlay_error: no
+
+	showOverlayError: =>
+		@setState
+			show_overlay: yes
+			show_overlay_error: yes
+	hideOverlay: =>
+		@setState
+			show_overlay: no
+			show_overlay_error: no
+
+	
 
 	render: (props,state)->
 		h Style,
@@ -89,6 +113,13 @@ class Demo extends Component
 			# tertiary: '#379CC6'
 			h 'div',
 				className: 'app'
+				h AlertOverlay,
+					onClick: @hideOverlay
+					transparent: true
+					visible: @state.show_overlay
+					alert_type: @state.show_overlay_error && 'error' || 'success'
+					message:@state.show_overlay_error && 'error message' || 'success message'
+				
 				h Section,
 					title: 'buttons'
 					h 'p',{},'Examples of buttons containing text, an <AlertDot> is added to the primary button.'
@@ -328,8 +359,6 @@ class Demo extends Component
 							label: 'like'
 
 
-
-
 				h Section,
 					title: 'colors'
 					h 'p',{},'all theme colors that can be passed to the `Style` wrapper'
@@ -370,33 +399,18 @@ class Demo extends Component
 						secondary: '#5F9B9D'
 						onPresetSelect: @onPresetSelect
 
+
 				h Section,
-					title: 'context menu'
-					h 'p',{},'context menu made out of bars'
-					h Menu,
-						vert: false
-						alternate: yes
-						h MenuTab,
-							content: h Input,
-								btn_type: 'button'
-								label: 'option 1'
-								h Input,
-									btn_type: 'button'
-									label: 'option 1 a'
-								h Input,
-									btn_type: 'button'
-									label: 'option 1 b'
-								h Input,
-									btn_type: 'button'
-									label: 'option 1 c'
-						h MenuTab,
-							content: h Input,
-								btn_type: 'button'
-								label: 'option 1'
-						h MenuTab,
-							content: h Input,
-								btn_type: 'button'
-								label: 'option 1'
+					title: 'overlay'
+					h Input,
+						label: 'show overlay'
+						type: 'button'
+						onClick: @showOverlay
+					h Input,
+						label: 'show overlay error'
+						type: 'button'
+						onClick: @showOverlayError
+
 
 
 

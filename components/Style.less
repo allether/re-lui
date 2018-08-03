@@ -82,7 +82,6 @@ body{
 
 
 .alert-dot{
-	
 	border-radius: 4px;
 	width: 8;
 	height: 8;
@@ -109,7 +108,7 @@ body{
 	padding: 0 @padding-size;
 	height: 30;
 	min-width: 30;
-	margin: 8;
+	margin: 4 6;
 	margin-left: 0;
 	display: inline-flex;
 	align-items: center;
@@ -122,6 +121,7 @@ body{
 	
 	
 	.label{
+		flex-shrink: 0;
 		margin: 0 @margin-size;
 	}
 	i{
@@ -150,16 +150,9 @@ body{
 			margin: 0 !important;
 		}
 	}
-}
-
-.input{
-	cursor: text;
-	display: inline-flex;
-	.label{
-		// margin-left: 6;
-		// margin-right: 0;
-	}
+	
 	input{
+		width: 100%;
 		outline: none;
 		background: none;
 		border: none;
@@ -175,15 +168,17 @@ body{
 	}
 }
 
+
 .hidden{
-	opacity: 0;
-	width: 0;
+	opacity: 0 !important;
+	width: 0 !important;
 	margin: 0 !important;
 }
 .input-bar{
 	transition: inherit;
 	height: 18px;
 	width: 4;
+	flex-shrink: 0;
 	margin: 0 @margin-size*2;
 	border-radius: @border-radius;
 }
@@ -194,6 +189,7 @@ body{
 	margin: 0 @margin-size;
 	padding: 0 @margin-size*2;
 	display: flex;
+	flex-shrink: 0;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
@@ -377,3 +373,28 @@ body{
 	display: inline-grid;
 }
 
+
+
+.overlay{
+	position: fixed;
+	left: 0;
+	z-index: 10;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0.9;
+	transition: opacity 0.3s ease;
+	&.overlay-hidden{
+		pointer-events: none;
+		opacity: 0;
+	}
+	.overlay-slide{
+		width: 100vw;
+		height: 100vh;
+	}
+}
+
+.overlay-empty{
+	background: none;
+	pointer-events: none;
+}
