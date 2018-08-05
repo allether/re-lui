@@ -421,7 +421,6 @@ class Demo extends Component
 						secondary: '#5F9B9D'
 						onPresetSelect: @onPresetSelect
 
-
 				h Section,
 					title: 'overlay'
 					h Input,
