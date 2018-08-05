@@ -1,12 +1,14 @@
 {h} = require 'preact'
 css = require './Style.less'
+cn = require 'classnames'
 class Section
 	render: (props)->
-		h 'div',
+		section_props = Object.assign props,
 			style:
 				background: @context.__theme.primary.inv[0]
 				color: @context.__theme.primary.color[1]
-			className: css['section']
+			className: cn(css['section'],props.className)
+		h 'div',section_props,
 			h 'h2',
 				className: css['section-title']
 				props.title

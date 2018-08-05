@@ -1,6 +1,6 @@
 {
-  "name": "preact-lui",
-  "version": "1.0.0",
+  "name": "lerp-ui",
+  "version": "0.0.1",
   "description": "not so generic collection of general purpose preact ui components",
   "main": "./dist/index.js",
   "scripts": {
@@ -9,8 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/arxii/preact-lui.git"
+    "url": "git+ssh://git@github.com/lerp-io/lerp-ui.git"
   },
+  "homepage": "https://lerp-io.github.io/lerp-ui/",
   "author": "",
   "license": "MIT",
   "devDependencies": {
@@ -24,7 +25,7 @@
     "less-loader": "^4.1.0",
     "normalize.css": "^8.0.0",
     "preact": "^8.2.9",
-    "preact-slide": "git+https://git@github.com/arxii/preact-slide.git",
+    "preact-slide": "^0.4.7",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.21.0",
     "webpack": "^4.16.2",

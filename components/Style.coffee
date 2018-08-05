@@ -3,6 +3,11 @@ Color = require 'color'
 require 'normalize.css'
 css = require './Style.less'
 
+
+# class Pallet extends Component
+# 	constructor: ->
+
+
 class Style extends Component
 	constructor: ->
 		super()
@@ -81,7 +86,6 @@ class Style extends Component
 		else
 			@secondary = @lightenPallet(secondary_c)
 
-		log @props.onSetStyle?
 		@props.onSetStyle?(@primary,@secondary)
 
 

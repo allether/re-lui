@@ -1,5 +1,5 @@
 @import './Font.css';
-@ease: 0.2s ease;
+@ease: 0.3s ease;
 @border-radius: 2px;
 @margin-size: 3;
 @padding-size: 8;
@@ -42,7 +42,7 @@ body{
 .section{
 	position: relative;
 	padding: 20;
-	padding-top: 40;
+	padding-top: 30;
 	padding-bottom: 10;
 }
 
@@ -132,6 +132,7 @@ a{
 	transition: filter @ease,background @ease, color @ease;
 	textarea{
 		border: none;
+		color: inherit;
 		background: none;
 		padding: 3 @margin-size;
 		// width: 100%;
@@ -224,8 +225,6 @@ a{
 	height: 20;
 	border-radius: @border-radius;
 	// margin: 0 @margin-size;
-	margin-right: @margin-size*2;
-	margin-top: @margin-size*2;
 	padding: 0 @margin-size*2;
 	display: flex;
 	flex-shrink: 0;
@@ -253,9 +252,8 @@ a{
 }
 
 .input-color-circle{
-	.chip();
+	margin-left: @margin-size;
 	min-width: 70;
-	
 }
 
 .input-color-text{

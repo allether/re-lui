@@ -1,7 +1,8 @@
 # lerp-ui
 
 A collection of *not so awefully generic* general purpose preact ui components.
-[homepage](http://arxii.github.io/preact-lui)
+
+[view all the components](http://lerp-io.github.io/lerp-ui)
 
 
 
