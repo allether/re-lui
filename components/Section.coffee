@@ -4,19 +4,22 @@ cn = require 'classnames'
 class Section
 	render: (props)->
 		section_props = Object.assign props,
-			style:
-				background: @context.__theme.primary.inv[0]
-				color: @context.__theme.primary.color[1]
 			className: cn(css['section'],props.className)
+		title = section_props.title
+		delete section_props.title
 		h 'div',section_props,
 			h 'h2',
 				className: css['section-title']
-				props.title
+				style:
+					opacity: 0.7
+					color: @context.__theme.primary.color[2]
+				title
 				h 'div',
 					className: css['section-title-bar']
 					style:
 						background: @context.__theme.primary.inv[1]
+						
 			h 'div',
-				className: css['section-content']
+				className: cn(css['section-content'],props.contentClassName)
 				props.children
 module.exports = Section

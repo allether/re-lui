@@ -55,6 +55,7 @@ class AlertOverlay extends Component
 				h Slide,
 					height: 40
 					className: css['overlay-alert']
+					onClick: props.onClick
 					style:
 						background: alert_bg
 						color: 'white'

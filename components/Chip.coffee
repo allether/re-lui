@@ -60,9 +60,10 @@ module.exports = class Chip extends Component
 		return btn_style
 	
 	render: (props,state)->
-		h 'span',
+		chip_props = Object.assign {},props,
 			onMouseEnter: @onMouseEnter
 			onMouseLeave: @onMouseLeave
-			style: @getButtonStyle(props,state)
-			className: cn(props.disabled && 'disabled',css['btn'],css['chip'],props.inline && css['chip-inline'])
-			props.children
+			className: cn(props.disabled && 'disabled',css['btn'],css['chip'],props.className)
+			style: Object.assign({},@getButtonStyle(props,state),props.style)
+
+		h 'span',chip_props,props.children

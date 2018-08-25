@@ -1,5 +1,6 @@
 {h,Component} = require 'preact'
-
+css = require './Style.less'
+Bar = require './Bar.coffee'
 
 class Menu extends Component
 	constructor: (props)->
@@ -12,22 +13,22 @@ class Menu extends Component
 			force_split_top: false
 			force_split_top_x: 0
 
-	getChildContext: ->
+	getChildContext: =>
 		alternate: @props.alternate
 		tabClassName: @props.tabClassName
 		tabsClassName: @props.tabsClassName
 		selectedTabClassName: @props.selectedTabClassName
 		vert: @props.vert
+		render_hidden: @props.render_hidden
 		min_x: @props.min_x
 		min_y: @props.min_y
 		max_x: @props.max_x
 		max_y: @props.max_y
+		big: @props.big
 		hover_reveal: @props.hover_reveal
 		level: 0
-		force_split_left: @state.force_split_left
-		force_split_left_x: @state.force_split_left_x
-		force_split_top: @state.force_split_top
-		force_split_top_y: @state.force_split_top_y
+		force_split_left: if @props.force_split_left? then @props.force_split_left else @state.force_split_left
+		force_split_top: if @props.force_split_top? then @props.force_split_top else @state.force_split_top
 		forceSplitTop: @forceSplitTop
 		forceSplitLeft: @forceSplitLeft
 
@@ -35,7 +36,7 @@ class Menu extends Component
 
 	componentDidUpdate: ->
 		
-		# log @state.force_split_left_x
+		
 		if @state.width != @base.clientWidth || @state.height != @base.clientHeight || @props.x < @state.force_split_left_x || @props.y < @state.force_split_top_y
 			if @props.x < @state.force_split_left_x
 				@state.force_split_left = false
@@ -71,14 +72,24 @@ class Menu extends Component
 			x = @clampPosX(x)
 			y = @clampPosY(y)
 
-		h 'div',
-			className: props.className
-			style: 
-				position: 'absolute'
-				display: 'flex'
-				flexDirection: props.vert && 'column' || 'row'
+		if props.fixed
+			fixed_style=
 				left: x
 				top: y
+				position:'fixed'
+				zIndex: 10
+
+		h Bar,
+			vert: props.vert
+			big: props.big
+			style: fixed_style
+			# className: css['bar']
+			# style: 
+			# 	# position: 'absolute'
+			# 	display: 'flex'
+			# 	flexDirection: props.vert && 'column' || 'row'
+			# 	left: x
+			# 	top: y
 			props.children
 
 
@@ -86,7 +97,7 @@ class Menu extends Component
 		overflow = @props.x - overflow
 		if overflow <= 0
 			return
-		# log overflow
+		
 		@setState
 			force_split_left: true
 			force_split_left_x: overflow
@@ -95,7 +106,7 @@ class Menu extends Component
 		overflow = @props.y - overflow
 		if overflow <= 0
 			return
-		# log overflow
+		
 		@setState
 			force_split_top: true
 			force_split_top_y: overflow
@@ -105,8 +116,5 @@ Menu.defaultProps =
 	y: 0
 	min_x: 0
 	min_y: 0
-	tabsClassName: 'menu-tabs'
-	tabClassName: 'menu-tab'
-	className: 'menu'
 
 module.exports = Menu

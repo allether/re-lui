@@ -4,8 +4,8 @@ window.log = console.log.bind(console)
 Style = require './components/Style.coffee'
 AlertDot = require './components/AlertDot.coffee'
 Input = require './components/Input.coffee'
-# Menu = require './components/Menu.coffee'
-# MenuTab = require './components/MenuTab.coffee'
+Menu = require './components/Menu.coffee'
+MenuTab = require './components/MenuTab.coffee'
 Section = require './components/Section.coffee'
 Bar = require './components/Bar.coffee'
 Chip = require './components/Chip.coffee'
@@ -24,6 +24,220 @@ class SvgIcon extends Component
 		h 'div',
 			className: 'icon'
 				@props.icon
+
+
+class MenuSection extends Component
+	constructor: (props)->
+		super(props)
+		@state=
+			x: 0
+			y: 0 
+	shouldComponentUpdate: (props,state)->
+		if props.big != @props.big || state.x != @state.x || state.y != @state.y || state.toggle_drag != @state.toggle_drag
+			return true
+		return false
+	onMove: (e)=>
+		@setState
+			x: e.clientX+20
+			y: e.clientY+20
+	onStop: (e)=>
+		window.removeEventListener 'mousemove',@onMove
+		window.removeEventListener 'click',@onStop
+		e.preventDefault()
+		e.stopPropagation()
+		@props.onDragStop?()
+		@setState
+			x: 0
+			y: 0
+			toggle_drag: no
+		return false
+	onDrag: (e)=>
+		window.addEventListener 'mousemove',@onMove
+		window.addEventListener 'click',@onStop
+		e.preventDefault()
+		e.stopPropagation()
+		@props.onDragStart?()
+		@setState
+			x: e.clientX+20
+			y: e.clientY+20
+			toggle_drag: yes
+		return false
+	render: (props,state)->
+		h Section,
+			title: 'menu'
+			h 'p',{},'menus are a mix of vertical and horizontal bars with a variety of options. `render_hidden` controls whether hidden tabs are rendered into the DOM which is needed for fixed menus to make sure that menu options do not overflow the allowed space'
+			h Menu,
+				vert: no
+				render_hidden: no
+				alternate: no
+				hover_reveal: yes
+				x: 0
+				y: 0
+				big: props.big
+				# max_x: window.innerWidth
+				# max_y: window.innerHeight
+				# min_x: 0
+				# min_y: 0
+				force_split_top: true
+				h MenuTab,
+					vert: yes
+					# reveal: yes
+					content: h Input,
+						type: 'button'
+						i: 'settings'
+						onClick: @toggleBarBig
+						label: 'bar item 1'
+						h AlertDot
+					h MenuTab,
+						content: h Input,
+							label: 'tab 1.a'
+							placeholder: 'tab 1 input'
+					h MenuTab,
+						content: h Input,
+							label: 'tab 1.b'
+							placeholder: 'tab 1 input'
+				h MenuTab,
+					vert: yes
+					content: h Input,
+						type: 'button'
+						btn_type: 'flat'
+						label: 'bar item 2'
+					h MenuTab,
+						vert: yes
+						
+						content: h Input,
+							label: 'tab 2.a'
+							btn_type: 'primary'
+							placeholder: 'tab 1 input'
+						h MenuTab,
+							content: h Input,
+								label: 'tab 2.a.a'
+								type: 'button'
+								i: 'chat'
+						h MenuTab,
+							content: h Input,
+								label: 'tab 2.a.b'
+								type: 'button'
+								i: 'chat'
+					h MenuTab,
+
+						content: h Input,
+
+							label: 'tab 2.b'
+							type: 'button'
+							i: 'search'
+						h MenuTab,
+							content: h Input,
+								label: 'tab 2.a.a'
+								type: 'button'
+								i: 'chat'
+						h MenuTab,
+							content: h Input,
+								label: 'tab 2.a.b'
+								type: 'button'
+								i: 'chat'
+							# placeholder: 'tab 1 input'
+				h MenuTab,
+					vert: no
+					big: no
+					# reveal: yes
+					content: h Input,
+						type: 'button'
+						label: 'tab 3'
+					h MenuTab,
+						content: h Input,
+							i: 'bookmark'
+							type: 'button'
+							btn_type: 'primary'
+							label: 'tab 3.a'
+							placeholder: 'tab 1 input'
+					h MenuTab,
+						vert: yes
+
+						content: h Input,
+							i: 'bookmark'
+							type: 'button'
+							label: 'tab 3.b'
+							placeholder: 'tab 1 input'
+						h MenuTab,
+							content: h Input,
+								label: 'tab 3.b.a'
+								type: 'button'
+								i: 'chat'
+						h MenuTab,
+							content: h Input,
+								label: 'tab 3.b.b'
+								type: 'button'
+								i: 'chat'
+			h 'p',{},'the menu below is a fixed menu. click and drag the drag button to drag the menu around the screen and see how it responds.'
+			h Input,
+				type: 'checkbox'
+				onClick: @onDrag
+				checked: state.toggle_drag
+				label: 'toggle drag'
+					
+			h Menu,
+				vert: no
+				fixed: state.toggle_drag && yes
+				render_hidden: state.toggle_drag && yes
+				hover_reveal: !state.toggle_drag
+				x: @state.x
+				y: @state.y
+				big: props.big
+				max_x: window.innerWidth-17
+				max_y: window.innerHeight
+				min_x: 0
+				min_y: 0
+
+				h MenuTab,
+					content: h Input,
+						type: 'button'
+						label: 'tab A'
+				h MenuTab,
+					vert: yes
+					reveal: state.toggle_drag || undefined
+					content: h Input,
+						type: 'button'
+						label: 'tab B'
+					h MenuTab,
+						content: h Input,
+							type: 'button'
+							label: 'tab B 1 width ----'
+					h MenuTab,
+						reveal: state.toggle_drag || undefined
+						content: h Input,
+							type: 'button'
+							label: 'tab B 2'
+						h MenuTab,
+							content: h Input,
+								type: 'button'
+								label: 'tab B 2 A width -----'
+						h MenuTab,
+							content: h Input,
+								type: 'button'
+								label: 'tab B 2 B'
+						h MenuTab,
+							content: h Input,
+								type: 'button'
+								label: 'tab B 2 C'
+					h MenuTab,
+						content: h Input,
+							type: 'button'
+							label: 'tab B 3'
+				h MenuTab,
+					content: h Input,
+						type: 'button'
+						label: 'tab C'
+				h MenuTab,
+					content: h Input,
+						type: 'button'
+						label: 'tab D'
+			h 'div',
+				style: 
+					height: '200px'
+					width: '100%'
+
+
 
 class SelectPresetButton extends Component
 	render: (props)->
@@ -110,13 +324,16 @@ class Demo extends Component
 		h Style,
 			primary: state.primary
 			secondary: state.secondary
+			onSetStyle: (@primary,@secondary)=>
+				document.body.style.background = @primary.inv[0]
+				document.body.style.color = @primary.color[0]
 			
 			# tertiary: '#379CC6'
 			h 'div',
 				className: 'app'
 				h AlertOverlay,
 					onClick: @hideOverlay
-					transparent: true
+					transparent: false
 					visible: @state.show_overlay
 					alert_type: @state.show_overlay_error && 'error' || 'success'
 					message:@state.show_overlay_error && 'error message' || 'success message'
@@ -215,6 +432,8 @@ class Demo extends Component
 						btn_type: 'default'
 						# i_type: 'primary'
 						i: 'search'
+						label: 'search..'
+						top_label: yes
 						type: 'search'
 						placeholder: 'search...'
 						value: state.input_value
@@ -229,7 +448,19 @@ class Demo extends Component
 					h Input,
 						btn_type: 'primary'
 						type: 'text'
+						label: 'top label goes here'
+						top_label: yes
+						bar: yes
+						big: true
+						onInput: @onInput
+						placeholder: 'top label + bar'
+						invalid: state.input_value?.length < 4
+						value: state.input_value
+					h Input,
+						btn_type: 'primary'
+						type: 'text'
 						label: 'input'
+
 						bar: yes
 						big: true
 						onInput: @onInput
@@ -244,6 +475,14 @@ class Demo extends Component
 						type: 'text'
 						big:yes
 						placeholder: 'chat...'
+						value: state.input_value
+					h Input,
+						btn_type: 'default'
+						# i_type: 'primary'
+						i: 'chat_bubble'
+						type: 'text'
+						big:yes
+						placeholder: 'no bar + icon'
 						value: state.input_value
 					h Input,
 						btn_type: 'flat'
@@ -379,7 +618,12 @@ class Demo extends Component
 							i: 'favorite'
 							btn_type: 'primary'
 							label: 'like'
-
+				h MenuSection,
+					big: state.bar_big
+					onDragStart: ()=>
+						@showOverlay('menu dragging')
+					onDragStop: ()=>
+						@hideOverlay()
 
 				h Section,
 					title: 'colors'
@@ -431,6 +675,10 @@ class Demo extends Component
 						label: 'show overlay error'
 						type: 'button'
 						onClick: @showOverlayError
+
+				
+
+
 
 
 

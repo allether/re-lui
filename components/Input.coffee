@@ -41,10 +41,17 @@ class Input extends Component
 			hover: no
 		@props.onMouseLeave?(e)
 	onKeyDown: (e)=>
+		if e.code == 'Enter' && @props.onEnter
+			@_input.blur()
+			return @props.onEnter(e)
+
+
 		if e.code == 'Enter' && @props.type == 'checkbox'
 			@_input.click()
-		else if e.code == 'Enter' && @props.type == 'list' && @list.value
-			log @list.value
+		else if (e.code == ',' || e.code == 'Enter') && @props.type == 'list' && @list.value
+			# log @list.value
+			if @props.onInput
+				@props.onInput(e,{value:@list.value})
 			@list.push(@list.value)
 			@list.value = ''
 			@state.value = ''
@@ -64,7 +71,8 @@ class Input extends Component
 		# e.preventDefault()
 		e.stopPropagation()
 		return false
-
+	setValue: (value)=>
+		@_input.value = value
 	inputRef: (el)=>
 		@_input = el
 
@@ -199,6 +207,9 @@ class Input extends Component
 			else
 				
 				bar_style.background = @context.__theme.primary.color[2]
+
+		if (!props.label || props.top_label) && !props.i 
+			bar_style.marginLeft = 0
 		return bar_style
 
 	
@@ -261,7 +272,7 @@ class Input extends Component
 				# onClick: @onClick
 				className: css['toggle']
 				beta: 70
-				height: '70%'
+				height: 20
 				slide: yes
 				pos: if props.checked then 0 else 2
 				h Slide,
@@ -297,7 +308,9 @@ class Input extends Component
 
 		if props.label
 			label = h 'div',
-				className: cn(value && css['label-opaque'],css['label'])
+				style:
+					color: props.top_label && @context.__theme.primary.color[0] || undefined
+				className: cn(value && css['label-opaque'],css['label'],props.top_label && css['top-label'])
 				props.label
 
 		if props.bar
@@ -362,7 +375,7 @@ class Input extends Component
 			onMouseLeave: @onMouseLeave
 			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
 			href: props.href	
-			style: @getButtonStyle(props,state)
+			style: Object.assign(@getButtonStyle(props,state),props.style)
 			chips
 			icon
 			label
