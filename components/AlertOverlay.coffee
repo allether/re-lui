@@ -36,8 +36,8 @@ class AlertOverlay extends Component
 		else if @state.alert_type == 'success'
 			alert_bg = @context.__theme.primary.true
 		else
-			alert_bg = @context.__theme.primary.color[0]
-
+			alert_bg = @context.__theme.primary.inv[0]
+		alert_color = @context.__theme.primary.color[0]
 		h Overlay,
 			onClick: props.onClick
 			visible: props.visible
@@ -51,14 +51,15 @@ class AlertOverlay extends Component
 				pos: slide_pos
 				h Slide,
 					beta: 100
-					@state.render && props.children || null
+					center: yes
+					props.children || null
 				h Slide,
 					height: 40
 					className: css['overlay-alert']
 					onClick: props.onClick
 					style:
 						background: alert_bg
-						color: 'white'
+						color: alert_color
 					center: yes
 					@state.message
 

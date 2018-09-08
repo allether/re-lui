@@ -210,7 +210,7 @@ a{
 		}
 	}
 	
-	input{
+	input,select{
 		width: 100%;
 		outline: none;
 		background: none;
@@ -223,6 +223,9 @@ a{
 		&.hidden{
 			min-width: 0px;
 		}
+	}
+	select{
+		cursor: pointer;
 	}
 
 	::placeholder{
@@ -452,6 +455,7 @@ a{
 .menu-bar{
 	position: absolute;
 	width: max-content;
+	min-width: 100%;
 	display: flex;
 }
 

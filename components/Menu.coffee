@@ -83,13 +83,7 @@ class Menu extends Component
 			vert: props.vert
 			big: props.big
 			style: fixed_style
-			# className: css['bar']
-			# style: 
-			# 	# position: 'absolute'
-			# 	display: 'flex'
-			# 	flexDirection: props.vert && 'column' || 'row'
-			# 	left: x
-			# 	top: y
+			className: props.className
 			props.children
 
 

@@ -33,6 +33,11 @@ class MenuSection extends Component
 			x: 0
 			y: 0 
 	shouldComponentUpdate: (props,state)->
+		_c = @context.__theme.primary.color[0] + '-' + @context.__theme.secondary.color[0]
+		if @_c != _c
+			@_c = _c
+			return true
+	
 		if props.big != @props.big || state.x != @state.x || state.y != @state.y || state.toggle_drag != @state.toggle_drag
 			return true
 		return false
@@ -302,7 +307,9 @@ class Demo extends Component
 		@setState
 			primary:primary
 			secondary: secondary
-
+	onListInput: (value)=>
+		@setState
+			list_value: value
 
 	showOverlay: =>
 		@setState
@@ -519,6 +526,8 @@ class Demo extends Component
 					h Input,
 						btn_type: 'primary'
 						type: 'list'
+						value: state.list_value
+						onInput: @onListInput
 						placeholder: 'comma seperated list'
 					h Input,
 						type: 'list'
@@ -563,7 +572,15 @@ class Demo extends Component
 						label: 'Messsage:'
 						bar: yes
 						placeholder: 'type text...'
-
+				h Section,
+					title: 'select type input'
+					h Input,
+						# checked: state.toggle_checked
+						# onInput:@onToggle
+						type: 'select'
+						label: 'select'
+						options: ['option 1','option 2','option 3']
+						placeholder: 'placeholder'
 				h Section,
 					title: 'bar'
 					h 'p',{},'buttons inside bar dont have margins unless specified'
@@ -624,6 +641,7 @@ class Demo extends Component
 						@showOverlay('menu dragging')
 					onDragStop: ()=>
 						@hideOverlay()
+
 
 				h Section,
 					title: 'colors'

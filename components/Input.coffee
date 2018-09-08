@@ -21,7 +21,13 @@ class Input extends Component
 				value: e.target.value
 		e.preventDefault()
 		e.stopPropagation()
-		@props.onInput?(e)
+		if @props.type == 'list'
+			if @state.list_chip_value
+				@props.onInput?(@state.list_chip_value+','+e.target.value)
+			else
+				@props.onInput?(e.target.value)
+		else
+			@props.onInput?(e)
 		return false
 	onFocus: (e)=>
 		@setState
@@ -48,18 +54,12 @@ class Input extends Component
 
 		if e.code == 'Enter' && @props.type == 'checkbox'
 			@_input.click()
-		else if (e.code == ',' || e.code == 'Enter') && @props.type == 'list' && @list.value
-			# log @list.value
-			if @props.onInput
-				@props.onInput(e,{value:@list.value})
-			@list.push(@list.value)
-			@list.value = ''
-			@state.value = ''
-			@_input.value = ''
-			@forceUpdate()
-		else if e.code == 'Backspace' && @props.type == 'list' && !@list.value
-			@list.pop()
-			@forceUpdate()
+		else if @props.type == 'list'
+			if (e.code == 'Enter') && @props.value
+				@props.onInput?(@props.value + ',')
+			else if e.code == 'Backspace' && !@_input.value && @props.value
+				log @props.value.substr(0,@props.value.length-1)
+				@props.onInput?(@props.value.substr(0,@props.value.length-1))
 			
 
 	onClick: (e)=>
@@ -123,6 +123,9 @@ class Input extends Component
 			else
 				btn_style.color = @context.__theme.primary.color[2]
 				btn_style.background = @context.__theme.primary.inv[1]
+
+		if props.center
+			btn_style.justifyContent = 'center'
 
 		return btn_style
 	
@@ -213,32 +216,29 @@ class Input extends Component
 		return bar_style
 
 	
-	removeChip: (i)->
-		@list.splice(i,1)
-		@forceUpdate()
+	# removeChip: (i)->
+		
+	# 	@forceUpdate()
+	
 	renderChips: (props,state)->
 		value = if props.value? then props.value else state.value
-		select = props.select
-		focus = state.focus
+		if !value
+			value = ''
 
-		
-				
-		if value?[value.length-1] == ',' 
-			if @list.value
-				@list.push value.substring(0,value.length-1)
-			@list.value = ''
-		else
-			@list.value = value #value.replace(/(^\s+)|(\s+$)/g,'')
-
-		
-
+		chips = value.split(',') || []
+		@state.list_value = chips.pop() || ''
 		chip_style = @getChipStyle(props,state,1)
-		return @list.map (item,i)=>
+		items = chips.map (item,i)=>
+			if @props.chipRenderer
+				item = @props.chipRenderer(item)
 			h 'div',
 				className: css['chip']
-				onClick: @removeChip.bind(@,i)
+				# onClick: @removeChip.bind(@,i)
 				style: chip_style
 				item
+		@state.list_chip_value = chips.join(',')
+
+		return items
 
 
 
@@ -297,11 +297,15 @@ class Input extends Component
 
 		if props.i
 			icon = h 'i',
+				onClick: @props.onIconClick
 				className: 'material-icons'
 				style: @getIconStyle(props,state)
 				props.i 
+		
+
 		else if props.i_class
 			icon = h 'i',
+				onClick: @props.onIconClick
 				className: props.i_class
 				style: @getIconStyle(props,state)
 
@@ -313,11 +317,13 @@ class Input extends Component
 				className: cn(value && css['label-opaque'],css['label'],props.top_label && css['top-label'])
 				props.label
 
+
 		if props.bar
 			bar = h 'div',
 				className: css['input-bar']
 				style: @getBarStyle(props,state)
-	
+
+
 		if props.type == 'color'
 			color_circle = h 'div',
 				className: cn(css['input-color-circle'],css['chip'])
@@ -329,9 +335,15 @@ class Input extends Component
 						color: state.is_dark && 'white' || 'black'
 					props.value
 
+
 		if props.type == 'list'
 			chips = @renderChips(props,state)
-			value = @list.value
+			# log @state.list_value
+			value = @state.list_value
+
+		# if props.type == 'select'
+
+
 
 
 
@@ -357,11 +369,16 @@ class Input extends Component
 
 		if props.type == 'textarea'
 			input = h 'textarea',input_props
+		else if props.type == 'select'
+			input = h 'select',input_props,
+				props.options?.map (opt)->
+					h 'option',
+						value: opt
+						opt
 		else
 			input = h 'input',input_props
-
-
-	
+			
+		
 
 
 

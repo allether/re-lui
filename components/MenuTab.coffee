@@ -173,7 +173,7 @@ class MenuTab extends Component
 				className: css['menu-bar']
 				vert: split_vert
 				style:
-					zIndex: @context.level
+					zIndex: @context.level+300
 					left: left
 					top: top
 					visibility: reveal && 'visible' || 'hidden'
