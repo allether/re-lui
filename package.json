@@ -1,6 +1,6 @@
 {
   "name": "lerp-ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "not so generic collection of general purpose preact ui components",
   "main": "./dist/index.js",
   "scripts": {
