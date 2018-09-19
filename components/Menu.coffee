@@ -111,6 +111,6 @@ Menu.defaultProps =
 	y: 0
 	min_x: 0
 	min_y: 0
-	hide_delay: 500
+	hide_delay: 250
 
 module.exports = Menu

@@ -31,10 +31,19 @@ class MenuTab extends Component
 	onMouseLeave: (e)=>
 		if @props.reveal? then return false
 		clearInterval @_hide_timeout
-		@_hide_timeout = setTimeout ()=>
+		if @props.children?.length
+			# if e.target == @base.parentElement || e.target.parentElement == @base.parentElement
+			# 	log 'fast hide'
+			# 	return @setState
+			# 		reveal: no
+			# else
+			@_hide_timeout = setTimeout ()=>
+				@setState
+					reveal: no
+			,@context.hide_delay
+		else
 			@setState
 				reveal: no
-		,@context.hide_delay
 	onMouseEnter: (e)=>
 		if @props.reveal? then return false
 		clearInterval @_hide_timeout
