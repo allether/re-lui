@@ -14,6 +14,7 @@ class Menu extends Component
 			force_split_top_x: 0
 
 	getChildContext: =>
+		hide_delay: @props.hide_delay
 		alternate: @props.alternate
 		tabClassName: @props.tabClassName
 		tabsClassName: @props.tabsClassName
@@ -110,5 +111,6 @@ Menu.defaultProps =
 	y: 0
 	min_x: 0
 	min_y: 0
+	hide_delay: 500
 
 module.exports = Menu
