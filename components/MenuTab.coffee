@@ -27,16 +27,12 @@ class MenuTab extends Component
 		reveal: if @state.reveal == false then false else @context.reveal
 
 	childContainer: (el)=>
-		@_child_container = el
+		@_child_container = el?.base
+
 	onMouseLeave: (e)=>
 		if @props.reveal? then return false
 		clearInterval @_hide_timeout
 		if @props.children?.length
-			# if e.target == @base.parentElement || e.target.parentElement == @base.parentElement
-			# 	log 'fast hide'
-			# 	return @setState
-			# 		reveal: no
-			# else
 			@_hide_timeout = setTimeout ()=>
 				@setState
 					reveal: no
@@ -70,9 +66,19 @@ class MenuTab extends Component
 		y1 = @_rect.top
 		y2 = @_rect.top + @_rect.height
 
-
+		# log @_child_container.clientWidth
 		cw = @_child_container?.clientWidth || 0
 		ch = @_child_container?.clientHeight || 0
+
+		@state.x1 = x1
+		@state.x2 = x2
+		@state.y1 = y1
+		@state.y2 = y2
+		@state.cw = cw
+		@state.ch = ch
+
+	
+
 
 
 		if @state.x1 == x1 && @state.x2 == x2 && @state.y1 == y1 && @state.y2 == y2 && cw == @state.cw && ch == @state.ch
@@ -93,13 +99,7 @@ class MenuTab extends Component
 			return @context.forceSplitLeft(x2 + cw - @context.max_x)
 
 
-		@setState
-			x1: x1
-			x2: x2
-			y1: y1
-			y2: y2
-			cw: cw
-			ch: ch
+		@setState()
 
 
 	render: (props)->
@@ -115,22 +115,22 @@ class MenuTab extends Component
 		else if props.hover_reveal
 			hover_reveal = props.hover_reveal
 
-		if props.className?
-			tabClassName = props.className
-		else
-			tabClassName = @context.tabClassName
+		# if props.className?
+		# 	tabClassName = props.className
+		# else
+		# 	tabClassName = @context.tabClassName
 
-		if props.tabsClassName?
-			tabsClassName = props.tabsClassName
-		else
-			tabsClassName = @context.tabsClassName
+		# if props.tabsClassName?
+		# 	tabsClassName = props.tabsClassName
+		# else
+		# 	tabsClassName = @context.tabsClassName
 
-		if reveal && props.children.length
-			tabClassName += ' ' + (@props.selectedTabClassName || @context.selectedTabClassName)
+		# if reveal && props.children.length
+		# 	tabClassName += ' ' + (@props.selectedTabClassName || @context.selectedTabClassName)
 
 
 		split_vert = @getSplitVert(props)
-
+		# log @state.cw,@context.max_x
 		if @base && @state.reveal
 			if !@context.vert
 				if @state.x1 + @state.cw > @context.max_x || @context.force_split_left
@@ -149,7 +149,6 @@ class MenuTab extends Component
 					bottom = null
 				
 			else
-
 				if @state.x2 + @state.cw > @context.max_x || @context.force_split_left
 					right = '100%'
 					left = null
@@ -184,6 +183,7 @@ class MenuTab extends Component
 			bar = h Bar,
 				big: if props.big? then props.big else @context.big
 				className: css['menu-bar']
+				ref: @childContainer
 				vert: split_vert
 				style:
 					zIndex: @context.level+300
@@ -197,7 +197,7 @@ class MenuTab extends Component
 		props.content.attributes.select = reveal
 
 		h 'div',
-			className: css['tab-wrapper']
+			className: css['tab-wrapper'] + ' ' + (props.className || '')
 			onMouseLeave: hover_reveal && @onMouseLeave
 			onMouseEnter: hover_reveal && @onMouseEnter	
 			props.content

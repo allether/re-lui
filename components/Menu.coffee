@@ -56,6 +56,7 @@ class Menu extends Component
 		@forceUpdate()
 
 	clampPosX: (x)->
+
 		if x + @base.clientWidth > @props.max_x
 			return @props.max_x - @base.clientWidth
 		return x
@@ -111,6 +112,6 @@ Menu.defaultProps =
 	y: 0
 	min_x: 0
 	min_y: 0
-	hide_delay: 250
+	hide_delay: 0
 
 module.exports = Menu

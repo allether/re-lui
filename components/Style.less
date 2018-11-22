@@ -436,13 +436,12 @@ a{
 	}
 	&.bar-vert{
 		height: auto;
+		width: auto;
 		flex-wrap: wrap;
 		flex-direction: row;
-		display: inline-grid;
+		display: flex; //inline-grid;
 	}
 }
-
-
 
 
 .tab-wrapper,.tab-content{
@@ -452,10 +451,12 @@ a{
 	flex-shrink: 0;
 }
 
+
 .menu-bar{
 	position: absolute;
-	width: max-content;
-	min-width: 100%;
+	width: fit-content;
+    min-width: max-content;
+	// min-width: 100%;
 	display: flex;
 }
 

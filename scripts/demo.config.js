@@ -18,6 +18,12 @@ var cfg = {
 	entry: {
 		demo: "./demo.coffee",
 	},
+	resolve: {
+	    'alias': {
+	    	'react': 'preact-compat',
+	    	'react-dom': 'preact-compat'
+	  	}
+	},
 	output: {
 		path: path.join(__dirname,'..','/dist'),
 		publicPath: '/dist',

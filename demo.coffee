@@ -14,7 +14,7 @@ css = require './demo.less'
 lerp_logo = require './lerp-logo-40.svg'
 
 
-
+ModelGridExample = require './model-grid-example.coffee'
 
 
 class SvgIcon extends Component
@@ -67,6 +67,9 @@ class MenuSection extends Component
 			y: e.clientY+20
 			toggle_drag: yes
 		return false
+
+	
+
 	render: (props,state)->
 		h Section,
 			title: 'menu'
@@ -103,6 +106,7 @@ class MenuSection extends Component
 							placeholder: 'tab 1 input'
 				h MenuTab,
 					vert: yes
+					# reveal: yes
 					content: h Input,
 						type: 'button'
 						btn_type: 'flat'
@@ -125,7 +129,7 @@ class MenuSection extends Component
 								type: 'button'
 								i: 'chat'
 					h MenuTab,
-
+						# reveal: yes
 						content: h Input,
 
 							label: 'tab 2.b'
@@ -144,7 +148,7 @@ class MenuSection extends Component
 							# placeholder: 'tab 1 input'
 				h MenuTab,
 					vert: no
-					big: no
+					# big: no
 					# reveal: yes
 					content: h Input,
 						type: 'button'
@@ -582,7 +586,7 @@ class Demo extends Component
 						options: ['option 1','option 2','option 3']
 						placeholder: 'placeholder'
 				h Section,
-					title: 'bar'
+					title: 'Bar'
 					h 'p',{},'buttons inside bar dont have margins unless specified'
 					h Bar,
 						big: state.bar_big
@@ -642,7 +646,10 @@ class Demo extends Component
 					onDragStop: ()=>
 						@hideOverlay()
 
-
+				h Section,
+					title: 'ModelGrid'
+					h 'p',{},'custom extensible model gird list component. requires peer dependency `react-virtualized` '
+					h ModelGridExample
 				h Section,
 					title: 'colors'
 					h 'p',{},'all theme colors that can be passed to the `Style` wrapper'
@@ -694,8 +701,15 @@ class Demo extends Component
 						type: 'button'
 						onClick: @showOverlayError
 
-				
-
+			
+	render: (props,state)->
+		h Style,
+			primary: state.primary
+			secondary: state.secondary
+			onSetStyle: (@primary,@secondary)=>
+				document.body.style.background = @primary.inv[0]
+				document.body.style.color = @primary.color[0]
+			h ModelGridExample
 
 
 
