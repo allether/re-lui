@@ -2,7 +2,7 @@ Color = require 'color'
 {render,h,Component} = require 'preact'
 Slide = require 'preact-slide'
 Input = require './Input.coffee'
-
+AlertDot = require './AlertDot.coffee'
 require 'normalize.css'
 css = require './ModelGrid.less'
 Bar = require './Bar.coffee'
@@ -20,9 +20,6 @@ class ModelGridMenu extends Component
 			selected_layout_index: 0
 			selected_filter_index: 0
 	
-	onSelectLayout: (layout)=>
-		@setState
-			selected_layout_index: @props.opts.layouts.indexOf(layout) || 0
 	
 	mapMenuStaticsButtons: (static_method,i)=>
 		h MenuTab,
@@ -46,17 +43,27 @@ class ModelGridMenu extends Component
 				# btn_type: 'flat'
 				label: doc_method.method_label
 
+	mapMenuFilterButtons: (filter,i)=>
+		h MenuTab,
+			key: i
+			content: h Input,
+				# onClick: @togglePinMenu.bind(@,'layout')
+				onClick: @props.onSelectFilter.bind(null,filter)
+				type: 'button'
+				label: filter.label
+
 	mapMenuLayoutButtons: (layout,i)=>
 		h MenuTab,
 			key: i
-			# click_reveal: yes
-			# className: css['model-grid-menu-tab-option']
+			# onClick: @togglePinMenu.bind(@,'layout')
 			content: h Input,
-				onClick: @togglePinMenu.bind(@,'layout')
+				invalid:yes
+				onClick: @props.onSelectLayout.bind(null,layout)
+				focus: if layout == @props.opts.layouts[@props.selected_layout_index] then false else undefined
+				btn_type: layout == @props.opts.layouts[@props.selected_layout_index] && 'primary'
 				type: 'button'
-				# btn_type: 'def'
 				label: layout.label + ' / ' + String(layout.keys)
-			@props.opts.statics.map @mapMenuStaticsButtons
+					
 	
 	togglePinMenu: (pin_menu_name)=>
 		@setState
@@ -77,7 +84,8 @@ class ModelGridMenu extends Component
 		else
 			list_label = opts.label
 
-		selected_layout = opts.layouts[@state.selected_layout_index]
+		selected_layout = opts.layouts[@props.selected_layout_index]
+		selected_filter = opts.filters[@props.selected_filter_index]
 		h Slide,
 			dim: 40
 			vert : no
@@ -121,8 +129,8 @@ class ModelGridMenu extends Component
 				render_hidden: no
 				h MenuTab,
 					vert: yes
-					onClick: @togglePinMenu.bind(@,'layout')
-					reveal: @getPinMenuBoolean('layout')
+					onClick: @togglePinMenu.bind(@,'layouts')
+					reveal: @getPinMenuBoolean('layouts')
 					content: h Input,
 						# className: css['model-grid-list-layout-button']
 						type: 'button'
@@ -131,14 +139,15 @@ class ModelGridMenu extends Component
 						label: selected_layout.label
 					opts.layouts.map @mapMenuLayoutButtons
 				h MenuTab,
-					# reveal: yes
-					# focus_backdrop: yes
-					click_reveal: yes
+					vert: yes
+					onClick: @togglePinMenu.bind(@,'filters')
+					reveal: @getPinMenuBoolean('filters')
 					content: h Input,
 						type: 'button'
 						btn_type: 'flat'
 						i: 'filter_list'
-						label: opts.filters[props.selected_filter_index]?.label || 'all'
+						label: selected_filter.label
+					opts.filters.map @mapMenuFilterButtons
 
 
 
@@ -171,10 +180,16 @@ class ModelGridList extends Component
 			# fixedWidth: no
 	
 	gridRef: (el)=>
+		# log el
 		@_grid = el
+		window.grid = el
+		# log @_grid
 	
 	slideRef: (el)=>
 		@_grid_slide = el
+
+
+
 	
 	# onGridScroll: (opt)->
 		# if opt.scrollTop == 0 && opt.scrollLeft == 0
@@ -195,7 +210,7 @@ class ModelGridList extends Component
 
 	columnWidth: (g_opts)=>
 		opts = @props.opts
-		key_name = opts.layouts[opts.selected_layout_index || 0]?.keys[g_opts.index] || opts.layouts[0].keys[g_opts.index]
+		key_name = opts.layouts[@props.selected_layout_index || 0]?.keys[g_opts.index] || opts.layouts[0].keys[g_opts.index]
 		key = opts.keys[key_name]
 		# log key_name
 		# if key.col_width
@@ -209,7 +224,7 @@ class ModelGridList extends Component
 		opts = @props.opts
 		data = @props.data
 		is_key = g_opts.rowIndex == 0
-		key_name = opts.layouts[opts.selected_layout_index || 0]?.keys[g_opts.columnIndex] || opts.layouts[0].keys[g_opts.columnIndex]
+		key_name = opts.layouts[@props.selected_layout_index || 0]?.keys[g_opts.columnIndex] || opts.layouts[0].keys[g_opts.columnIndex]
 		key = opts.keys[key_name]
 		
 		
@@ -250,36 +265,20 @@ class ModelGridList extends Component
 				value = value.substring(0,max_l-2)+'..'
 
 
-
-		if g_opts.rowIndex == 0
-			val_div = h 'div',
+		# log is_key
+		if is_key
+			return h 'div',
 				className: css['model-grid-cell']
 				style: g_opts.style
 				key: g_opts.key
 				key.label
 		
-		else
-			val_div = h 'div',
-				className: css['model-grid-cell']
-				style: g_opts.style
-				key: g_opts.key
-				value
 		
-
-		
-
-
-		# if !!key.col_width
-		return val_div
-		# else
-			# return h CellMeasurer,
-			# 	cache: @_cell_cache
-			# 	fixedWidth: !key.col_width
-			# 	columnIndex: g_opts.columnIndex
-			# 	rowIndex: g_opts.rowIndex
-			# 	key: g_opts.key
-			# 	parent: g_opts.parent
-			# 	val_div
+		return h 'div',
+			className: css['model-grid-cell']
+			style: g_opts.style
+			key: g_opts.key
+			value
 	
 
 	
@@ -289,18 +288,30 @@ class ModelGridList extends Component
 	# componentDidMount: ->
 	# 	@forceUpdate()
 
+	getGridKey: (props)->
+		layout = props.opts.layouts[props.selected_layout_index || 0] || props.opts.layouts[0]
+		filter = props.opts.filters[props.selected_filter_index]?.label || null
+		(filter || 'all') + '-' + (layout.label)
+
+
+	componentDidUpdate: ->
+		# log @_grid
+		if @getGridKey(@props) != @state.grid_key
+			@state.grid_key = @getGridKey(@props)
+			@_grid.recomputeGridSize()
 
 	render: (props)->
+		layout = props.opts.layouts[props.selected_layout_index]
+		filter = props.opts.filters[props.selected_filter_index]?.label || null
+		# log props.selected_layout_index
 		opts = props.opts
 		data = props.data
-		layout = opts.layouts[props.selected_layout_index || 0] || opts.layouts[0]
-		filter = opts.filters[props.selected_filter_index]?.label || null
-		grid_key =  (filter || 'all') + '-' + (layout.label)
+		grid_key = @getGridKey(props)
 		if @_grid_slide
 			grid = h MultiGrid,
 				className: css['model-grid-list']
 				ref: @gridRef
-				key: grid_key
+				# key: grid_key
 				onScroll: @onGridScroll
 				cellRenderer: @cellRenderer
 				columnWidth: @columnWidth
@@ -320,10 +331,27 @@ class ModelGridList extends Component
 
 
 class ModelGrid extends Component
+	constructor: (props)->
+		super(props)
+		@state =
+			selected_layout_index: 0
+			selected_filter_index: 0
+	
+	onSelectLayout: (layout)=>
+		@setState
+			selected_layout_index: @props.opts.layouts.indexOf(layout) || 0
+	
+	onSelectFilter: (filter)=>
+		@setState
+			selected_filter_index: @props.opts.filters.indexOf(filter) || 0
+	
 	render: (props,state)->
 		opts = props.opts
 		data = props.data
-
+		props.onSelectLayout = @onSelectLayout
+		props.onSelectFilter = @onSelectFilter
+		props.selected_layout_index = @state.selected_layout_index
+		props.selected_filter_index = @state.selected_filter_index
 		h Slide,
 			vert: yes
 			className: css['model-grid']

@@ -18,7 +18,6 @@ class Style extends Component
 
 
 	componentWillMount: ->
-		@setRef()
 		@renderStyle(@props)
 
 
@@ -27,13 +26,7 @@ class Style extends Component
 			primary: @primary
 			secondary: @secondary
 
-
-	setRef: ->
-		@_head_el = document.head.querySelector('#lerp-style')
-		if !@_head_el
-			@_head_el = document.createElement('style')
-			@_head_el.id = '#lerp-style'
-			document.head.appendChild(@_head_el)		
+	
 
 
 	createPallet: (color,inv,color_factor,inv_factor)->
@@ -88,8 +81,9 @@ class Style extends Component
 			@secondary = @darkenPallet(secondary_c,0.5)
 		else
 			@secondary = @lightenPallet(secondary_c,1.5)
-
-		@props.onSetStyle?(@primary,@secondary)
+		setTimeout ()=>
+			@props.onSetStyle?(@primary,@secondary)
+		,0
 
 
 	componentWillUpdate: (props)->

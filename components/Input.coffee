@@ -63,8 +63,8 @@ class Input extends Component
 			
 
 	onClick: (e)=>
-		@_input.click()
-		@_input.focus()
+		@_input?.click()
+		@_input?.focus()
 		@props.onClick?(e)
 	
 	onInputClick: (e)=>
@@ -85,6 +85,9 @@ class Input extends Component
 		value = if props.value? then props.value else state.value
 		select = props.select
 		focus = (state.focus) || state.hover
+
+		if props.focus?
+			focus = props.focus
 
 
 
@@ -343,40 +346,34 @@ class Input extends Component
 
 		# if props.type == 'select'
 
-
-
-
-
-		self_input_props = 
-			className: input_hidden && css['hidden']
-			onKeyDown: @onKeyDown
-			onInput: @onInput
-			ref: @inputRef
-			onFocus: @onFocus
-			onBlur: @onBlur
-			value: value
-
-
-
+		if props.type != 'button'
+			self_input_props = 
+				className: input_hidden && css['hidden']
+				onKeyDown: @onKeyDown
+				onInput: @onInput
+				ref: @inputRef
+				onFocus: @onFocus
+				onBlur: @onBlur
+				value: value
 		
-		input_props = Object.assign {},props,self_input_props
+			input_props = Object.assign {},props,self_input_props
 
-		if props.type == 'button'
-			input_props.style = cursor: 'pointer'
+			if props.type == 'button'
+				input_props.style = cursor: 'pointer'
 
-		input_props.onClick = @onInputClick
+			input_props.onClick = @onInputClick
 
 
-		if props.type == 'textarea'
-			input = h 'textarea',input_props
-		else if props.type == 'select'
-			input = h 'select',input_props,
-				props.options?.map (opt)->
-					h 'option',
-						value: opt
-						opt
-		else
-			input = h 'input',input_props
+			if props.type == 'textarea'
+				input = h 'textarea',input_props
+			else if props.type == 'select'
+				input = h 'select',input_props,
+					props.options?.map (opt)->
+						h 'option',
+							value: opt
+							opt
+			else
+				input = h 'input',input_props
 			
 		
 
@@ -398,7 +395,6 @@ class Input extends Component
 			label
 			toggle
 			bar
-			# alt_label
 			input
 			color_circle
 			alert

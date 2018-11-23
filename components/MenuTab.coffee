@@ -233,8 +233,9 @@ class MenuTab extends Component
 					right: right
 					flexDirection: flex_dir
 				props.children
-		
-		props.content.attributes.select = state.reveal
+
+		if props.children.length && !props.disabled
+			props.content.attributes.select = state.reveal
 		
 		h 'div',
 			className: css['tab-wrapper'] + ' ' + (props.className || '')

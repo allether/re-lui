@@ -94,7 +94,7 @@ user_model =
 		},
 		{
 			label: 'full'
-			keys: ['_id','_name','_age']
+			keys: ['project','_id','_name','_age']
 		}
 	]
 
