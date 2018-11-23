@@ -2,6 +2,7 @@ Color = require 'color'
 {render,h,Component} = require 'preact'
 Slide = require 'preact-slide'
 Input = require './Input.coffee'
+
 require 'normalize.css'
 css = require './ModelGrid.less'
 Bar = require './Bar.coffee'
@@ -15,6 +16,7 @@ class ModelGridMenu extends Component
 	constructor: (props)->
 		super(props)
 		@state =
+			menu_backdrop: false
 			selected_layout_index: 0
 			selected_filter_index: 0
 	
@@ -25,23 +27,45 @@ class ModelGridMenu extends Component
 	mapMenuStaticsButtons: (static_method,i)=>
 		h MenuTab,
 			key: i
-			className: css['model-grid-menu-tab-option']
+			# className: css['model-grid-menu-tab-option']
 			content: h Input,
 				onClick: static_method.fn?.bind(undefined,static_method)
 				type: 'button'
-				btn_type: 'flat'
+				# btn_type: 'flat'
 				label: static_method.method_label
+			@props.opts.statics.map @mapMenuMethodsButtons
+	
+	mapMenuMethodsButtons: (doc_method,i)=>
+		h MenuTab,
+			key: i
+			vert: yes
+			# className: css['model-grid-menu-tab-option']
+			content: h Input,
+				onClick: doc_method.fn?.bind(undefined,doc_method)
+				type: 'button'
+				# btn_type: 'flat'
+				label: doc_method.method_label
 
 	mapMenuLayoutButtons: (layout,i)=>
 		h MenuTab,
 			key: i
-			className: css['model-grid-menu-tab-option']
+			# click_reveal: yes
+			# className: css['model-grid-menu-tab-option']
 			content: h Input,
-				onClick: @onSelectLayout.bind(@,layout)
+				onClick: @togglePinMenu.bind(@,'layout')
 				type: 'button'
-				btn_type: 'flat'
+				# btn_type: 'def'
 				label: layout.label + ' / ' + String(layout.keys)
+			@props.opts.statics.map @mapMenuStaticsButtons
 	
+	togglePinMenu: (pin_menu_name)=>
+		@setState
+			pin_menu_name: if @state.pin_menu_name? then null else pin_menu_name 
+			menu_backdrop: !@state.menu_backdrop
+	
+	getPinMenuBoolean: (pin_menu_name)->
+		if @state.pin_menu_name == pin_menu_name then true else undefined
+
 	render: (props,state)->
 		opts = props.opts
 		data = props.data
@@ -62,7 +86,6 @@ class ModelGridMenu extends Component
 				vert: no
 				max_x: window.innerWidth-17
 				max_y: window.innerHeight
-				# alternate: yes
 				hover_reveal: yes
 				big: true
 				h MenuTab,
@@ -83,16 +106,23 @@ class ModelGridMenu extends Component
 						name: 'methods'
 						btn_type: 'flat'
 						label: list_label
+
 			h Menu,
 				vert: no
 				max_x: window.innerWidth-17
 				max_y: window.innerHeight
 				className: css['model-grid-list-menu-right']
-				# force_split_left: yes
 				big: true
+				enable_backdrop: yes
+				show_backdrop: @state.menu_backdrop
+				force_split_left: yes
+				onClickBackdrop: @togglePinMenu.bind(@,null)
 				hover_reveal: yes
+				render_hidden: no
 				h MenuTab,
 					vert: yes
+					onClick: @togglePinMenu.bind(@,'layout')
+					reveal: @getPinMenuBoolean('layout')
 					content: h Input,
 						# className: css['model-grid-list-layout-button']
 						type: 'button'
@@ -101,6 +131,9 @@ class ModelGridMenu extends Component
 						label: selected_layout.label
 					opts.layouts.map @mapMenuLayoutButtons
 				h MenuTab,
+					# reveal: yes
+					# focus_backdrop: yes
+					click_reveal: yes
 					content: h Input,
 						type: 'button'
 						btn_type: 'flat'
@@ -271,7 +304,6 @@ class ModelGridList extends Component
 				onScroll: @onGridScroll
 				cellRenderer: @cellRenderer
 				columnWidth: @columnWidth
-				# deferredMeasurementCache:@checkCell
 				columnCount: layout.keys.length
 				fixedColumnCount:0
 				fixedRowCount:1

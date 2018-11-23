@@ -36,6 +36,7 @@ class Overlay extends Component
 			onClick: props.onClick
 			className: cn(css['overlay'],!@state.visible && css['overlay-hidden'],props.className)
 			style:
+				zIndex: props.z_index || 666
 				display: !@state.render && 'none' || ''
 				background: props.background || @context.__theme.primary.inv[0]
 			props.children

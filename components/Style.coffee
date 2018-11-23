@@ -45,12 +45,15 @@ class Style extends Component
 			color.hex()
 			color.mix(inv,.1*color_factor).hex()
 			color.mix(inv,.3*color_factor).hex()
+			color.mix(inv,.6*color_factor).hex()
+			color.mix(inv,.9*color_factor).hex()
 		]
 
 		c.inv = [
 			inv.mix(color,.02*inv_factor).hex()
 			inv.mix(color,.03*inv_factor).hex()
 			inv.mix(color,.05*inv_factor).hex()
+			inv.mix(color,.1*inv_factor).hex()
 		]
 
 		return c

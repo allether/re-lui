@@ -7,12 +7,14 @@ class MenuTab extends Component
 		super(props)
 		@state =
 			reveal: props.reveal || false
+			show_backdrop: false
 			x1:0
 			x2:0
 			y1:0
 			y2:0
 			cw:0
 			ch:0
+
 
 	getSplitVert: (props)->
 		if props.vert?
@@ -21,43 +23,69 @@ class MenuTab extends Component
 			split_vert = if @context.alternate then !@context.vert else @context.vert
 		return split_vert
 	
+
 	getChildContext: ->
 		vert: @getSplitVert(@props)
+		onContextTabReveal: @onContextTabReveal
+		tab_branch: @context.tab_branch
 		level: @context.level+1
+		hover_reveal: if @props.hover_reveal? then @props.hover_reveal else @context.hover_reveal
+		click_reveal: if @props.click_reveal? then @props.click_reveal else @context.click_reveal
+		big: @props.big || @context.big
 		reveal: if @state.reveal == false then false else @context.reveal
+
 
 	childContainer: (el)=>
 		@_child_container = el?.base
 
-	onMouseLeave: (e)=>
-		if @props.reveal? then return false
-		clearInterval @_hide_timeout
-		if @props.children?.length
-			@_hide_timeout = setTimeout ()=>
-				@setState
-					reveal: no
-			,@context.hide_delay
-		else
-			@setState
-				reveal: no
-	onMouseEnter: (e)=>
-		if @props.reveal? then return false
-		clearInterval @_hide_timeout
-		@setState
-			reveal: yes
-	onClick: (e)=>
-		@props.onClick?()
 
-		if !@props.children.length then return
-		@setState
-			reveal: !@state.reveal
-		e.preventDefault()
-		return false
+	# disableReveal: (e)=>
+	# 	if @props.reveal? then return false
+	# 	clearInterval @_hide_timeout
+	# 	if @props.children?.length
+	# 		@_hide_timeout = setTimeout ()=>
+	# 			@setState
+	# 				reveal: no
+	# 		,@context.hide_delay
+	# 	else
+	# 		@setState
+	# 			reveal: no
+	
+
+	# enableReveal: (e)=>
+	# 	if @props.reveal? then return false
+	# 	clearInterval @_hide_timeout
+	# 	@setState
+	# 		reveal: yes
+	
+	syncRevealState: (props)->
+		if props.reveal?
+			@state.reveal = props.reveal
+			return
+
+		if @context.reveal == false
+			@state.reveal = false
+			return
+
+
+	componentWillMount: ->
+		@syncRevealState(@props)
+	
 	componentWillUpdate: (props)->
-		if props.reveal != @props.reveal && props.reveal?
+		# log @context.tab_branch && @context.tab_branch.length
 
-			@setState
-				reveal: props.reveal
+		# if @context.click_reveal || @props.click_reveal
+		# log props.reveal
+		if !(props.reveal?)
+			if @context.tab_branch[@context.level] != @
+				@state.reveal = false
+			else
+				@state.reveal = true
+			
+		@syncRevealState(props)
+
+
+
 
 	componentDidUpdate: ->
 		@_rect = @base.getBoundingClientRect()
@@ -66,7 +94,6 @@ class MenuTab extends Component
 		y1 = @_rect.top
 		y2 = @_rect.top + @_rect.height
 
-		# log @_child_container.clientWidth
 		cw = @_child_container?.clientWidth || 0
 		ch = @_child_container?.clientHeight || 0
 
@@ -76,11 +103,7 @@ class MenuTab extends Component
 		@state.y2 = y2
 		@state.cw = cw
 		@state.ch = ch
-
-	
-
-
-
+		
 		if @state.x1 == x1 && @state.x2 == x2 && @state.y1 == y1 && @state.y2 == y2 && cw == @state.cw && ch == @state.ch
 			return
 	
@@ -89,49 +112,64 @@ class MenuTab extends Component
 		else
 			split_vert = if @context.alternate then !@context.vert else @context.vert
 
-
 		if y2 + ch > @context.max_y && !@context.force_split_top
 			return @context.forceSplitTop(y2 + ch - @context.max_y)
 		
 		if x2 + cw > @context.max_x && !@context.force_split_left
-			
-			# console.dir @base
 			return @context.forceSplitLeft(x2 + cw - @context.max_x)
-
 
 		@setState()
 
 
-	render: (props)->
-		if @context.reveal == false
-			reveal = false
-		else if @state.reveal == false
-			reveal = false
-		else
-			reveal = true
+
+
+
+
+	revealSelfTab: (e)=>
+		@context.tab_branch.length = 0
+		@context.tab_branch[0] = @
+		@context.onContextTabReveal(@context.tab_branch,e)
+		e.preventDefault()
+		e.stopPropagation()
+		return false
+	
+	onContextTabReveal: (tree,e)=>
+
+		tree.unshift @
+		@context.onContextTabReveal(tree,e)
+
+	
+	onTabClick: (e)=>
+		@revealSelfTab(e)
+		@props.onClick?(e)
+		return false
+	
+	onTabMouseEnter: (e)=>
+		if !@state.reveal
+			@revealSelfTab(e)
+		@props.onMouseEnter?(e)
+		return false
+	
+	onTabMouseLeave: (e)=>
+		if @props.reveal then return
+		if (!@context.hover_reveal || @props.hover_reveal == false) then return
+		if @context.level == 0
+			@context.clearTabBranch(e)
+		# @disableReveal(e)
+		@props.onMouseLeave?(e)
+		return false
+	
+
+	render: (props,state)->
+		
 
 		if @context.hover_reveal?
 			hover_reveal = @context.hover_reveal
 		else if props.hover_reveal
 			hover_reveal = props.hover_reveal
 
-		# if props.className?
-		# 	tabClassName = props.className
-		# else
-		# 	tabClassName = @context.tabClassName
-
-		# if props.tabsClassName?
-		# 	tabsClassName = props.tabsClassName
-		# else
-		# 	tabsClassName = @context.tabsClassName
-
-		# if reveal && props.children.length
-		# 	tabClassName += ' ' + (@props.selectedTabClassName || @context.selectedTabClassName)
-
-
 		split_vert = @getSplitVert(props)
-		# log @state.cw,@context.max_x
-		if @base && @state.reveal
+		if @base && state.reveal
 			if !@context.vert
 				if @state.x1 + @state.cw > @context.max_x || @context.force_split_left
 					right = '0%'
@@ -143,7 +181,6 @@ class MenuTab extends Component
 				if (@state.y2 + @state.ch > @context.max_y) || @context.force_split_top
 					top = null
 					bottom = '100%'
-
 				else 
 					top = '100%'
 					bottom = null
@@ -152,14 +189,11 @@ class MenuTab extends Component
 				if @state.x2 + @state.cw > @context.max_x || @context.force_split_left
 					right = '100%'
 					left = null
-
-
 				else
 					left = '100%'
 					right = null
 					flex_dir = 'row'
 					
-
 				if @state.y1 + @state.ch > @context.max_y || @context.force_split_top
 					bottom = '0%'
 					top = null
@@ -179,29 +213,37 @@ class MenuTab extends Component
 			else
 				flex_dir = 'row'
 
-		if (@context.render_hidden? && @context.render_hidden) || !@context.render_hidden? || @props.render_hidden || reveal
+		z_index = (@context.level+1)*100
+
+		
+			# @context.showBackdrop()
+
+		if (@context.render_hidden? && @context.render_hidden) || !@context.render_hidden? || @props.render_hidden || state.reveal
 			bar = h Bar,
 				big: if props.big? then props.big else @context.big
-				className: css['menu-bar']
+				className: css['menu-bar']##+' ' + css['modal-shadow']
 				ref: @childContainer
 				vert: split_vert
 				style:
-					zIndex: @context.level+300
+					zIndex: z_index
 					left: left
 					top: top
-					visibility: reveal && 'visible' || 'hidden'
+					visibility: state.reveal && 'visible' || 'hidden'
 					bottom: bottom
 					right: right
 					flexDirection: flex_dir
 				props.children
-		props.content.attributes.select = reveal
-
+		
+		props.content.attributes.select = state.reveal
+		
 		h 'div',
 			className: css['tab-wrapper'] + ' ' + (props.className || '')
-			onMouseLeave: hover_reveal && @onMouseLeave
-			onMouseEnter: hover_reveal && @onMouseEnter	
+			onMouseLeave: @onTabMouseLeave
+			onMouseEnter: @onTabMouseEnter
+			onClick: @onTabClick
+			style:
+				zIndex: state.reveal && z_index || 'unset'
 			props.content
-
 			bar
 
 
