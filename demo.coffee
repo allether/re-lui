@@ -76,17 +76,19 @@ class MenuSection extends Component
 			h 'p',{},'menus are a mix of vertical and horizontal bars with a variety of options. `render_hidden` controls whether hidden tabs are rendered into the DOM which is needed for fixed menus to make sure that menu options do not overflow the allowed space'
 			h Menu,
 				vert: no
-				render_hidden: no
-				alternate: no
-				hover_reveal: yes
-				x: 0
-				y: 0
+				# render_hidden: no
+				# alternate: no
+				hover_reveal_enabled: yes
+				# x: 0
+				# y: 0
+				split_y:-1
+				split_x: 1
 				big: props.big
 				# max_x: window.innerWidth
 				# max_y: window.innerHeight
 				# min_x: 0
 				# min_y: 0
-				force_split_top: true
+
 				h MenuTab,
 					vert: yes
 					# reveal: yes
@@ -188,15 +190,14 @@ class MenuSection extends Component
 			h Menu,
 				vert: no
 				fixed: state.toggle_drag && yes
-				render_hidden: state.toggle_drag && yes
-				hover_reveal: !state.toggle_drag
+				render_hidden_children: no
+				hover_reveal_enabled: !state.toggle_drag
 				x: @state.x
 				y: @state.y
 				big: props.big
-				max_x: window.innerWidth-17
-				max_y: window.innerHeight
-				min_x: 0
-				min_y: 0
+				split_y: -1
+				split_x: 1
+				
 
 				h MenuTab,
 					content: h Input,
@@ -277,7 +278,7 @@ class Demo extends Component
 			btn_select: false
 			bar_big: yes
 			primary:'#1B1C1D'
-			secondary:'#414277'
+			secondary:'#4D6977'
 			test_color: '#00f3dd'
 	setTestColor: (e)=>
 		@setState
@@ -646,10 +647,10 @@ class Demo extends Component
 					onDragStop: ()=>
 						@hideOverlay()
 
-				h Section,
-					title: 'ModelGrid'
-					h 'p',{},'custom extensible model gird list component. requires peer dependency `react-virtualized` '
-					h ModelGridExample
+				# h Section,
+				# 	title: 'ModelGrid'
+				# 	h 'p',{},'custom extensible model gird list component. requires peer dependency `react-virtualized` '
+				# 	h ModelGridExample
 				h Section,
 					title: 'colors'
 					h 'p',{},'all theme colors that can be passed to the `Style` wrapper'
@@ -701,36 +702,36 @@ class Demo extends Component
 						type: 'button'
 						onClick: @showOverlayError
 
-			
-	render: (props,state)->
-		h Style,
-			primary: state.primary
-			secondary: state.secondary
-			onSetStyle: (@primary,@secondary)=>
-				@_top_container.style.background = @primary.inv[0]
-				@_top_container.style.color = @primary.color[0]
-			h 'div',
-				style: 
-					display: 'flex'
-					flexDirection: 'column'
-				h 'div',
-					style:
-						height: '50%'
-					ref: (e)=>
-						@_top_container = e
-					h ModelGridExample
-				h 'div',
-					style:
-						height: '50%'
-					ref: (e)=>
-						@_bot_container = e
-					h Style,
-						primary: '#fff'
-						secondary: state.secondary
-						onSetStyle: (@primary,@secondary)=>
-							@_bot_container.style.background = @primary.inv[0]
-							@_bot_container.style.color = @primary.color[0]
-						h ModelGridExample
+
+	# render: (props,state)->
+	# 	h Style,
+	# 		primary: state.primary
+	# 		secondary: state.secondary
+	# 		onSetStyle: (@primary,@secondary)=>
+	# 			@_top_container.style.background = @primary.inv[0]
+	# 			@_top_container.style.color = @primary.color[0]
+	# 		h 'div',
+	# 			style: 
+	# 				display: 'flex'
+	# 				flexDirection: 'column'
+	# 			h 'div',
+	# 				style:
+	# 					height: '50%'
+	# 				ref: (e)=>
+	# 					@_top_container = e
+	# 				h ModelGridExample
+	# 			h 'div',
+	# 				style:
+	# 					height: '50%'
+	# 				ref: (e)=>
+	# 					@_bot_container = e
+	# 				h Style,
+	# 					primary: '#fff'
+	# 					secondary: state.secondary
+	# 					onSetStyle: (@primary,@secondary)=>
+	# 						@_bot_container.style.background = @primary.inv[0]
+	# 						@_bot_container.style.color = @primary.color[0]
+	# 					h ModelGridExample
 				
 
 

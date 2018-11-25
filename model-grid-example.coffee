@@ -77,6 +77,7 @@ user_model =
 	global_filter: (obj)->
 		obj.project == 'My Project'
 	
+
 	filters: [
 		{
 			label: 'noteworthy'
@@ -86,6 +87,44 @@ user_model =
 				return false
 		}
 	]
+
+	sort: [
+		{
+			name: ''
+		}
+	]
+
+	query: [
+
+	]
+
+	# render_form: ()->
+	# 	h ModelForm,
+	# 		keys: [
+	# 			{
+	# 				key:'name'
+	# 				type:String
+	# 				required:true
+	# 				validate: (val)->
+	# 					if val == 'bad'
+	# 						return false
+	# 					return true
+	# 			},{
+	# 				key:'age'
+	# 				type:String
+	# 				label:'User Age'
+	# 				required:false
+	# 			},{
+	# 				key:'sex'
+	# 				type:String
+	# 				label: 'User Sex'
+	# 				required:false
+	# 				placeholder: 'male'
+	# 			}
+	# 		]
+	# 		submit:
+	# 			label: 'submit'
+	# 			fn: onFormSubmit
 
 	layouts: [
 		{
@@ -97,33 +136,43 @@ user_model =
 			keys: ['project','_id','_name','_age']
 		}
 	]
-
+	keys_array: ['project','_name','_id','_age']
 	keys:
 		_id:
 			label: 'ID'
-			col_width: 300
+			col_width: 70
 			placeholder: '-'
 			onEdit: (val)->
 				alert('_id edit '+val)
 		_name:
 			label: 'Name'
-			col_width: 100
+			form_render:yes
+			form_required: no
+			type: String
+			col_width: 150
 			placeholder: '-'
 			onEdit: (val)->
 				alert('_name edit '+val)
 		_age:
 			label: 'Age'
-			col_width: 40
+			col_width: 70
+			form_render:yes
+			form_required: yes
+			type: String
 			center: yes
 			placeholder: '-'
 			onEdit: (val)->
 				alert('_age edit '+val)
 		project:
 			label: 'Project'
-			col_width: 250
+			col_width: 350
+			form_render:yes
+			form_autofill: 'My Project'
+			form_required: yes
+			type: String
 			placeholder: '-'
 			onEdit: (val)->
-				alert('_age edit '+val)
+				alert('project edit '+val)
 	
 	statics: [
 		{
@@ -136,34 +185,7 @@ user_model =
 			method_name: 'update-all-users'
 			fn: onStaticFn
 		},
-		{
-			method_name: 'add-user'
-			method_label: 'add new user'
-			render: ()->
-				h ModelGridForm,
-					values: [
-						{
-							key:'name'
-							required:true
-							validate: (val)->
-								if val == 'bad'
-									return false
-								return true
-						},{
-							key:'age'
-							label:'User Age'
-							required:false
-						},{
-							key:'sex'
-							label: 'User Sex'
-							required:false
-							placeholder: 'male'
-						}
-					]
-					submit:
-						label: 'submit'
-						fn: onFormSubmit
-		}
+		
 	]
 
 	methods: [

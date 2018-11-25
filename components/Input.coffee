@@ -85,6 +85,8 @@ class Input extends Component
 		value = if props.value? then props.value else state.value
 		select = props.select
 		focus = (state.focus) || state.hover
+		# if props.type == 'label'
+		# 	focus = false
 
 		if props.focus?
 			focus = props.focus
@@ -92,8 +94,13 @@ class Input extends Component
 
 
 		btn_style = {}
+		if props.type == 'label'
+			focus = false
+			btn_style.cursor = 'default'
+		
 		if props.type == 'button'
 			btn_style.cursor = 'pointer'
+		
 		if props.btn_type == 'primary'
 			if select
 				btn_style.color = @context.__theme.secondary.inv[0]
@@ -190,18 +197,20 @@ class Input extends Component
 		value = if props.value? then props.value else state.value
 		select = props.select
 		focus = state.focus
-
 		bar_style = {}
 		if !value
-			if props.btn_type == 'primary'
+			if props.required && !props.value
+				bar_style.background = @context.__theme.secondary.warn
+			else if props.btn_type == 'primary'
 				bar_style.background = @context.__theme.secondary.color[0]
 			else if props.btn_type == 'flat'
 				bar_style.background = @context.__theme.primary.inv[1]
 			else
 				bar_style.background = @context.__theme.primary.inv[2]
-		else if props.invalid == true
+			
+		else if props.invalid == true || props.is_valid == false
 			bar_style.background = @context.__theme.secondary.false
-		else if props.invalid == false
+		else if props.invalid == false || props.is_valid == true
 			bar_style.background = @context.__theme.secondary.true
 		else if props.color == 'color'
 			bar_style.background = props.value
@@ -252,6 +261,8 @@ class Input extends Component
 		select = props.select
 		focus = state.focus || state.hover || select
 
+		if props.type == 'label'
+			select = false
 		if props.type == 'color' || props.type == 'checkbox' || props.type == 'button'
 			input_hidden = true
 
@@ -346,7 +357,7 @@ class Input extends Component
 
 		# if props.type == 'select'
 
-		if props.type != 'button'
+		if props.type != 'button' && props.type != 'label'
 			self_input_props = 
 				className: input_hidden && css['hidden']
 				onKeyDown: @onKeyDown
@@ -379,7 +390,7 @@ class Input extends Component
 
 
 
-		if props.invalid
+		if props.invalid || props.is_valid == false
 			alert = h AlertDot,
 				error: yes
 

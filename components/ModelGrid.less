@@ -1,14 +1,23 @@
+@import './_globals.less';
 .model-grid{
 	height: 100%;
 	width: 100%;
 }
 .model-grid-slash{
 	opacity: 0.4;
-	padding: 0 6;
+	padding: 0 4;
 }
 .model-grid-slide{
 	width: 100%;
 	height: 100%;
+}
+.model-grid-opaque{
+	opacity: 0.5;
+}
+.model-grid-add-doc-form{
+	max-height: 300px;
+	height: fit-content;
+	overflow-y: scroll;
 }
 *{
 	outline: none;
@@ -17,9 +26,33 @@
 	overflow: visible;
 	// overflow-x: hidden;
 }
+
+
+.model-grid-key{
+	cursor: pointer;
+	// transition: color @ease;
+	.model-grid-key-toggle{
+		opacity: 0.5;
+		transition: opacity @ease;
+	}
+	&:hover{
+		.model-grid-key-toggle{
+			opacity: 1;
+			// font-weight: 600;
+			// text-decoration: underline;
+		}
+	}
+}
+.model-grid-key-toggle{
+	// transition: transform 0.3;
+	line-height: 30px;
+	// margin-left: 2px;
+}
+
 .model-grid-cell{
+	display: flex;
 	height: 30;
-	font-family: "Roboto Mono";
+	font-family: @monofont;
 	font-size: 13;
 	vertical-align: middle;
 	line-height: 30px;

@@ -1,9 +1,5 @@
 @import './Font.css';
-@ease: 0.3s ease;
-@border-radius: 2px;
-@margin-size: 3;
-@padding-size: 8;
-
+@import './_globals.less';
 
 // .secondary-b-highlight,.secondary-b-error{
 // 	background: initial;
@@ -30,7 +26,7 @@
 
 body{
 	font-size: 13;
-	font-family: 'Open Sans';
+	font-family: @monofont;
 	font-weight: 400;
 	box-sizing: border-box;
 }
@@ -149,6 +145,7 @@ a{
 		margin-top: 0;
 	}
 	.label{
+		white-space: pre;
 		flex-shrink: 0;
 		margin: 0 @margin-size;
 	}
@@ -238,7 +235,10 @@ a{
 	}
 }
 
-
+pre{
+	font-family: @monofont;
+	font-size: inherit;
+}
 
 
 .hidden{
@@ -415,18 +415,18 @@ a{
 	&.bar-big{
 		height: 40;
 		input{
-			margin: 0 @margin-size*2;
+			margin: 0 @margin-size*1;
 		}
 		.alert-dot{
 			top: 4;
 			right: 4;
 		}
 		.btn{
-			padding: 0 @padding-size*2;
+			padding: 0 @padding-size*1;
 			height: 40;
 		}
 		.btn>.label{
-			margin: 0 @margin-size*2;
+			margin: 0 @margin-size*1;
 		}
 		i{
 			font-size: 24 !important;
@@ -438,11 +438,38 @@ a{
 			}
 		}
 	}
+	&.bar-small{
+		height: 30;
+		input{
+			margin: 0 @margin-size;
+		}
+		.alert-dot{
+			top: -3;
+			right: -3;
+		}
+		.btn{
+			padding: 0 @padding-size;
+			height: 30;
+		}
+		.btn>.label{
+			margin: 0 @margin-size;
+		}
+		i{
+			font-size: 20 !important;
+		}
+		.btn-icon-square{
+			width: 30;
+			i{
+				margin-left: -@padding-size/2;
+			}
+		}
+	}
+	
 	&.bar-vert{
 		height: auto;
 		width: auto;
 		flex-wrap: wrap;
-		flex-direction: row;
+		flex-direction: column;
 		display: flex; //inline-grid;
 	}
 }

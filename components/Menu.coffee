@@ -11,10 +11,6 @@ class Menu extends Component
 			width: 0
 			height: 0
 			tab_branch: []
-			force_split_left: false
-			force_split_left_x: 0
-			force_split_top: false
-			force_split_top_x: 0
 			backdrop_theme_color: null
 			backdrop_opaque_color: null
 
@@ -22,26 +18,22 @@ class Menu extends Component
 		onContextTabReveal: @onContextTabReveal
 		clearTabBranch: @clearTabBranch
 		tab_branch: @state.tab_branch
-		# showBackdrop: @showBackdrop
-		# hideBackdrop: @hideBackdrop
-		# enable_backdrop: @props.enable_backdrop
-		hide_delay: @props.hide_delay
 		alternate: @props.alternate
 		selectedTabClassName: @props.selectedTabClassName
 		vert: @props.vert
-		render_hidden: @props.render_hidden
-		min_x: @props.min_x
-		min_y: @props.min_y
-		max_x: @props.max_x
-		max_y: @props.max_y
+		render_unrevealed_children: @props.render_unrevealed_children
+		bounding_box: @props.bounding_box
 		big: @props.big
-		hover_reveal: @props.hover_reveal
-		click_reveal: @props.click_reveal
+		hover_reveal_enabled: @props.hover_reveal_enabled
+		click_reveal_enabled: @props.click_reveal_enabled
 		level: 0
-		force_split_left: if @props.force_split_left? then @props.force_split_left else @state.force_split_left
-		force_split_top: if @props.force_split_top? then @props.force_split_top else @state.force_split_top
-		forceSplitTop: @forceSplitTop
-		forceSplitLeft: @forceSplitLeft
+		split_x: @props.split_x
+		split_y: @props.split_y
+		bar_dir_x: @props.bar_dir_x
+		bar_dir_y: @props.bar_dir_y
+		force_split_x: @props.force_split_x
+		force_split_y: @props.force_split_y
+		
 
 	# componentWillUpdate: ->
 	componentWillUpdate: (props)->
@@ -60,9 +52,8 @@ class Menu extends Component
 				@state.force_split_top = false
 				@state.force_split_top_y = 0
 			
-			@setState
-				width: @base.clientWidth
-				height: @base.clientHeight
+			@state.width = @base.clientWidth
+			@state.height = @base.clientHeight
 		
 		@state.reveal = undefined
 		
@@ -70,21 +61,21 @@ class Menu extends Component
 		@props.enable_backdrop && @renderBackdrop()
 
 
-	# componentDidMount: =>
-	# 	@forceUpdate()
+	componentDidMount: =>
+		@forceUpdate()
 
 
-	clampPosX: (x)->
+	# clampPosX: (x)->
 
-		if x + @base.clientWidth > @props.max_x
-			return @props.max_x - @base.clientWidth
-		return x
+	# 	if x + @base.clientWidth > @props.max_x
+	# 		return @props.max_x - @base.clientWidth
+	# 	return x
 
 
-	clampPosY: (y)->
-		if y + @base.clientHeight > @props.max_y
-			return @props.max_y - @base.clientHeight
-		return y
+	# clampPosY: (y)->
+	# 	if y + @base.clientHeight > @props.max_y
+	# 		return @props.max_y - @base.clientHeight
+	# 	return y
 
 
 	onClickBackdrop: (e)=>
@@ -104,7 +95,7 @@ class Menu extends Component
 
 	clearTabBranch: (e)=>
 		@state.tab_branch.length = 0
-		@forceUpdate()
+		@setState()
 
 
 	onContextTabReveal: (tab_branch,e)=>
@@ -118,6 +109,8 @@ class Menu extends Component
 
 	render: (props)->
 		# log 'render menu'
+		props.bounding_box.right = window.innerWidth
+		props.bounding_box.bottom = window.innerHeight
 		x = props.x
 		y = props.y
 
@@ -126,9 +119,9 @@ class Menu extends Component
 			@state.backdrop_opaque_color = Color(@state.backdrop_color).alpha(.8).string()
 
 
-		if @base
-			x = @clampPosX(x)
-			y = @clampPosY(y)
+		# if @base
+		# 	x = @clampPosX(x)
+		# 	y = @clampPosY(y)
 
 
 		if props.fixed
@@ -136,7 +129,7 @@ class Menu extends Component
 				left: x
 				top: y
 				position:'fixed'
-				zIndex: 10
+				zIndex: props.zIndex || 999
 
 
 		h Bar,
@@ -147,32 +140,36 @@ class Menu extends Component
 			props.children
 
 
-	forceSplitLeft: (overflow)=>
-		overflow = @props.x - overflow
-		if overflow <= 0
-			return
+	# forceSplitLeft: (overflow)=>
+	# 	overflow = @props.x - overflow
+	# 	if overflow <= 0
+	# 		return
 		
-		@setState
-			force_split_left: true
-			force_split_left_x: overflow
+	# 	@setState
+	# 		force_split_left: true
+	# 		force_split_left_x: overflow
 
 	
-	forceSplitTop: (overflow)=>
-		overflow = @props.y - overflow
-		if overflow <= 0
-			return
+	# forceSplitTop: (overflow)=>
+	# 	overflow = @props.y - overflow
+	# 	if overflow <= 0
+	# 		return
 		
-		@setState
-			force_split_top: true
-			force_split_top_y: overflow
+	# 	@setState
+	# 		force_split_top: true
+	# 		force_split_top_y: overflow
 
 		
 Menu.defaultProps = 
 	x: 0
 	y: 0
-	min_x: 0
-	min_y: 0
-	hide_delay: 0
+	split_x: 1
+	force_split_x: 0
+	force_split_y: 0
+	split_y: 1
+	bar_dir_x: 1
+	bar_dir_y: 1
+	bounding_box: {left:0,top:0,right:Infinity,bottom:Infinity}
 	enable_backdrop: false
 
 module.exports = Menu

@@ -14,6 +14,7 @@ class Style extends Component
 		@white = Color('#fff')
 		@black = Color('#000')
 		@false = Color('#FC0020')
+		@warn = Color('#E7BC08')
 		@true = Color('#21FF48')
 
 
@@ -57,6 +58,7 @@ class Style extends Component
 		c.highlight = color.lighten(1).saturate(.85)
 		c.true = color.lighten(1).mix(@true,0.7);
 		c.false = color.lighten(1).mix(@false,0.7);
+		c.warn = color.lighten(1).mix(@warn,0.7);
 		return c
 
 
@@ -65,6 +67,7 @@ class Style extends Component
 		c.highlight = color.darken(0.5).saturate(.85)
 		c.true = color.darken(0.5).mix(@true,0.7);
 		c.false = color.darken(0.5).mix(@false,0.7);
+		c.warn = color.darken(0.5).mix(@warn,0.7);
 		return c
 
 
