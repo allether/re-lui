@@ -21,7 +21,7 @@ class Menu extends Component
 		alternate: @props.alternate
 		selectedTabClassName: @props.selectedTabClassName
 		vert: @props.vert
-		render_unrevealed_children: @props.render_unrevealed_children
+		render_unrevealed_children: @props.render_unrevealed_children || false
 		bounding_box: @props.bounding_box
 		big: @props.big
 		hover_reveal_enabled: @props.hover_reveal_enabled
@@ -109,8 +109,8 @@ class Menu extends Component
 
 	render: (props)->
 		# log 'render menu'
-		props.bounding_box.right = window.innerWidth
-		props.bounding_box.bottom = window.innerHeight
+		# props.bounding_box.width = props.bounding_box.width || window.innerWidth
+		# props.bounding_box.height = props.bounding_box.bottom || window.innerHeight
 		x = props.x
 		y = props.y
 
@@ -169,7 +169,7 @@ Menu.defaultProps =
 	split_y: 1
 	bar_dir_x: 1
 	bar_dir_y: 1
-	bounding_box: {left:0,top:0,right:Infinity,bottom:Infinity}
+	bounding_box: {x:0,y:0,width:Infinity,height:Infinity}
 	enable_backdrop: false
 
 module.exports = Menu

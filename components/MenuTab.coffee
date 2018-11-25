@@ -88,10 +88,10 @@ class MenuTab extends Component
 	getFullBoundingBoxOverflowBounds: (rr)->
 		split_vert = !@context.vert
 		bb = @props.bounding_box || @context.bounding_box
-		rr.top = rr.top - bb.top
-		rr.bottom = rr.bottom - bb.bottom
-		rr.left = rr.left - bb.left
-		rr.right = rr.right - bb.right
+		rr.top = rr.top - bb.y
+		rr.bottom = rr.bottom - (bb.y+bb.height)
+		rr.left = rr.left - bb.x
+		rr.right = rr.right - (bb.x+bb.width)
 		return rr
 
 
@@ -110,6 +110,8 @@ class MenuTab extends Component
 			rr.right = rect.x + rect.width
 			rr.top = rect.y
 			rr.bottom = rect.y + rect.height
+
+		
 
 		if split_vert && !split_y
 			throw new Error 'split_vert && !split_y'
@@ -230,6 +232,7 @@ class MenuTab extends Component
 		@state.split_y = split_y
 		@state.bar_dir_x = bar_dir_x
 		@state.bar_dir_y = bar_dir_y
+		@state.z_index = (@context.level+1)*100
 		@state.bar_children_split_vert = bar_children_split_vert
 		
 		@state.render_unrevealed_children = if props.render_unrevealed_children? then props.render_unrevealed_children else @context.render_unrevealed_children
@@ -265,7 +268,7 @@ class MenuTab extends Component
 
 
 	render: (props,state)->
-		z_index = (@context.level+1)*100
+		
 		reveal = state.reveal
 		
 

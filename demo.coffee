@@ -703,35 +703,35 @@ class Demo extends Component
 						onClick: @showOverlayError
 
 
-	# render: (props,state)->
-	# 	h Style,
-	# 		primary: state.primary
-	# 		secondary: state.secondary
-	# 		onSetStyle: (@primary,@secondary)=>
-	# 			@_top_container.style.background = @primary.inv[0]
-	# 			@_top_container.style.color = @primary.color[0]
-	# 		h 'div',
-	# 			style: 
-	# 				display: 'flex'
-	# 				flexDirection: 'column'
-	# 			h 'div',
-	# 				style:
-	# 					height: '50%'
-	# 				ref: (e)=>
-	# 					@_top_container = e
-	# 				h ModelGridExample
-	# 			h 'div',
-	# 				style:
-	# 					height: '50%'
-	# 				ref: (e)=>
-	# 					@_bot_container = e
-	# 				h Style,
-	# 					primary: '#fff'
-	# 					secondary: state.secondary
-	# 					onSetStyle: (@primary,@secondary)=>
-	# 						@_bot_container.style.background = @primary.inv[0]
-	# 						@_bot_container.style.color = @primary.color[0]
-	# 					h ModelGridExample
+	render: (props,state)->
+		h Style,
+			primary: state.primary
+			secondary: state.secondary
+			onSetStyle: (@primary,@secondary)=>
+				@_top_container.style.background = @primary.inv[0]
+				@_top_container.style.color = @primary.color[0]
+			h 'div',
+				style: 
+					display: 'flex'
+					flexDirection: 'column'
+				h 'div',
+					style:
+						height: '50%'
+					ref: (e)=>
+						@_top_container = e
+					h ModelGridExample
+				h 'div',
+					style:
+						height: '50%'
+					ref: (e)=>
+						@_bot_container = e
+					h Style,
+						primary: '#fff'
+						secondary: state.secondary
+						onSetStyle: (@primary,@secondary)=>
+							@_bot_container.style.background = @primary.inv[0]
+							@_bot_container.style.color = @primary.color[0]
+						h ModelGridExample
 				
 
 

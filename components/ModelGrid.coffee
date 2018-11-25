@@ -145,16 +145,15 @@ class ModelGridMenu extends Component
 
 		selected_layout = opts.layouts[@props.cfg.layout_index]
 		selected_filter = opts.filters[@props.cfg.filter_index]
+		
 		h Slide,
 			dim: 40
 			vert : no
 			className: css['menu-slide']
 			h Menu,
 				vert: no
-				max_x: window.innerWidth-17
-				max_y: window.innerHeight
-				hover_reveal: yes
-				render_hidden: no
+				bounding_box: document.body.getBoundingClientRect()
+				hover_reveal_enabled: yes
 				show_backdrop: @state.menu_backdrop
 				onClickBackdrop: @togglePinMenu.bind(@,null,false)
 				big: true
@@ -197,16 +196,13 @@ class ModelGridMenu extends Component
 
 			h Menu,
 				vert: no
-				max_x: window.innerWidth-17
-				max_y: window.innerHeight
+				bounding_box: document.body.getBoundingClientRect()
 				className: css['model-grid-list-menu-right']
 				big: true
 				enable_backdrop: yes
 				show_backdrop: @state.menu_backdrop
-				force_split_left: yes
 				onClickBackdrop: @togglePinMenu.bind(@,null,false)
-				hover_reveal: yes
-				render_hidden: no
+				hover_reveal_enabled: yes
 				h MenuTab,
 					vert: yes
 					onClick: @togglePinMenu.bind(@,'layouts',true)
@@ -337,20 +333,14 @@ class ModelGridList extends Component
 		# h Style,
 		# 	primary: @context.__theme.primary.inv[0]
 		# 	secondary: @context.__theme.secondary.color[0]
+		# log @base
+		# bounds = @base.getBoundingClientRect()
+		# b = {left:bounds,top:bounds.y,bottom: bounds.y+bounds.height,right:bounds.x+bounds.width}
 		h Menu,
-			# key: 'model-method-menu'
 			vert: no
-			max_x: window.innerWidth-17
-			max_y: window.innerHeight
-			# className: css['model-grid-list-menu-right']
+			bounding_box: @base.getBoundingClientRect()
 			big: no
 			enable_backdrop: yes
-			# show_backdrop: @state.menu_backdrop
-			# force_split_left: yes
-			# onClickBackdrop: @togglePinMenu.bind(@,null,false)
-			hover_reveal: yes
-			render_hidden: no
-			# reveal: yes
 			h MenuTab,
 				vert: yes
 				reveal: yes
@@ -359,15 +349,11 @@ class ModelGridList extends Component
 					btn_type: 'primary'
 					i: 'menu'
 				h MenuTab,
-					key:1
-					# vert: yes
 					content: h Input,
 						type: 'button'
 						btn_type: 'primary'
 						i: 'delete'
 				h MenuTab,
-					key:2
-					# vert: yes
 					content: h Input,
 						type: 'button'
 						btn_type: 'primary'
