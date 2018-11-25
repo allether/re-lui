@@ -76,11 +76,9 @@ class MenuTab extends Component
 	
 
 	onTabMouseLeave: (e)=>
-		if @props.reveal then return
-		# if (!@context.hover_reveal_enabled || @props.hover_reveal_enabled == false) then return
+		if !@context.hover_reveal_enabled && @state.reveal then return
 		if @context.level == 0
 			@context.clearTabBranch(e)
-		# @disableReveal(e)
 		@props.onMouseLeave?(e)
 		return false
 	
@@ -268,8 +266,10 @@ class MenuTab extends Component
 
 
 	render: (props,state)->
-		
+		# log props.content.attributes.i,props.reveal
 		reveal = state.reveal
+		if props.children.length && !props.disabled
+			props.content.attributes.select = state.reveal
 		
 
 		if !@state.render_children
@@ -278,10 +278,11 @@ class MenuTab extends Component
 				onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave
 				onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter
 				onClick: @onTabClick
-				
 				props.content
 
 		bar_style = {}
+		if props.bar_style
+			Object.assign bar_style,props.bar_style
 		
 
 				
@@ -327,19 +328,22 @@ class MenuTab extends Component
 			props.children
 
 
-		if props.children.length && !props.disabled
-			props.content.attributes.select = state.reveal
+		
+		tab_style = {}
+		if props.tab_style
+			Object.assign tab_style,props.tab_style
+		
+		tab_style.zIndex = @state.z_index || 'unset'
+		tab_style.flexDirection = flex_dir
 		
 		h 'div',
 			className: css['tab-wrapper'] + ' ' + (props.className || '')
 			onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave
 			onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter
 			onClick: @onTabClick
-			style:
-				zIndex: @state.z_index || 'unset'
-				flexDirection: flex_dir
+			style: tab_style
 			props.content
 			bar
 
-
+# MenuTab.defaultProps = 
 module.exports = MenuTab

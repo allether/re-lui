@@ -98,34 +98,6 @@ user_model =
 
 	]
 
-	# render_form: ()->
-	# 	h ModelForm,
-	# 		keys: [
-	# 			{
-	# 				key:'name'
-	# 				type:String
-	# 				required:true
-	# 				validate: (val)->
-	# 					if val == 'bad'
-	# 						return false
-	# 					return true
-	# 			},{
-	# 				key:'age'
-	# 				type:String
-	# 				label:'User Age'
-	# 				required:false
-	# 			},{
-	# 				key:'sex'
-	# 				type:String
-	# 				label: 'User Sex'
-	# 				required:false
-	# 				placeholder: 'male'
-	# 			}
-	# 		]
-	# 		submit:
-	# 			label: 'submit'
-	# 			fn: onFormSubmit
-
 	layouts: [
 		{
 			label: 'short'
@@ -136,11 +108,14 @@ user_model =
 			keys: ['project','_id','_name','_age']
 		}
 	]
+
 	keys_array: ['project','_name','_id','_age']
+	
 	keys:
 		_id:
 			label: 'ID'
 			col_width: 70
+			indexed: yes
 			placeholder: '-'
 			onEdit: (val)->
 				alert('_id edit '+val)
@@ -148,6 +123,7 @@ user_model =
 			label: 'Name'
 			form_render:yes
 			form_required: no
+			indexed: true
 			type: String
 			col_width: 150
 			placeholder: '-'
@@ -157,6 +133,7 @@ user_model =
 			label: 'Age'
 			col_width: 70
 			form_render:yes
+			indexed: true
 			form_required: yes
 			type: String
 			center: yes
@@ -167,6 +144,7 @@ user_model =
 			label: 'Project'
 			col_width: 350
 			form_render:yes
+			# indexed: true
 			form_autofill: 'My Project'
 			form_required: yes
 			type: String
@@ -293,5 +271,18 @@ class ModelGridExample extends Component
 		h ModelGrid,
 			opts: user_model
 			data: user_data
+			
+			loadCfg: (defaults)->
+				for key,value of defaults
+					# log 'load',key,value
+					got_key = localStorage.getItem(key)
+					defaults[key] = if got_key then JSON.parse(got_key) else value
+
+				# query_helper_tab_name: 'bookmark'
+			
+			saveCfg: (cfg)->
+				for key,value of cfg
+					# log 'save',key,value
+					localStorage.setItem(key,JSON.stringify(value))
 
 module.exports = ModelGridExample

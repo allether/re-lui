@@ -19,6 +19,53 @@
 	height: fit-content;
 	overflow-y: scroll;
 }
+
+.model-grid-label-float-right{
+	right: 10px;
+    position: absolute;
+}
+
+.model-grid-search-query-l-item{
+	min-height: 30px;
+	// padding: 2.5px 5px;
+	i{
+		font-size: 15;
+		position: absolute;
+		width: 30px;
+		right: 0;
+		height: 100%;
+		top: 0;
+		display: flex;
+		opacity: 0.5;
+		align-items: center;
+		justify-content: center;
+		font-size: 16px !important;
+		color: white;
+		&:hover{
+			// color: yellow;
+			opacity: 1;
+		}
+	}
+	.json{
+		position: relative;
+		min-height: 30px;
+		margin: 0;
+		overflow-wrap: break-word;
+		
+		padding: 8px;
+		font-size: 10px;
+		cursor: pointer;
+		white-space: pre;
+		// opacity: 0.8;
+		// box-sizing: border-box;
+		// &:hover{
+		// 	opacity:1;
+		// }
+		// border-radius: 2px;
+	}
+
+}
+
 *{
 	outline: none;
 }
@@ -27,6 +74,9 @@
 	// overflow-x: hidden;
 }
 
+.model-grid-search-query-helper{
+	background: black;
+}
 
 .model-grid-key{
 	cursor: pointer;

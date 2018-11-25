@@ -10,9 +10,185 @@ Bar = require './Bar.coffee'
 MenuTab = require './MenuTab.coffee'
 Menu = require './Menu.coffee'
 {MultiGrid} = require 'react-virtualized/dist/commonjs/MultiGrid'
-# {CellMeasurer,CellMeasurerCache} = require 'react-virtualized/dist/commonjs/CellMeasurer'
+
+{List} = require 'react-virtualized/dist/commonjs/List'
+###
+index,       // Index of row
+isScrolling, // The List is currently being scrolled
+isVisible,   // This row is visible within the List (eg it is not an overscanned row)
+key,         // Unique key within array of rendered rows
+parent,      // Reference to the parent List (instance)
+style 
+###
+
+{CellMeasurer,CellMeasurerCache} = require 'react-virtualized/dist/commonjs/CellMeasurer'
+# {AutoSizer} = require 'react-virtualized/dist/commonjs/AutoSizer'
 CHAR_W = 7.8
 CELL_PAD = 10
+
+class SearchQueryHelper extends Component
+	constructor: (props)->
+		super(props)
+		@state = 
+			selected_item_index: -1
+			lists: 
+				bookmark: []
+				history: []
+	
+	selectTab: (tab_name)=>
+		@setState
+			tab_name: tab_name
+	
+	buildCache: ->
+		@_cell_cache = {}
+		@_cell_cache['bookmark'] = new CellMeasurerCache
+			defaultHeight: 30
+			fixedWidth: yes
+			fixedHeight: no
+		@_cell_cache['history'] = new CellMeasurerCache
+			defaultHeight: 30
+			fixedWidth: yes
+			fixedHeight: no
+
+	calculateLists: (props)->
+		@state.lists.history = [].concat(props.query_list).sort (query_a,query_b)->
+			if query_a.created_at > query_b.created_at
+				return -1
+			else
+				return 1
+
+		@state.lists.bookmark = @state.lists.history.filter (query)->
+			query.is_bookmarked
+
+		# if @state.lists._bookmark_l != @state.lists.bookmark.length
+		@_cell_cache['bookmark'].clearAll()
+		@_cell_cache['history'].clearAll()
+			# @state.lists._bookmark_l = @state.lists.bookmark.length
+
+
+
+		@state.lists.history._parsed = @state.lists.history.map (query)->
+			JSON.stringify(JSON.parse(query.value),4,4)
+
+		@state.lists.bookmark._parsed = @state.lists.bookmark.map (query)->
+			JSON.stringify(JSON.parse(query.value),4,4)
+		
+		log 'parsed'
+	
+	componentWillMount: (props)->
+		@buildCache()
+		@calculateLists(@props)
+
+	componentWillUpdate: (props)->
+		# log @state.lists.history.length,props.query_list.length
+		
+		if props.tab_name != @props.tab_name
+			@state.selected_item_index = -1
+		if @state.lists.history.length != props.query_list.length
+			@calculateLists(props)
+	listRef: (el)=>
+		@_list = el
+	selectItem: (r_opts)=>
+		@setState
+			selected_item_index: r_opts.index
+		@_list.recomputeGridSize()
+		@props.onSelectItem(@state.lists[@props.tab_name][r_opts.index])
+
+	bookmarkItem: (r_opts)=>
+		@props.onBookmarkItem(@state.lists[@props.tab_name][r_opts.index])
+		@calculateLists(@props)
+		@_list.recomputeGridSize()
+		# @state.lists[@props.tab_name][r_opts.index].is_bookmarked = true
+
+
+
+	rowRenderer: (tab_name,r_opts)=>
+		# log tab_name,r_opts
+		if !@state.lists[tab_name][r_opts.index]
+			return false
+		r_opts.style.height = 'auto'
+		if @state.selected_item_index == r_opts.index
+			cell_bg = @context.__theme.secondary.color[0]
+			cell_color = @context.__theme.secondary.inv[0]
+			
+		else
+			cell_bg = (r_opts.index % 2) && @context.__theme.primary.inv[1] || null
+			cell_color = @context.__theme.primary.color[0]
+		
+		h CellMeasurer,
+			cache: @_cell_cache[tab_name]
+			rowIndex: r_opts.index
+			key: r_opts.key
+			parent: r_opts.parent
+			h 'div',
+				style: r_opts.style
+				className: css['model-grid-search-query-l-item']
+				onClick: @selectItem.bind(@,r_opts)
+				h 'div',
+					className: css['json']
+					style:
+						color: cell_color
+						background: cell_bg
+					@state.lists[tab_name]._parsed[r_opts.index]
+					@state.selected_item_index == r_opts.index && (h 'i',
+						className: 'material-icons'
+						onClick: @bookmarkItem.bind(@,r_opts)
+						@state.lists[tab_name][r_opts.index].is_bookmarked && 'bookmark' || 'bookmark_border'
+					) || null
+
+	
+	renderQueryList: (tab_name)->
+		# log @_cell_cache
+		h List,
+			height: 270
+			width: 300
+			ref: @listRef
+			rowHeight: @_cell_cache[tab_name].rowHeight
+			rowCount: @state.lists[tab_name].length
+			deferredMeasurementCache: @_cell_cache[tab_name]
+			rowRenderer: @rowRenderer.bind(@,tab_name)
+
+
+	render: (props)->
+		h Slide,
+			className: css['model-grid-search-query-helper']
+			style:
+				background: @context.__theme.primary.inv[0]
+			width: 300
+			height: 300
+			vert: yes
+			h Bar,
+				big: yes
+				h Input,
+					i: 'bookmark'
+					select:  @props.tab_name == 'bookmark' || undefined
+					# btn_type: @state.tab == 'bookmark' && 'primary' || 'default'
+					onClick: props.onSelectTab.bind(null,'bookmark')
+					type: 'button'
+				h Input,
+					i: 'history'
+					select:  @props.tab_name == 'history' || undefined
+					# btn_type: @state.tab == 'bookmark' && 'primary' || 'default'
+					onClick: props.onSelectTab.bind(null,'history')
+					type: 'button'
+			h Slide,
+				dim: 270 
+				slide: yes
+				vert: no
+				pos: if props.tab_name == 'bookmark' then 0 else 1
+				h Slide,
+					beta: 100
+					@renderQueryList('bookmark')
+				h Slide,
+					beta: 100
+					@renderQueryList('history')
+
+
+SearchQueryHelper.defaultProps = 
+	query_list: []
+	tab_name: 'history'
+
+
 class ModelGridMenu extends Component
 	constructor: (props)->
 		super(props)
@@ -57,23 +233,30 @@ class ModelGridMenu extends Component
 					h 'span',{className: css['model-grid-opaque']},String(layout.keys)
 				]
 
-	mapMenuSearchButtons: (key_name,i)=>
+	mapMenuSearchKeys: (key_name,i)=>
 		key = @props.opts.keys[key_name]
+		if !key.indexed
+			return null
 		h MenuTab,
 			key: i
 			content: h Input,
-				invalid:yes
+				# invalid:yes
+
 				onClick: @props.onSelectSearchKey.bind(null,key_name)
 
 				focus: if key_name == @props.cfg.search_key then false else undefined
 				# focus: if layout == @props.opts.layouts[@props.selected_layout_index] then false else undefined
-				btn_type: key_name == @props.cfg.search_key && 'primary'
+				btn_type: key_name == @props.cfg.search_key && 'primary' || 'flat'
 				type: 'button'
-				label: key.label
+				label: [
+					key.label.padEnd(10)
+					h 'span',{className: (css['model-grid-label-float-right']+' '+css['model-grid-opaque'])},String(key_name)
+				]
 
 	
 	togglePinMenu: (pin_menu_name,toggle)=>
 		@setState
+			show_search_query_helper: no
 			pin_menu_name: pin_menu_name
 			menu_backdrop: toggle
 
@@ -121,16 +304,46 @@ class ModelGridMenu extends Component
 					big: yes
 					type: 'submit'
 					btn_type: 'primary'
-					# label: 'create'
 
 
-		# props.cfg.new_doc
+	validateJSONQueryString: (json)->
+		JSON.parse(json)
+
+	showSearchQueryHelper: =>
+		@setState show_search_query_helper: yes
+
+	hideSearchQueryHelper: =>
+		@setState show_search_query_helper: no
+
+	setSearchQueryJSONValue: (e)=>
+		@setState
+			search_query_value: e.target.value
+
+	onSelectQueryItem: (q_item)=>
+		@setState
+			search_query_value: q_item.value
+
+	setSearchKeyValue: (e)=>
+		@setState search_key_value: e.target.value
+
+
+	searchQueryJSONSubmit: =>
+		try 
+			@validateJSONQueryString(@state.search_query_value)
+			@props.searchByJSONQuery(@state.search_query_value)
+		catch error
+			@setState
+				search_query_json_value_error: error.messsage
+			console.warn 'search_query_json_value_error '+error.message
+		
+	submitSearchKeyValue: ->
+		@props.searchByKeyValue(@state.search_query_value)
 	
-	
-	getPinMenuBoolean: (pin_menu_name)->
-		if @state.pin_menu_name == pin_menu_name then true else undefined
+	getPinMenuBoolean: (pin_menu_name,bool)->
+		if @state.pin_menu_name == pin_menu_name then true else (if bool then false else undefined)
 
 	render: (props,state)->
+		window._menu = @
 		opts = props.opts
 		data = props.data
 		cfg = props.cfg
@@ -145,14 +358,14 @@ class ModelGridMenu extends Component
 
 		selected_layout = opts.layouts[@props.cfg.layout_index]
 		selected_filter = opts.filters[@props.cfg.filter_index]
-		
+		bb = document.body.getBoundingClientRect()
 		h Slide,
 			dim: 40
 			vert : no
 			className: css['menu-slide']
 			h Menu,
 				vert: no
-				bounding_box: document.body.getBoundingClientRect()
+				bounding_box: bb
 				hover_reveal_enabled: yes
 				show_backdrop: @state.menu_backdrop
 				onClickBackdrop: @togglePinMenu.bind(@,null,false)
@@ -162,8 +375,15 @@ class ModelGridMenu extends Component
 					content: h Input,
 						type: 'button'
 						btn_type: 'flat'
-						i: 'menu'
+						i: 'more_vert'
 					opts.statics.map @mapMenuStaticsButtons
+				h MenuTab,
+					content: h Input,
+						type: 'label'
+						name: 'document'
+						btn_type: 'flat'
+						label: list_label
+				
 				h MenuTab,
 					reveal: @getPinMenuBoolean('add-doc')
 					onClick: @togglePinMenu.bind(@,'add-doc',true)
@@ -172,31 +392,11 @@ class ModelGridMenu extends Component
 						btn_type: 'flat'
 						i: 'add'
 					@getPinMenuBoolean('add-doc') && @renderNewDocForm(props)
-				h MenuTab,
-					reveal: @getPinMenuBoolean('statics')
-					content: h Input,
-						type: 'label'
-						name: 'statics'
-						btn_type: 'flat'
-						label: list_label
-				h MenuTab,
-					big: false
-					hover_reveal: no
-					# onClick: @togglePinMenu.bind(@,'search-keys')
-					reveal: @getPinMenuBoolean('search-keys')
-					content: h Input,
-						onFocus: @togglePinMenu.bind(@,'search-keys',true)
-						type: 'input'
-						btn_type: 'flat'
-						i: 'search'
-						bar: yes
-						placeholder: 'search by [ '+cfg.search_key+' ]'
-					opts.keys_array.map @mapMenuSearchButtons
 				
-
+				
 			h Menu,
 				vert: no
-				bounding_box: document.body.getBoundingClientRect()
+				bounding_box: bb
 				className: css['model-grid-list-menu-right']
 				big: true
 				enable_backdrop: yes
@@ -205,31 +405,80 @@ class ModelGridMenu extends Component
 				hover_reveal_enabled: yes
 				h MenuTab,
 					vert: yes
+					big: no
 					onClick: @togglePinMenu.bind(@,'layouts',true)
 					reveal: @getPinMenuBoolean('layouts')
 					content: h Input,
-						# className: css['model-grid-list-layout-button']
 						type: 'button'
 						btn_type: 'flat'
 						i: 'view_week'
-						label: [
+						label: bb.width > 750 && [
 							h 'span',{className: css['model-grid-slash']},'/'
 							selected_layout.label
-						]
+						] || undefined
 					opts.layouts.map @mapMenuLayoutButtons
 				h MenuTab,
 					vert: yes
+					big: no
 					onClick: @togglePinMenu.bind(@,'filters',true)
 					reveal: @getPinMenuBoolean('filters')
 					content: h Input,
 						type: 'button'
 						btn_type: 'flat'
 						i: 'filter_list'
-						label: [
+						label: bb.width > 750 && [
 							h 'span',{className: css['model-grid-slash']},'/'
 							selected_filter.label
-						]
+						] || undefined
 					opts.filters.map @mapMenuFilterButtons
+				h MenuTab,
+					vert: yes
+					hover_reveal_enabled: no
+					big: no
+					bar_style:
+						width: '100%'
+					reveal: @getPinMenuBoolean('search-keys',true)
+					content: h Input,
+						onFocus: @togglePinMenu.bind(@,'search-keys',true)
+						type: 'input'
+						btn_type: 'flat'
+						value: @state.search_key_value
+						onInput: @setSearchKeyValue
+						onEnter: @submitSearchKeyValue
+						i: 'search'
+						label:cfg.search_key.padStart(5)
+						bar: yes
+						placeholder: 'search by [ '+cfg.search_key+' ]'
+					h MenuTab,
+						vert: no
+						reveal: @state.show_search_query_helper
+						
+						content: h Input,
+							type: 'input'
+							btn_type: 'flat'
+							onFocus: @showSearchQueryHelper
+							onInput: @setSearchQueryJSONValue
+							onEnter: @searchQueryJSONSubmit
+							onClick: @searchQueryJSONSubmit
+							value: @state.search_query_value
+							i: 'settings_ethernet'
+							bar: yes
+							placeholder: '{ type custom query }'
+						@state.show_search_query_helper && h MenuTab,
+							content: h SearchQueryHelper,
+								query_list: cfg.query_list
+								tab_name: cfg.query_helper_tab_name
+								onSelectTab: @props.selectQueryHelperTab
+								onBookmarkItem: @props.bookmarkSeachQueryItem
+								onSelectItem: @onSelectQueryItem
+							
+					# h MenuTab,
+					# 	vert: no
+					# 	reveal: yes
+					# 	content: h Input,
+					# 		type: 'button'
+					# 		i: 'settings_ethernet'
+					opts.keys_array.map @mapMenuSearchKeys
 				# h MenuTab,
 				# 	vert: yes
 				# 	onClick: @togglePinMenu.bind(@,'layouts',true)
@@ -267,10 +516,6 @@ class ModelGridList extends Component
 			minWidth: 55
 			fixedHeight: true
 			defaultWidth: 255
-			# defaultWidth: 100,
-  			
-			# defaultHeight: 30
-			# fixedWidth: no
 	
 	gridRef: (el)=>
 		# log el
@@ -451,9 +696,9 @@ class ModelGridList extends Component
 				className: (css['model-grid-cell']+' '+css['model-grid-key'])
 				style: g_opts.style
 				key: g_opts.key
-				onClick: @props.onToggleKeySort.bind(null,key_name)
+				onClick: key.indexed && @props.onToggleKeySort.bind(null,key_name)
 				h 'div',className:css['model-grid-label'],key.label
-				h 'i',
+				key.indexed && h 'i',
 					className: 'material-icons '+css['model-grid-key-toggle']
 					style:
 						transform: 'rotate('+rotate_arrow+'deg)'
@@ -526,8 +771,33 @@ class ModelGrid extends Component
 			filter_index: 0
 			selected_doc_id: 1
 			search_key: props.opts.keys_array[0]
+			query_list: []
 			new_doc: {}
 			sort: {}
+	selectQueryHelperTab: (tab_name)=>
+		@setState
+			query_helper_tab_name: tab_name
+	searchByJSONQuery: (value)=>
+		for qf_item in @state.query_list
+			if qf_item.value == value
+				qf_item.call_count++
+				return @setState
+					search_query_json_value: value
+
+		@state.query_list.push
+			value: value
+			call_count: 0
+			is_bookmarked: no
+			created_at: Date.now()
+		
+		@setState
+			search_query_json_value: value
+			query_list: @state.query_list
+
+	searchByKeyValue: (value)->
+		@setState
+			search_key_value: value
+
 	onSelectDocumentById: (doc_id)=>
 		@setState
 			selected_doc_id: doc_id
@@ -537,7 +807,16 @@ class ModelGrid extends Component
 	onSelectLayout: (layout)=>
 		@setState
 			layout_index: @props.opts.layouts.indexOf(layout) || 0
-	
+
+	bookmarkSeachQueryItem: (q_item)=>
+		for qf_item in @state.query_list
+			if qf_item.value == q_item.value
+				qf_item.is_bookmarked = !qf_item.is_bookmarked
+				break
+
+		@setState
+			query_list: @state.query_list
+
 	onSelectFilter: (filter)=>
 		@setState
 			filter_index: @props.opts.filters.indexOf(filter) || 0
@@ -550,6 +829,12 @@ class ModelGrid extends Component
 		else
 			@state.sort[key_name] = undefined
 		@setState()
+
+	componentWillMount: ->
+		@props.loadCfg?(@state)
+
+	componentDidUpdate: ->
+		@props.saveCfg?(@state)
 
 
 	
@@ -567,6 +852,10 @@ class ModelGrid extends Component
 		props.onSelectDocumentById = @onSelectDocumentById
 		props.onSelectSearchKey = @onSelectSearchKey
 		props.onToggleKeySort = @onToggleKeySort
+		props.selectQueryHelperTab = @selectQueryHelperTab
+		props.searchByKeyValue = @searchByKeyValue
+		props.bookmarkSeachQueryItem = @bookmarkSeachQueryItem
+		props.searchByJSONQuery = @searchByJSONQuery
 		# props.onNewDocFormInput = @onNewDocFormInput
 		props.onAddDocumentButton = @onAddDocumentButton
 		
