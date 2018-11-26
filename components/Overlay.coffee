@@ -6,7 +6,7 @@ class Overlay extends Component
 	constructor: (props)->
 		super(props)
 		@state=
-			visible: props.visible
+			visible: if props.initial_visible? then props.initial_visible else props.visible
 			render: props.visible
 
 	componentWillUpdate: (props)->
@@ -30,15 +30,23 @@ class Overlay extends Component
 						render: @props.visible
 				,1000
 
-	
+	# componentWillMount: ->
+	# 	if @props.
+
+
 	render: (props,state)->
+		# log props.overlay_style
+	
+		overlay_style = Object.assign 
+			zIndex: props.z_index || 666
+			display: !@state.render && 'none' || ''
+			background: props.background || @context.__theme.primary.inv[0]
+		,props.style
+		
 		h 'div',
 			onClick: props.onClick
 			className: cn(css['overlay'],!@state.visible && css['overlay-hidden'],props.className)
-			style:
-				zIndex: props.z_index || 666
-				display: !@state.render && 'none' || ''
-				background: props.background || @context.__theme.primary.inv[0]
+			style: overlay_style
 			props.children
 
 

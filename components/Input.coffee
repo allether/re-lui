@@ -394,13 +394,17 @@ class Input extends Component
 			alert = h AlertDot,
 				error: yes
 
+		if props.style
+			style = Object.assign @getButtonStyle(props,state),props.style
+		else
+			style = @getButtonStyle(props,state)
 		h (props.href && 'a' || 'div'),
 			onClick: @onClick
 			onMouseEnter: @onMouseEnter
 			onMouseLeave: @onMouseLeave
 			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
 			href: props.href	
-			style: Object.assign(@getButtonStyle(props,state),props.style)
+			style: style
 			chips
 			icon
 			label

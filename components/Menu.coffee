@@ -1,22 +1,25 @@
 {h,render,Component} = require 'preact'
 css = require './Style.less'
 Bar = require './Bar.coffee'
-Overlay = require './Overlay.coffee'
 Color = require 'color'
+Overlay = require './Overlay.coffee'
+
 class Menu extends Component
 	constructor: (props)->
 		super(props)
-		# @resetBackdropCache()
 		@state=
 			width: 0
 			height: 0
 			tab_branch: []
-			backdrop_theme_color: null
-			backdrop_opaque_color: null
+			backdrop_color: props.backdrop_color || '#000'
+		@state.backdrop_opaque_color = Color(@state.backdrop_color).alpha(.9).string()
 
 	getChildContext: =>
 		onContextTabReveal: @onContextTabReveal
+		backdrop_color: @props.backdrop_color || @state.backdrop_color
+		backdrop_opaque_color: @props.backdrop_opaque_color || @state.backdrop_opaque_color
 		clearTabBranch: @clearTabBranch
+		onClickBackdrop: @props.onClickBackdrop
 		tab_branch: @state.tab_branch
 		alternate: @props.alternate
 		selectedTabClassName: @props.selectedTabClassName
@@ -35,11 +38,10 @@ class Menu extends Component
 		force_split_y: @props.force_split_y
 		
 
-	# componentWillUpdate: ->
 	componentWillUpdate: (props)->
-		if props.backdrop_opaque_color 
-			@state.backdrop_opaque_color = props.backdrop_opaque_color
-		
+		if props.backdrop_color != @props.backdrop_color
+			@state.backdrop_opaque_color = @state.Color(@state.backdrop_color).alpha(.9).string()
+
 
 	componentDidUpdate: ->	
 		# log @state.reveal	
@@ -58,39 +60,13 @@ class Menu extends Component
 		@state.reveal = undefined
 		
 
-		@props.enable_backdrop && @renderBackdrop()
-
-
 	componentDidMount: =>
 		@forceUpdate()
-
-
-	# clampPosX: (x)->
-
-	# 	if x + @base.clientWidth > @props.max_x
-	# 		return @props.max_x - @base.clientWidth
-	# 	return x
-
-
-	# clampPosY: (y)->
-	# 	if y + @base.clientHeight > @props.max_y
-	# 		return @props.max_y - @base.clientHeight
-	# 	return y
 
 
 	onClickBackdrop: (e)=>
 		@clearTabBranch(e)
 		@props.onClickBackdrop?(e)
-
-
-	renderBackdrop: =>
-		overlay = h Overlay,
-			z_index: 90
-			onClick: @onClickBackdrop
-			background: @state.backdrop_opaque_color
-			visible: @props.show_backdrop
-		
-		@_backdrop = render(overlay,document.body,@_backdrop)
 
 
 	clearTabBranch: (e)=>
@@ -103,73 +79,36 @@ class Menu extends Component
 			tab_branch: tab_branch
 
 
-	componentWillUnmount: ->
-		@_backdrop?.remove()
-
-
 	render: (props)->
-		# log 'render menu'
-		# props.bounding_box.width = props.bounding_box.width || window.innerWidth
-		# props.bounding_box.height = props.bounding_box.bottom || window.innerHeight
-		x = props.x
-		y = props.y
 
-		if @state.backdrop_color != @context.__theme.primary.color[3]
-			@state.backdrop_color = @context.__theme.primary.color[3]
-			@state.backdrop_opaque_color = Color(@state.backdrop_color).alpha(.8).string()
-
-
-		# if @base
-		# 	x = @clampPosX(x)
-		# 	y = @clampPosY(y)
-
+		bar_style = {}
 
 		if props.fixed
-			fixed_style=
-				left: x
-				top: y
-				position:'fixed'
-				zIndex: props.zIndex || 999
-
-
+			bar_style.left = props.left
+			bar_style.top = props.top
+			bar_style.position = 'fixed'
+		if props.style
+			Object.assign bar_style,props.style
+		
 		h Bar,
 			vert: props.vert
 			big: props.big
-			style: fixed_style
+			style: bar_style
 			className: props.className
 			props.children
-
-
-	# forceSplitLeft: (overflow)=>
-	# 	overflow = @props.x - overflow
-	# 	if overflow <= 0
-	# 		return
-		
-	# 	@setState
-	# 		force_split_left: true
-	# 		force_split_left_x: overflow
-
-	
-	# forceSplitTop: (overflow)=>
-	# 	overflow = @props.y - overflow
-	# 	if overflow <= 0
-	# 		return
-		
-	# 	@setState
-	# 		force_split_top: true
-	# 		force_split_top_y: overflow
+			# backdrop
 
 		
 Menu.defaultProps = 
 	x: 0
 	y: 0
 	split_x: 1
-	force_split_x: 0
-	force_split_y: 0
+	# force_split_x: 0
+	# force_split_y: 0
 	split_y: 1
 	bar_dir_x: 1
 	bar_dir_y: 1
 	bounding_box: {x:0,y:0,width:Infinity,height:Infinity}
-	enable_backdrop: false
+	show_backdrop: undefined
 
 module.exports = Menu

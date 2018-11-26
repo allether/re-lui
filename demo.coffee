@@ -14,9 +14,6 @@ css = require './demo.less'
 lerp_logo = require './lerp-logo-40.svg'
 
 
-ModelGridExample = require './model-grid-example.coffee'
-
-
 class SvgIcon extends Component
 	componentDidMount: ->
 		@base.innerHTML = @props.icon;
@@ -192,11 +189,14 @@ class MenuSection extends Component
 				fixed: state.toggle_drag && yes
 				render_hidden_children: no
 				hover_reveal_enabled: !state.toggle_drag
-				x: @state.x
-				y: @state.y
+				left: @state.x
+				top: @state.y
+				style:
+					zIndex: state.toggle_drag && 999 || 'initial'
 				big: props.big
 				split_y: -1
 				split_x: 1
+				bounding_box: document.body.getBoundingClientRect()
 				
 
 				h MenuTab,
@@ -702,37 +702,6 @@ class Demo extends Component
 						type: 'button'
 						onClick: @showOverlayError
 
-
-	render: (props,state)->
-		h Style,
-			primary: state.primary
-			secondary: state.secondary
-			onSetStyle: (@primary,@secondary)=>
-				@_top_container.style.background = @primary.inv[0]
-				@_top_container.style.color = @primary.color[0]
-			h 'div',
-				style: 
-					display: 'flex'
-					flexDirection: 'column'
-				h 'div',
-					style:
-						height: '50%'
-					ref: (e)=>
-						@_top_container = e
-					h ModelGridExample
-				h 'div',
-					style:
-						height: '50%'
-					ref: (e)=>
-						@_bot_container = e
-					h Style,
-						primary: '#fff'
-						secondary: state.secondary
-						onSetStyle: (@primary,@secondary)=>
-							@_bot_container.style.background = @primary.inv[0]
-							@_bot_container.style.color = @primary.color[0]
-						h ModelGridExample
-				
 
 
 

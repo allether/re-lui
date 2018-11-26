@@ -1,14 +1,14 @@
 {h,Component} = require 'preact'
 Bar = require './Bar.coffee'
 css = require './Style.less'
-
+Overlay = require './Overlay.coffee'
 class MenuTab extends Component
 	constructor: (props)->
 		super(props)
 		@state =
 			reveal: props.reveal || false
 			pre_render_visibility : false
-			show_backdrop: false
+			# show_backdrop: false
 
 
 
@@ -72,6 +72,15 @@ class MenuTab extends Component
 		if !@state.reveal
 			@revealSelfTab(e)
 		@props.onMouseEnter?(e)
+		return false
+
+	onClickBackdrop: (e)=>
+		if @props.onClickBackdrop
+			@props.onClickBackdrop(e)
+		else if @context.onClickBackdrop
+			@context.onClickBackdrop(e)
+		e.preventDefault()
+		e.stopPropagation()
 		return false
 	
 
@@ -174,10 +183,9 @@ class MenuTab extends Component
 		return split_vert
 
 	calculateSplitDirections : (props,state)->
-		_label = props.content.attributes.label
+		
 		split_vert = !@context.vert
-		# force_split_x = props.split_x || @context.force_split_x || 0
-		# force_split_y = props.split_y || @context.force_split_y || 0
+	
 		split_x = (props.split_x || @context.split_x)# where the children bar will be located relative to the tab (left or right)
 		split_y = (props.split_y || @context.split_y)# where the children bar will be located (top or bottom)
 		if !split_x && !split_y
@@ -231,6 +239,7 @@ class MenuTab extends Component
 		@state.bar_dir_x = bar_dir_x
 		@state.bar_dir_y = bar_dir_y
 		@state.z_index = (@context.level+1)*100
+		
 		@state.bar_children_split_vert = bar_children_split_vert
 		
 		@state.render_unrevealed_children = if props.render_unrevealed_children? then props.render_unrevealed_children else @context.render_unrevealed_children
@@ -245,6 +254,20 @@ class MenuTab extends Component
 
 
 	componentWillUpdate: (props,state)->
+
+		if props.show_backdrop
+			@state.backdrop_visible = true
+		else
+			if @props.show_backdrop
+				clearTimeout(@_hide_backdrop_timeout)
+				@_hide_backdrop_timeout = setTimeout ()=>
+					if !@props.show_backdrop
+						@setState
+							backdrop_visible: false
+				,310
+			else
+				@state.backdrop_visible = false
+
 		if !props.children.length
 			@state.hide_rendered_children = false
 			return
@@ -266,26 +289,41 @@ class MenuTab extends Component
 
 
 	render: (props,state)->
-		# log props.content.attributes.i,props.reveal
+		if @state.backdrop_visible 
+			@state.z_index = (@context.level+1)*100 + 10000
+		else
+			@state.z_index = (@context.level+1)*100
+
 		reveal = state.reveal
 		if props.children.length && !props.disabled
 			props.content.attributes.select = state.reveal
-		
+		backdrop = null
+		if @state.backdrop_visible
+			backdrop = h Overlay,
+				z_index: -1
+				initial_visible: false
+				onClick: @onClickBackdrop
+				background: @props.backdrop_opaque_color || @context.backdrop_opaque_color
+				visible: @props.show_backdrop
+
 
 		if !@state.render_children
 			return h 'div',
+				style:
+					zIndex: @state.z_index
 				className: css['tab-wrapper'] + ' ' + (props.className || '')
 				onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave
 				onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter
 				onClick: @onTabClick
 				props.content
+				backdrop
+
 
 		bar_style = {}
 		if props.bar_style
 			Object.assign bar_style,props.bar_style
 		
-
-				
+		
 		if !@state.split_vert && @state.split_x > 0
 			bar_style.right = null
 			bar_style.left = '100%'
@@ -313,11 +351,13 @@ class MenuTab extends Component
 
 			
 		bar_style.zIndex = @state.z_index
+
 	
 		if @state.hide_rendered_children
 			bar_style.visibility = 'hidden'
 		else
 			bar_style.visible = 'visible'
+
 
 		bar = h Bar,
 			big: if props.big? then props.big else @context.big
@@ -344,6 +384,7 @@ class MenuTab extends Component
 			style: tab_style
 			props.content
 			bar
+			backdrop
 
 # MenuTab.defaultProps = 
 module.exports = MenuTab
