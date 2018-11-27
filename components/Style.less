@@ -198,14 +198,14 @@ a{
 		}
 	}
 	&.btn-big{
-		height: 40 !important;
+		height: 40;
 		padding: 0 @padding-size*2;
 		&.btn-icon-square{
 			width: 40;
 		}
 		i{
 			font-size: 24;
-			margin-left: -@padding-size/2;
+			margin-left: 0;// margin-left: -@padding-size/2;
 		}
 	}
 	&.btn-icon-square{
@@ -233,6 +233,7 @@ a{
 		min-width: 100px;
 		&.hidden{
 			min-width: 0px;
+			height: 0;
 		}
 	}
 	select{
@@ -469,9 +470,9 @@ pre{
 		}
 		.btn-icon-square{
 			width: 30;
-			i{
-				margin-left: -@padding-size/2;
-			}
+			// i{
+			// 	margin-left: -@padding-size/2;
+			// }
 		}
 	}
 	
