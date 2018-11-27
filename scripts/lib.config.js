@@ -9,7 +9,7 @@ var cfg = {
 			{ test: /\.(less)$/, exclude: /^(https?:)?\/\//,use: ['style-loader',{loader:'css-loader',options: {
 			    modules: true,
 			    // importLoaders: 1,
-			    localIdentName: 'lui-[hash:base64:5]'
+			     localIdentName: 'lui-[local]'//localIdentName: 'lui-[hash:base64:5]'
 			  }},'less-loader'] },
 			{ test: /\.(css)$/, exclude: /^(https?:)?\/\//, use: ['style-loader','css-loader'] },
 			{ test: /\.(woff|woff2|eot|ttf|png)$/,loader: 'url-loader?limit=65000' }

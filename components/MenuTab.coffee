@@ -153,7 +153,7 @@ class MenuTab extends Component
 			else
 				rr.top -= ch - rect.height
 
-		# log rr,@props.content.attributes.label
+		
 
 		return rr
 
@@ -199,8 +199,7 @@ class MenuTab extends Component
 		
 		bar_dir_y = if props.bar_dir_y? then props.bar_dir_y else @context.split_y
 		bar_dir_x = if props.bar_dir_x? then props.bar_dir_x else @context.split_x
-		# log bar_dir_y
-		# log split_x,_label
+
 	
 		ob = @getFullBoundingBoxOverflowBounds(@getFullBoundingBox(split_x,split_y,bar_dir_x,bar_dir_y))
 
@@ -225,11 +224,7 @@ class MenuTab extends Component
 		else if split_vert && ob.right > 0
 			bar_dir_x = -1
 
-		# if split_vert && (split_y != @state.split_y || @state.bar_dir_x != bar_dir_x)
-		# 	force_update = true
-		# if !split_vert && (split_y != @state.split_y || @state.bar_dir_x != bar_dir_x)
-		# 	force_update = true
-		# log @state.split_y,split_y
+
 		if (split_y != @state.split_y || @state.bar_dir_x != bar_dir_x || split_y != @state.split_y || @state.bar_dir_x != bar_dir_x)
 			force_update = true
 
@@ -282,7 +277,7 @@ class MenuTab extends Component
 			@state.skipped_last_children_render = true
 		
 		if force_update
-			# log 'force update'
+			
 			@state.hide_rendered_children = true
 			setTimeout @forceUpdate.bind(@),0
 
@@ -309,8 +304,7 @@ class MenuTab extends Component
 
 		if !@state.render_children
 			return h 'div',
-				style:
-					zIndex: @state.z_index
+				style: Object.assign({zIndex: @state.z_index},props.tab_style)
 				className: css['tab-wrapper'] + ' ' + (props.className || '')
 				onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave
 				onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter
