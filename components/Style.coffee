@@ -16,7 +16,8 @@ class Style extends Component
 		@false = Color('#FC0020')
 		@warn = Color('#E7BC08')
 		@true = Color('#21FF48')
-
+		@state = 
+			rendered_style: yes
 
 	componentWillMount: ->
 		@renderStyle(@props)
