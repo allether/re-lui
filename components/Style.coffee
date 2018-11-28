@@ -84,14 +84,19 @@ class Style extends Component
 			@secondary = @darkenPallet(secondary_c,0.5)
 		else
 			@secondary = @lightenPallet(secondary_c,1.5)
-		setTimeout ()=>
-			@props.onSetStyle?(@primary,@secondary)
-		,0
+	
 
 
-	componentWillUpdate: (props)->
+	componentWillUpdate: (props,state)->
 		if @props.primary != props.primary || @props.secondary != props.secondary || @props.tertiary != props.tertiary
-			@renderStyle(props)
+			@renderStyle(props,state)
+			state.rendered_style = true
+
+	componentDidUpdate: ->
+		if @state.rendered_style
+			@state.rendered_style = false
+			@props.onSetStyle?(@primary,@secondary)
+
 
 
 	render: (props)->
