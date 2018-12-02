@@ -8,6 +8,10 @@ class Overlay extends Component
 		@state=
 			visible: if props.initial_visible? then props.initial_visible else props.visible
 			render: props.visible
+	
+	componentWillMount: ->
+		@state.visible = if @props.initial_visible? then @props.initial_visible else @props.visible
+		@stat.render = @props.visible
 
 	componentWillUpdate: (props)->
 		if @props.visible != props.visible
