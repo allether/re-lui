@@ -387,6 +387,7 @@ class MenuTab extends Component
 			onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave
 			onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter
 			onClick: @onTabClick
+			onKeyDown: @props.onKeyDown
 			style: tab_style
 			props.content
 			bar
