@@ -98,10 +98,9 @@ class MenuTab extends Component
 
 	onTabMouseLeave: (e)=>
 		@props.onMouseLeave?(e)
-		
-		if @props.hover_reveal_enabled == false || @context.hover_reveal_enabled == false
+		if (@props.hover_reveal_enabled == false || @context.hover_reveal_enabled == false) || (@props.click_reveal_enabled || @context.click_reveal_enabled) || @props.reveal?
 			return
-		
+
 		@context.spliceTabBranch(@)
 		
 
