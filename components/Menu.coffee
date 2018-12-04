@@ -19,6 +19,8 @@ class Menu extends Component
 		backdrop_color: @props.backdrop_color || @state.backdrop_color
 		backdrop_opaque_color: @props.backdrop_opaque_color || @state.backdrop_opaque_color
 		clearTabBranch: @clearTabBranch
+		spliceTabBranch: @spliceTabBranch
+		# setState: @forceUpdate.bind(@)
 		onClickBackdrop: @props.onClickBackdrop
 		tab_branch: @state.tab_branch
 		alternate: @props.alternate
@@ -36,28 +38,18 @@ class Menu extends Component
 		bar_dir_y: @props.bar_dir_y
 		force_split_x: @props.force_split_x
 		force_split_y: @props.force_split_y
-		
+	
+	spliceTabBranch: (tab)=>
+		@state.tab_branch.splice(@state.tab_branch.indexOf(tab))
+		@setState()
 
 	componentWillUpdate: (props)->
 		if props.backdrop_color != @props.backdrop_color
 			@state.backdrop_opaque_color = @state.Color(@state.backdrop_color).alpha(.9).string()
 
 
-	componentDidUpdate: ->	
-		# log @state.reveal	
-		if @state.width != @base.clientWidth || @state.height != @base.clientHeight || @props.x < @state.force_split_left_x || @props.y < @state.force_split_top_y
-			if @props.x < @state.force_split_left_x
-				@state.force_split_left = false
-				@state.force_split_left_x = 0
-			
-			if @props.y < @state.force_split_top_y
-				@state.force_split_top = false
-				@state.force_split_top_y = 0
-			
-			@state.width = @base.clientWidth
-			@state.height = @base.clientHeight
-		
-		@state.reveal = undefined
+	# componentDidUpdate: ->	
+	# 	@state.reveal = undefined
 		
 
 	componentDidMount: =>

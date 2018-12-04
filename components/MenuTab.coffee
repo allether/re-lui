@@ -57,21 +57,33 @@ class MenuTab extends Component
 	
 
 	onContextTabReveal: (tree,e)=>
-
+		# log tree
 		tree.unshift @
 		@context.onContextTabReveal(tree,e)
 
 	
 	onTabClick: (e)=>
-		@revealSelfTab(e)
+		if @props.reveal == false then return @props.onClick?(e)
+		if @props.hover_reveal_enabled == true || @context.hover_reveal_enabled == true
+			return
+		if @props.click_reveal_enabled == true || @context.click_reveal_enabled == true
+			@revealSelfTab(e)
 		@props.onClick?(e)
 		return false
 	
 
 	onTabMouseEnter: (e)=>
+		@props.onMouseEnter?(e)
+		# log @context.hover_reveal_enabled,@state.reveal
+		if @props.hover_reveal_enabled == false
+			return
+
+		if @context.hover_reveal_enabled && @state.reveal
+			return
+
 		if !@state.reveal
 			@revealSelfTab(e)
-		@props.onMouseEnter?(e)
+		
 		return false
 
 	onClickBackdrop: (e)=>
@@ -85,12 +97,15 @@ class MenuTab extends Component
 	
 
 	onTabMouseLeave: (e)=>
-		if !@context.hover_reveal_enabled && @state.reveal then return
-		if @context.level == 0
-			@context.clearTabBranch(e)
 		@props.onMouseLeave?(e)
-		return false
-	
+		
+		if @props.hover_reveal_enabled == false
+			return
+
+		if @context.hover_reveal_enabled && @state.reveal
+			return
+		@context.spliceTabBranch(@)
+		
 
 	getFullBoundingBoxOverflowBounds: (rr)->
 		split_vert = !@context.vert
@@ -229,10 +244,10 @@ class MenuTab extends Component
 			force_update = true
 
 		@state.split_vert = split_vert
-		@state.split_x = split_x
-		@state.split_y = split_y
-		@state.bar_dir_x = bar_dir_x
-		@state.bar_dir_y = bar_dir_y
+		@state.split_x = if props.force_split_x? then props.force_split_x else split_x
+		@state.split_y = if props.force_split_y? then props.force_split_y else split_y
+		@state.bar_dir_x = if props.force_bar_dir_x? then props.force_bar_dir_x else bar_dir_x
+		@state.bar_dir_y = if props.force_bar_dir_y? then props.force_bar_dir_y else bar_dir_y
 		@state.z_index = (@context.level+1)*100
 		
 		@state.bar_children_split_vert = bar_children_split_vert

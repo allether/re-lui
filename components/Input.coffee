@@ -335,7 +335,7 @@ class Input extends Component
 		if props.bar
 			bar = h 'div',
 				className: css['input-bar']
-				style: @getBarStyle(props,state)
+				style: Object.assign @getBarStyle(props,state),props.bar_style
 
 
 		if props.type == 'color'
@@ -373,7 +373,8 @@ class Input extends Component
 				input_props.style = cursor: 'pointer'
 
 			input_props.onClick = @onInputClick
-
+			if props.input_props
+				Object.assign input_props,props.input_props
 
 			if props.type == 'textarea'
 				input = h 'textarea',input_props

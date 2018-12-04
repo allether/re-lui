@@ -9,4 +9,5 @@ module.exports =
 	AlertDot : require './AlertDot.coffee'
 	Overlay: require './Overlay.coffee'
 	AlertOverlay: require './AlertOverlay.coffee'
+	SquareLoader: require './SquareLoader.coffee'
 	Chip: require './Chip.coffee'

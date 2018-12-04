@@ -11,32 +11,29 @@ class Overlay extends Component
 	
 	componentWillMount: ->
 		@state.visible = if @props.initial_visible? then @props.initial_visible else @props.visible
-		@stat.render = @props.visible
+		@state.render = @props.visible
 
-	componentWillUpdate: (props)->
+	componentWillUpdate: (props,state)->
 		if @props.visible != props.visible
 			if props.visible
-				@state.render = true
-	
-		
+				state.render = true
 
 	componentDidUpdate: (p_props,p_state)->
 		if @state.visible != @props.visible
-			setTimeout ()=>
-				@setState
-					visible: @props.visible
-			,0
+			@setState
+				visible: @props.visible
 			
-
 			if !@props.visible
 				setTimeout ()=>
 					@setState
 						render: @props.visible
 				,1000
-
-	# componentWillMount: ->
-	# 	if @props.
-
+	
+	componentDidMount: (p_props,p_state)->
+		if @state.visible != @props.visible
+			@setState
+				visible: @props.visible
+			
 
 	render: (props,state)->
 		# log props.overlay_style
@@ -46,6 +43,8 @@ class Overlay extends Component
 			display: !@state.render && 'none' || ''
 			background: props.background || @context.__theme.primary.inv[0]
 		,props.style
+
+		# log props.style
 		
 		h 'div',
 			onClick: props.onClick
