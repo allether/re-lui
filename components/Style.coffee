@@ -45,10 +45,10 @@ class Style extends Component
 		]
 
 		c.inv = [
-			inv.mix(color,.01*inv_factor).hex()
+			inv.mix(color,.02*inv_factor).hex()
 			inv.mix(color,.03*inv_factor).hex()
-			inv.mix(color,.06*inv_factor).hex()
-			inv.mix(color,.09*inv_factor).hex()
+			inv.mix(color,.05*inv_factor).hex()
+			inv.mix(color,.08*inv_factor).hex()
 		]
 
 		return c
