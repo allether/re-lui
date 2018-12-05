@@ -38,13 +38,14 @@ class AlertOverlay extends Component
 		else
 			alert_bg = @context.__theme.primary.inv[0]
 		alert_color = 'white'
+		
 		h Overlay,
 			onClick: props.onClick
 			visible: props.visible
 			initial_visible: props.initial_visible
 			style: props.style
-			className: props.transparent && css['overlay-empty']
-			backdrop_color: props.transparent && 'none' || props.backdrop_color
+			transparent: props.transparent
+			backdrop_color: props.backdrop_color
 			h Slide,
 				className: css['overlay-slide']
 				slide: yes
