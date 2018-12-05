@@ -1,5 +1,6 @@
 {h,Component} = require 'preact'
 cn = require 'classnames'
+Color = require 'color'
 css = require './Style.less'
 
 class Overlay extends Component
@@ -8,12 +9,26 @@ class Overlay extends Component
 		@state=
 			visible: if props.initial_visible? then props.initial_visible else props.visible
 			render: props.visible
+			
+		
+		
+	
+	setBackdropColor: (bg)=>
+		if bg == 'none'
+			return 'none'
+		return Color(bg).alpha(.9).string()
 	
 	componentWillMount: ->
+		@state.backdrop_color = @props.backdrop_color || @context.__theme.primary.inv[0]
+		@state.backdrop_opaque_color = @setBackdropColor(@state.backdrop_color)
 		@state.visible = if @props.initial_visible? then @props.initial_visible else @props.visible
 		@state.render = @props.visible
 
 	componentWillUpdate: (props,state)->
+		if props.backdrop_color != @props.backdrop_color || (@context.__theme.primary.inv[0] != @state.backdrop_color)
+			state.backdrop_color = props.backdrop_color || @context.__theme.primary.inv[0]
+			state.backdrop_opaque_color = @setBackdropColor(state.backdrop_color)
+		
 		if @props.visible != props.visible
 			if props.visible
 				state.render = true
@@ -41,7 +56,7 @@ class Overlay extends Component
 		overlay_style = Object.assign 
 			zIndex: props.z_index || 666
 			display: !@state.render && 'none' || ''
-			background: props.background || @context.__theme.primary.inv[0]
+			background: state.backdrop_opaque_color
 		,props.style
 
 		# log props.style

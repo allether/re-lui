@@ -12,8 +12,9 @@ class Menu extends Component
 			height: 0
 			tab_branch: []
 			backdrop_color: props.backdrop_color || '#000'
-		@state.backdrop_opaque_color = Color(@state.backdrop_color).alpha(.9).string()
-
+		@state.backdrop_opaque_color = @setColor(@state.backdrop_color)
+	setColor: (bg)=>
+		Color(bg).alpha(.9).string()
 	getChildContext: =>
 		onContextTabReveal: @onContextTabReveal
 		backdrop_color: @props.backdrop_color || @state.backdrop_color
@@ -43,9 +44,9 @@ class Menu extends Component
 		@state.tab_branch.splice(@state.tab_branch.indexOf(tab))
 		@setState()
 
-	componentWillUpdate: (props)->
+	componentWillUpdate: (props,state)->
 		if props.backdrop_color != @props.backdrop_color
-			@state.backdrop_opaque_color = @state.Color(@state.backdrop_color).alpha(.9).string()
+			state.backdrop_opaque_color = @setColor(props.backdrop_color)
 
 
 	# componentDidUpdate: ->	
