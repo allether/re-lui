@@ -44,7 +44,7 @@ class AlertOverlay extends Component
 			initial_visible: props.initial_visible
 			style: props.style
 			className: props.transparent && css['overlay-empty']
-			backdrop_color: props.transparent && 'none' || props.background
+			backdrop_color: props.transparent && 'none' || props.backdrop_color
 			h Slide,
 				className: css['overlay-slide']
 				slide: yes
