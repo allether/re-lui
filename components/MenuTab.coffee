@@ -310,7 +310,7 @@ class MenuTab extends Component
 				z_index: -1
 				initial_visible: false
 				onClick: @onClickBackdrop
-				background: @props.backdrop_opaque_color || @context.backdrop_opaque_color
+				backdrop_color: props.backdrop_color
 				visible: @props.show_backdrop
 
 
