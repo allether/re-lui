@@ -56,19 +56,19 @@ class Style extends Component
 
 	lightenPallet: (color,factor)=>
 		c = @createPallet(color,@white,factor || 1,1.5)
-		c.highlight = color.lighten(1).saturate(.85)
-		c.true = color.lighten(1).mix(@true,0.7);
-		c.false = color.lighten(1).mix(@false,0.7);
-		c.warn = color.lighten(1).mix(@warn,0.7);
+		c.highlight = color.lighten(1).saturate(.85).hex()
+		c.true = color.lighten(1).mix(@true,0.7).hex();
+		c.false = color.lighten(1).mix(@false,0.7).hex();
+		c.warn = color.lighten(1).mix(@warn,0.7).hex();
 		return c
 
 
 	darkenPallet: (color,factor)->
 		c = @createPallet(color,@black,factor || 1,6)
-		c.highlight = color.darken(0.5).saturate(.85)
-		c.true = color.darken(0.5).mix(@true,0.7);
-		c.false = color.darken(0.5).mix(@false,0.7);
-		c.warn = color.darken(0.5).mix(@warn,0.7);
+		c.highlight = color.darken(0.5).saturate(.85).hex()
+		c.true = color.darken(0.5).mix(@true,0.7).hex();
+		c.false = color.darken(0.5).mix(@false,0.7).hex();
+		c.warn = color.darken(0.5).mix(@warn,0.7).hex();
 		return c
 
 
