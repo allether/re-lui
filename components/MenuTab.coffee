@@ -303,7 +303,8 @@ class MenuTab extends Component
 
 		reveal = state.reveal
 		if props.children.length && !props.disabled && props.content
-			props.content.attributes?.select = state.reveal
+			if props.content.attributes && !(props.content.attributes.select?)
+				props.content.attributes.select = state.reveal
 		backdrop = null
 		if @state.backdrop_visible
 			backdrop = h Overlay,

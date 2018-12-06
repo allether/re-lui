@@ -96,7 +96,7 @@ class Style extends Component
 	componentDidUpdate: ->
 		if @state.rendered_style
 			@state.rendered_style = false
-			@props.onSetStyle?(@primary,@secondary)
+			# @props.onSetStyle?(@primary,@secondary)
 
 
 
