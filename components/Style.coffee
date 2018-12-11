@@ -56,7 +56,7 @@ class Style extends Component
 
 
 	lightenPallet: (color,factors)=>
-		c = @createPallet(color,color.lighten(9.0),factors)
+		c = @createPallet(color,color.lighten(@props.lighten_factor),factors)
 		c.highlight = color.lighten(1).saturate(.85).hex()
 		c.true = color.lighten(1).mix(@true,0.7).hex();
 		c.false = color.lighten(1).mix(@false,0.7).hex();
@@ -65,7 +65,7 @@ class Style extends Component
 
 
 	darkenPallet: (color,factors)->
-		c = @createPallet(color,color.darken(.95),factors)
+		c = @createPallet(color,color.darken(@props.darken_factor),factors)
 		c.highlight = color.darken(0.5).saturate(.85).hex()
 		c.true = color.darken(0.5).mix(@true,0.7).hex();
 		c.false = color.darken(0.5).mix(@false,0.7).hex();
@@ -107,11 +107,13 @@ class Style extends Component
 Style.defaultProps = 
 	primary: '#18262a'
 	secondary: 'whitesmoke'
+	darken_factor: .75
+	lighten_factor: 9.0
 	primary_factors: 
 		color: [.1,.3,.6,.9]
-		inv: [.05,.1,.3,.6]
+		inv: [.05,.1,.15,.25]
 	secondary_factors: 
 		color: [.1,.3,.6,.9]
-		inv: [.05,.1,.3,.6]
+		inv: [.05,.1,.15,.25]
 
 module.exports = Style

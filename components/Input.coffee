@@ -182,14 +182,14 @@ class Input extends Component
 				
 			else if props.btn_type == 'flat'
 				if focus || select
-					i_style.color = @context.__theme.primary.color[1]
-				else
-					i_style.color = @context.__theme.primary.color[2]
-			else
-				if focus || select
 					i_style.color = @context.__theme.primary.color[0]
 				else
 					i_style.color = @context.__theme.primary.color[1]
+			else
+				if focus || select
+					i_style.color = @context.__theme.primary.color[1]
+				else
+					i_style.color = @context.__theme.primary.color[2]
 		
 		return i_style
 
