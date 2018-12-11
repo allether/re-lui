@@ -120,15 +120,15 @@ class Input extends Component
 				btn_style.color = @context.__theme.primary.color[0]
 				btn_style.background = @context.__theme.primary.inv[1]
 			else
-				btn_style.color = @context.__theme.primary.color[2]
+				btn_style.color = @context.__theme.primary.color[1]
 				btn_style.background = @context.__theme.primary.inv[0]			
 		
 		else
 			if select
-				btn_style.color = @context.__theme.primary.color[0]
+				btn_style.color = @context.__theme.primary.color[1]
 				btn_style.background = @context.__theme.primary.inv[2]
 			else if focus
-				btn_style.color = @context.__theme.primary.color[0]
+				btn_style.color = @context.__theme.primary.color[1]
 				btn_style.background = @context.__theme.primary.inv[2]
 			else
 				btn_style.color = @context.__theme.primary.color[2]

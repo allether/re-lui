@@ -301,17 +301,21 @@ class Demo extends Component
 	setPrimaryColor: (e)=>
 		@setState
 			primary: e.target.value
+		# setTimeout @,0
 
 
 	setSecondaryColor: (e)=>
 		@setState
 			secondary: e.target.value
+		@setState()
 
 
 	onPresetSelect: (primary,secondary)=>
 		@setState
 			primary:primary
 			secondary: secondary
+		@setState()
+	
 	onListInput: (value)=>
 		@setState
 			list_value: value
@@ -331,17 +335,22 @@ class Demo extends Component
 			show_overlay_error: no
 
 	
+	refStyle: (e)=>
+		@_style = e
 
+	componentDidUpdate: (props,state)=>
+		if state.primary != @state.primary || @state.secondary != state.secondary
+			@forceUpdate()
+	
 	render: (props,state)->
 		h Style,
-			primary: state.primary
-			secondary: state.secondary
-			onSetStyle: (@primary,@secondary)=>
-				document.body.style.background = @primary.inv[0]
-				document.body.style.color = @primary.color[0]
-			
-			# tertiary: '#379CC6'
+			primary: state.primary #these should be accessed in child context (bad example)
+			secondary: state.secondary #these should be accessed in child context (bad example)
+			ref:@refStyle
 			h 'div',
+				style:
+					background: @_style?.primary.inv[0]
+					color: @_style?.primary.color[0]
 				className: 'app'
 				h AlertOverlay,
 					onClick: @hideOverlay

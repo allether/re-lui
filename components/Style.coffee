@@ -11,8 +11,8 @@ css = require './Style.less'
 class Style extends Component
 	constructor: ->
 		super()
-		@white = Color('#fff')
-		@black = Color('#000')
+		@white = Color('#F4F4F4')
+		@black = Color('#141414')
 		@false = Color('#FC0020')
 		@warn = Color('#E7BC08')
 		@true = Color('#21FF48')
@@ -31,31 +31,32 @@ class Style extends Component
 	
 
 
-	createPallet: (color,inv,color_factor,inv_factor)->
+	createPallet: (color,inv,factors)->
 		color_factor = color_factor || 1
 		inv_factor = inv_factor || 1
 
 		c = {}
 		c.color = [
 			color.hex()
-			color.mix(inv,.1*color_factor).hex()
-			color.mix(inv,.3*color_factor).hex()
-			color.mix(inv,.6*color_factor).hex()
-			color.mix(inv,.9*color_factor).hex()
+			color.mix(inv,factors.color[0]).hex()
+			color.mix(inv,factors.color[1]).hex()
+			color.mix(inv,factors.color[2]).hex()
+			color.mix(inv,factors.color[3]).hex()
 		]
 
 		c.inv = [
-			inv.mix(color,.02*inv_factor).hex()
-			inv.mix(color,.03*inv_factor).hex()
-			inv.mix(color,.04*inv_factor).hex()
-			inv.mix(color,.05*inv_factor).hex()
+			inv.hex()
+			inv.mix(color,factors.inv[0]).hex()
+			inv.mix(color,factors.inv[1]).hex()
+			inv.mix(color,factors.inv[2]).hex()
+			inv.mix(color,factors.inv[3]).hex()
 		]
 
 		return c
 
 
-	lightenPallet: (color,factor)=>
-		c = @createPallet(color,@white,factor || 1,1.5)
+	lightenPallet: (color,factors)=>
+		c = @createPallet(color,color.lighten(9.0),factors)
 		c.highlight = color.lighten(1).saturate(.85).hex()
 		c.true = color.lighten(1).mix(@true,0.7).hex();
 		c.false = color.lighten(1).mix(@false,0.7).hex();
@@ -63,8 +64,8 @@ class Style extends Component
 		return c
 
 
-	darkenPallet: (color,factor)->
-		c = @createPallet(color,@black,factor || 1,6)
+	darkenPallet: (color,factors)->
+		c = @createPallet(color,color.darken(.95),factors)
 		c.highlight = color.darken(0.5).saturate(.85).hex()
 		c.true = color.darken(0.5).mix(@true,0.7).hex();
 		c.false = color.darken(0.5).mix(@false,0.7).hex();
@@ -77,14 +78,14 @@ class Style extends Component
 		secondary_c = Color(props.secondary)
 
 		if primary_c.isLight()
-			@primary = @darkenPallet(primary_c)
+			@primary = @darkenPallet(primary_c,props.primary_factors)
 		else
-			@primary = @lightenPallet(primary_c)
+			@primary = @lightenPallet(primary_c,props.primary_factors)
 
 		if secondary_c.isLight()
-			@secondary = @darkenPallet(secondary_c,0.5)
+			@secondary = @darkenPallet(secondary_c,props.secondary_factors)
 		else
-			@secondary = @lightenPallet(secondary_c,1.5)
+			@secondary = @lightenPallet(secondary_c,props.secondary_factors)
 	
 
 
@@ -106,5 +107,11 @@ class Style extends Component
 Style.defaultProps = 
 	primary: '#18262a'
 	secondary: 'whitesmoke'
+	primary_factors: 
+		color: [.1,.3,.6,.9]
+		inv: [.05,.1,.3,.6]
+	secondary_factors: 
+		color: [.1,.3,.6,.9]
+		inv: [.05,.1,.3,.6]
 
 module.exports = Style
