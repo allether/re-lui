@@ -245,7 +245,7 @@ class MenuTab extends Component
 		bar_dir_x = if props.force_bar_dir_x? then props.force_bar_dir_x else bar_dir_x
 		bar_dir_y = if props.force_bar_dir_y? then props.force_bar_dir_y else bar_dir_y
 
-		if (split_y != @state.split_y || @state.bar_dir_x != bar_dir_x || split_y != @state.split_y || @state.bar_dir_x != bar_dir_x)
+		if (split_y != @state.split_y || @state.bar_dir_x != bar_dir_x || split_x != @state.split_x || @state.bar_dir_y != bar_dir_y)
 			# log 'force update',split_y != @state.split_y,@state.bar_dir_x != bar_dir_x,split_y != @state.split_y,@state.bar_dir_x != bar_dir_x
 			force_update = true
 
