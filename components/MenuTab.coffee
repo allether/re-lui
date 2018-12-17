@@ -237,14 +237,23 @@ class MenuTab extends Component
 			bar_dir_x = -1
 
 
-		if (split_y != @state.split_y || @state.bar_dir_x != bar_dir_x || split_y != @state.split_y || @state.bar_dir_x != bar_dir_x)
-			force_update = true
+		
 
 		@state.split_vert = split_vert
-		@state.split_x = if props.force_split_x? then props.force_split_x else split_x
-		@state.split_y = if props.force_split_y? then props.force_split_y else split_y
-		@state.bar_dir_x = if props.force_bar_dir_x? then props.force_bar_dir_x else bar_dir_x
-		@state.bar_dir_y = if props.force_bar_dir_y? then props.force_bar_dir_y else bar_dir_y
+		split_x = if props.force_split_x? then props.force_split_x else split_x
+		split_y = if props.force_split_y? then props.force_split_y else split_y
+		bar_dir_x = if props.force_bar_dir_x? then props.force_bar_dir_x else bar_dir_x
+		bar_dir_y = if props.force_bar_dir_y? then props.force_bar_dir_y else bar_dir_y
+
+		if (split_y != @state.split_y || @state.bar_dir_x != bar_dir_x || split_y != @state.split_y || @state.bar_dir_x != bar_dir_x)
+			# log 'force update',split_y != @state.split_y,@state.bar_dir_x != bar_dir_x,split_y != @state.split_y,@state.bar_dir_x != bar_dir_x
+			force_update = true
+
+		@state.split_x = split_x
+		@state.split_y = split_y
+		@state.bar_dir_x = bar_dir_x
+		@state.bar_dir_y = bar_dir_y
+		
 		@state.z_index = (@context.level+1)*100
 		
 		@state.bar_children_split_vert = bar_children_split_vert
@@ -288,6 +297,8 @@ class MenuTab extends Component
 		else if !@state.render_children && @props.children.length
 			@state.skipped_last_children_render = true
 		
+		
+		# log @state.hide_rendered_children
 		if force_update
 			
 			@state.hide_rendered_children = true
