@@ -297,10 +297,9 @@ class MenuTab extends Component
 		else if !@state.render_children && @props.children.length
 			@state.skipped_last_children_render = true
 		
-		log 'update'
+		# log 'update'
 		# log @state.hide_rendered_children
 		if force_update
-			
 			@state.hide_rendered_children = true
 			setTimeout @forceUpdate.bind(@),0
 
