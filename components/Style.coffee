@@ -1,12 +1,13 @@
 Color = require 'color'
-{Component} = require 'preact'
 require 'normalize.css'
 css = require './Style.less'
-
+{createElement,Component,createContext} = require 'react'
+global.h = createElement
+global.Component = Component
 
 # class Pallet extends Component
 # 	constructor: ->
-
+global.StyleContext = createContext({})
 
 class Style extends Component
 	constructor: ->
@@ -22,13 +23,6 @@ class Style extends Component
 	componentWillMount: ->
 		@renderStyle(@props)
 
-
-	getChildContext: =>
-		__theme:
-			primary: @primary
-			secondary: @secondary
-
-	
 
 
 	createPallet: (color,inv,factors)->
@@ -86,7 +80,10 @@ class Style extends Component
 			@secondary = @darkenPallet(secondary_c,props.secondary_factors)
 		else
 			@secondary = @lightenPallet(secondary_c,props.secondary_factors)
-	
+		
+		@_theme = 
+			primary: @primary
+			secondary: @secondary
 
 
 	componentWillUpdate: (props,state)->
@@ -101,8 +98,11 @@ class Style extends Component
 
 
 
-	render: (props)->
-		return props.children[0]
+	render: ->
+		h StyleContext.Provider,
+			value: @_theme
+			@props.children
+
 
 Style.defaultProps = 
 	primary: '#18262a'
@@ -115,5 +115,7 @@ Style.defaultProps =
 	secondary_factors: 
 		color: [.1,.3,.6,.9]
 		inv: [.05,.1,.15,.25]
+
+
 
 module.exports = Style

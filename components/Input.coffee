@@ -1,9 +1,8 @@
 css = require './Style.less'
 cn = require 'classnames'
 Color = require 'color'
-Slide = require 'preact-slide'
+Slide = require 're-slide'
 AlertDot = require './AlertDot.coffee'
-{h,Component} = require 'preact'
 require './MaterialIcons.css'
 
 
@@ -11,11 +10,12 @@ class Input extends Component
 	constructor: (props)->
 		super(props)
 		@state=
-			value: null
+			value: ''
 		if props.type == 'color'
 			@state.is_dark = Color(props.value).isDark()
 		@list = []
 	onInput: (e)=>
+		# log e
 		if !@props.onInput
 			return @setState
 				value: e.target.value
@@ -87,7 +87,7 @@ class Input extends Component
 		focus = (state.focus) || state.hover
 		# if props.type == 'label'
 		# 	focus = false
-
+		# log focus
 		if props.focus?
 			focus = props.focus
 
@@ -103,36 +103,36 @@ class Input extends Component
 		
 		if props.btn_type == 'primary'
 			if select
-				btn_style.color = @context.__theme.secondary.inv[0]
-				btn_style.background = @context.__theme.secondary.color[0]
+				btn_style.color = @context.secondary.inv[0]
+				btn_style.background = @context.secondary.color[0]
 			else if focus
-				btn_style.color = @context.__theme.secondary.inv[0]
-				btn_style.background = @context.__theme.secondary.color[0]
+				btn_style.color = @context.secondary.inv[0]
+				btn_style.background = @context.secondary.color[0]
 			else
-				btn_style.color = @context.__theme.secondary.inv[2]
-				btn_style.background = @context.__theme.secondary.color[1]
+				btn_style.color = @context.secondary.inv[2]
+				btn_style.background = @context.secondary.color[1]
 		
 		else if props.btn_type == 'flat'
 			if select
-				btn_style.color = @context.__theme.primary.color[0]
-				btn_style.background = @context.__theme.primary.inv[1]
+				btn_style.color = @context.primary.color[0]
+				btn_style.background = @context.primary.inv[1]
 			else if focus
-				btn_style.color = @context.__theme.primary.color[0]
-				btn_style.background = @context.__theme.primary.inv[1]
+				btn_style.color = @context.primary.color[0]
+				btn_style.background = @context.primary.inv[1]
 			else
-				btn_style.color = @context.__theme.primary.color[1]
-				btn_style.background = @context.__theme.primary.inv[0]			
+				btn_style.color = @context.primary.color[1]
+				btn_style.background = @context.primary.inv[0]			
 		
 		else
 			if select
-				btn_style.color = @context.__theme.primary.color[1]
-				btn_style.background = @context.__theme.primary.inv[2]
+				btn_style.color = @context.primary.color[1]
+				btn_style.background = @context.primary.inv[2]
 			else if focus
-				btn_style.color = @context.__theme.primary.color[1]
-				btn_style.background = @context.__theme.primary.inv[2]
+				btn_style.color = @context.primary.color[1]
+				btn_style.background = @context.primary.inv[2]
 			else
-				btn_style.color = @context.__theme.primary.color[2]
-				btn_style.background = @context.__theme.primary.inv[1]
+				btn_style.color = @context.primary.color[2]
+				btn_style.background = @context.primary.inv[1]
 
 		if props.center
 			btn_style.justifyContent = 'center'
@@ -147,20 +147,20 @@ class Input extends Component
 
 		btn_style = {}
 		if props.btn_type == 'primary'
-			btn_style.color = @context.__theme.secondary.inv[0]
-			btn_style.background = @context.__theme.secondary.color[2]
+			btn_style.color = @context.secondary.inv[0]
+			btn_style.background = @context.secondary.color[2]
 		
 	
 		else if props.btn_type == 'flat'
 			
-			btn_style.color = @context.__theme.primary.color[0]
-			btn_style.background = @context.__theme.primary.inv[2]
+			btn_style.color = @context.primary.color[0]
+			btn_style.background = @context.primary.inv[2]
 				
 		
 		else
 			
-			btn_style.color = @context.__theme.primary.inv[0]
-			btn_style.background = @context.__theme.primary.color[2]
+			btn_style.color = @context.primary.inv[0]
+			btn_style.background = @context.primary.color[2]
 
 
 		return btn_style
@@ -170,26 +170,26 @@ class Input extends Component
 		select = props.select
 		focus = (state.focus) || state.hover
 		if props.i_type == 'primary'
-			i_style.color = @context.__theme.secondary.color[0]
+			i_style.color = @context.secondary.color[0]
 		else if props.i_type == 'highlight'
-			i_style.color = @context.__theme.secondary.highlight
+			i_style.color = @context.secondary.highlight
 		else
 			if props.btn_type == 'primary'
 				if focus || select
-					i_style.color = @context.__theme.secondary.inv[0]
+					i_style.color = @context.secondary.inv[0]
 				else
-					i_style.color = @context.__theme.secondary.inv[2]
+					i_style.color = @context.secondary.inv[2]
 				
 			else if props.btn_type == 'flat'
 				if focus || select
-					i_style.color = @context.__theme.primary.color[2]
+					i_style.color = @context.primary.color[2]
 				else
-					i_style.color = @context.__theme.primary.color[3]
+					i_style.color = @context.primary.color[3]
 			else
 				if focus || select
-					i_style.color = @context.__theme.primary.color[0]
+					i_style.color = @context.primary.color[0]
 				else
-					i_style.color = @context.__theme.primary.color[1]
+					i_style.color = @context.primary.color[1]
 		
 		return i_style
 
@@ -200,28 +200,28 @@ class Input extends Component
 		bar_style = {}
 		if !value
 			if props.required && !props.value
-				bar_style.background = @context.__theme.secondary.warn
+				bar_style.background = @context.secondary.warn
 			else if props.btn_type == 'primary'
-				bar_style.background = @context.__theme.secondary.color[0]
+				bar_style.background = @context.secondary.color[0]
 			else if props.btn_type == 'flat'
-				bar_style.background = @context.__theme.primary.inv[1]
+				bar_style.background = @context.primary.inv[1]
 			else
-				bar_style.background = @context.__theme.primary.inv[2]
+				bar_style.background = @context.primary.inv[2]
 			
 		else if props.invalid == true || props.is_valid == false
-			bar_style.background = @context.__theme.secondary.false
+			bar_style.background = @context.secondary.false
 		else if props.invalid == false || props.is_valid == true
-			bar_style.background = @context.__theme.secondary.true
+			bar_style.background = @context.secondary.true
 		else if props.color == 'color'
 			bar_style.background = props.value
 		else
 			if props.btn_type == 'primary'
-				bar_style.background = @context.__theme.secondary.inv[0]
+				bar_style.background = @context.secondary.inv[0]
 			else if props.btn_type == 'flat'
-				bar_style.background = @context.__theme.primary.color[1]
+				bar_style.background = @context.primary.color[1]
 			else
 				
-				bar_style.background = @context.__theme.primary.color[2]
+				bar_style.background = @context.primary.color[2]
 
 		if (!props.label || props.top_label) && !props.i 
 			bar_style.marginLeft = 0
@@ -244,6 +244,7 @@ class Input extends Component
 			if @props.chipRenderer
 				item = @props.chipRenderer(item)
 			h 'div',
+				key: 'chip-'+i
 				className: css['chip']
 				# onClick: @removeChip.bind(@,i)
 				style: chip_style
@@ -253,10 +254,20 @@ class Input extends Component
 		return items
 
 
+	render: ->
+		return h MenuTabContext.Consumer,{},(value)=>
+			# log value
+			if value == true
+				@state.focus = true
+
+			# log @state.reveal
+			@renderInput()
 
 
-
-	render: (props,state)->
+	renderInput: ->
+		# log 'render input'
+		props = @props
+		state = @state
 		value = if props.value? then props.value else state.value
 		select = props.select
 		focus = state.focus || state.hover || select
@@ -275,18 +286,18 @@ class Input extends Component
 
 		if props.type == 'checkbox'
 			toggle_bar_on_style = 
-				background: @context.__theme.secondary.true
+				background: @context.secondary.true
 			toggle_bar_off_style = 
-				background: @context.__theme.secondary.false
+				background: @context.secondary.false
 			if props.btn_type == 'primary'
 				toggle_bar_style = 
-					background: @context.__theme.secondary.color[0]
+					background: @context.secondary.color[0]
 			else if props.btn_type == 'flat'
 				toggle_bar_style = 
-					background: @context.__theme.primary.inv[1]
+					background: @context.primary.inv[1]
 			else
 				toggle_bar_style = 
-					background: @context.__theme.primary.inv[2]
+					background: @context.primary.inv[2]
 			
 			toggle = h Slide,
 				width: 30
@@ -334,7 +345,7 @@ class Input extends Component
 		if props.label
 			label = h 'div',
 				style:
-					color: props.top_label && @context.__theme.primary.color[0] || undefined
+					color: props.top_label && @context.primary.color[0] || undefined
 				className: cn(value && css['label-opaque'],css['label'],props.top_label && css['top-label'])
 				props.label
 
@@ -380,16 +391,17 @@ class Input extends Component
 		# if props.type == 'select'
 
 		if props.type != 'button' && props.type != 'label'
-			self_input_props = 
+			input_props = 
 				className: input_hidden && css['hidden']
 				onKeyDown: @onKeyDown
-				onInput: @onInput
+				onChange: @onInput
 				ref: @inputRef
+				placeholder: @props.placeholder
 				onFocus: @onFocus
 				onBlur: @onBlur
 				value: value
 		
-			input_props = Object.assign {},props,self_input_props
+			# input_props = Object.assign {},props,self_input_props
 
 			if props.type == 'button'
 				input_props.style = cursor: 'pointer'
@@ -402,8 +414,9 @@ class Input extends Component
 				input = h 'textarea',input_props
 			else if props.type == 'select'
 				input = h 'select',input_props,
-					props.options?.map (opt)->
+					props.options?.map (opt,i)->
 						h 'option',
+							key: i
 							value: opt
 							opt
 			else
@@ -416,8 +429,7 @@ class Input extends Component
 		# if props.invalid || props.is_valid == false
 		# 	alert = h AlertDot,
 		# 		error: yes
-
-
+		
 
 		h (props.href && 'a' || 'div'),
 			onClick: @onClick
@@ -438,7 +450,7 @@ class Input extends Component
 			props.children
 
 
-
+Input.contextType = StyleContext
 Input.defaultProps = 
 	type: 'text'
 	btn_type: 'default'

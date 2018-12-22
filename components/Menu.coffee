@@ -1,8 +1,11 @@
-{h,render,Component} = require 'preact'
 css = require './Style.less'
 Bar = require './Bar.coffee'
 Color = require 'color'
+{createContext} = require 'react'
 # Overlay = require './Overlay.coffee'
+
+MenuContext = createContext({})
+global.MenuContext = MenuContext
 
 class Menu extends Component
 	constructor: (props)->
@@ -12,18 +15,17 @@ class Menu extends Component
 			height: 0
 			tab_branch: []
 			backdrop_color: props.backdrop_color || '#000'
-	
+		
+		
 
 	
-	getChildContext: =>
+	getContext: =>
 		onContextTabReveal: @onContextTabReveal
 		backdrop_color: @props.backdrop_color || @state.backdrop_color
-		clearTabBranch: @clearTabBranch
 		spliceTabBranch: @spliceTabBranch
 		onClickBackdrop: @props.onClickBackdrop
 		tab_branch: @state.tab_branch
 		alternate: @props.alternate
-		selectedTabClassName: @props.selectedTabClassName
 		vert: @props.vert
 		render_unrevealed_children: @props.render_unrevealed_children || false
 		bounding_box: @props.bounding_box
@@ -39,8 +41,12 @@ class Menu extends Component
 		force_split_y: @props.force_split_y
 	
 	spliceTabBranch: (tab)=>
-		@state.tab_branch.splice(@state.tab_branch.indexOf(tab))
-		@setState()
+		tab_i = @state.tab_branch.indexOf(tab)
+
+		if tab_i < 0
+			return
+		@state.tab_branch.splice(tab_i)
+		@forceUpdate()
 
 	# componentWillUpdate: (props,state)->
 	# 	if props.backdrop_color != @props.backdrop_color
@@ -62,7 +68,7 @@ class Menu extends Component
 
 	clearTabBranch: (e)=>
 		@state.tab_branch.length = 0
-		@setState()
+		@forceUpdate()
 
 
 	onContextTabReveal: (tab_branch,e)=>
@@ -70,24 +76,25 @@ class Menu extends Component
 			tab_branch: tab_branch
 
 
-	render: (props)->
+	render: ->
 
 		bar_style = {}
 
-		if props.fixed
-			bar_style.left = props.left
-			bar_style.top = props.top
+		if @props.fixed
+			bar_style.left = @props.left
+			bar_style.top = @props.top
 			bar_style.position = 'fixed'
-		if props.style
-			Object.assign bar_style,props.style
-		
-		h Bar,
-			vert: props.vert
-			big: props.big
-			style: bar_style
-			className: props.className
-			props.children
-			# backdrop
+		if @props.style
+			Object.assign bar_style,@props.style
+		h MenuContext.Provider,
+			value: @getContext()
+			h Bar,
+				vert: @props.vert
+				big: @props.big
+				style: bar_style
+				className: @props.className
+				@props.children
+				# backdrop
 
 		
 Menu.defaultProps = 
@@ -101,5 +108,7 @@ Menu.defaultProps =
 	bar_dir_y: 1
 	bounding_box: {x:0,y:0,width:Infinity,height:Infinity}
 	show_backdrop: undefined
+
+Menu.contextType = StyleContext
 
 module.exports = Menu

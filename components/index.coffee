@@ -1,5 +1,4 @@
 module.exports = 
-	Header : require './Header.coffee'
 	Bar : require './Bar.coffee'
 	Input : require './Input.coffee'
 	Menu : require './Menu.coffee'

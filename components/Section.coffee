@@ -1,25 +1,23 @@
-{h} = require 'preact'
 css = require './Style.less'
 cn = require 'classnames'
-class Section
-	render: (props)->
-		section_props = Object.assign props,
-			className: cn(css['section'],props.className)
-		title = section_props.title
-		delete section_props.title
-		h 'div',section_props,
+class Section extends Component
+	render: ->
+		h 'div',
+			className: cn(css['section'],@props.className)
+			style: @props.style
 			h 'h2',
 				className: css['section-title']
 				style:
 					opacity: 0.7
-					color: @context.__theme.primary.color[2]
-				title
+					color: @context.primary.color[2]
+				@props.title
 				h 'div',
 					className: css['section-title-bar']
 					style:
-						background: @context.__theme.primary.inv[1]
+						background: @context.primary.inv[1]
 						
 			h 'div',
-				className: cn(css['section-content'],props.contentClassName)
-				props.children
+				className: cn(css['section-content'],@props.contentClassName)
+				@props.children
+Section.contextType = StyleContext
 module.exports = Section

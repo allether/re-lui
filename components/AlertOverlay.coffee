@@ -1,9 +1,8 @@
 Overlay = require './Overlay.coffee'
-{Component,h} = require 'preact'
-Slide = require 'preact-slide'
+Slide = require 're-slide'
 cn = require 'classnames'
 css = require './Style.less'
-
+# log StyleContext
 class AlertOverlay extends Component
 	constructor: (props)->
 		super(props)
@@ -24,28 +23,28 @@ class AlertOverlay extends Component
 
 		
 
-	render: (props,state)->
-
-		if state.show_alert
+	render: ->
+		# log @context
+		if @state.show_alert
 			slide_pos = 1
 		else
 			slide_pos = 0
 
 		if @state.alert_type == 'error' 
-			alert_bg = @context.__theme.primary.false
+			alert_bg = @context.primary.false
 		else if @state.alert_type == 'success'
-			alert_bg = @context.__theme.primary.true
+			alert_bg = @context.primary.true
 		else
-			alert_bg = @context.__theme.primary.inv[0]
+			alert_bg = @context.primary.inv[0]
 		alert_color = 'white'
 		
 		h Overlay,
-			onClick: props.onClick
-			visible: props.visible
-			initial_visible: props.initial_visible
-			style: props.style
-			transparent: props.transparent
-			backdrop_color: props.backdrop_color
+			onClick: @props.onClick
+			visible: @props.visible
+			initial_visible: @props.initial_visible
+			style: @props.style
+			transparent: @props.transparent
+			backdrop_color: @props.backdrop_color
 			h Slide,
 				className: css['overlay-slide']
 				slide: yes
@@ -55,16 +54,16 @@ class AlertOverlay extends Component
 				h Slide,
 					beta: 100
 					center: yes
-					props.children || null
+					@props.children || null
 				h Slide,
 					height: 40
 					className: css['overlay-alert']
-					onClick: props.onClick
+					onClick: @props.onClick
 					style:
 						background: alert_bg
 						color: alert_color
 					center: yes
 					@state.message
 
-
+AlertOverlay.contextType = StyleContext
 module.exports = AlertOverlay

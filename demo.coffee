@@ -1,4 +1,10 @@
-{render,h,Component} = require 'preact'
+{render} = require 'react-dom'
+
+
+{createElement,Component} = require 'react'
+global.h = createElement
+global.Component = Component
+{render} = require 'react-dom'
 
 window.log = console.log.bind(console)
 Style = require './components/Style.coffee'
@@ -30,7 +36,7 @@ class MenuSection extends Component
 			x: 0
 			y: 0 
 	shouldComponentUpdate: (props,state)->
-		_c = @context.__theme.primary.color[0] + '-' + @context.__theme.secondary.color[0]
+		_c = @context.primary.color[0] + '-' + @context.secondary.color[0]
 		if @_c != _c
 			@_c = _c
 			return true
@@ -67,7 +73,9 @@ class MenuSection extends Component
 
 	
 
-	render: (props,state)->
+	render: ->
+		state = @state
+		props = @props
 		h Section,
 			title: 'menu'
 			h 'p',{},'menus are a mix of vertical and horizontal bars with a variety of options. `render_hidden` controls whether hidden tabs are rendered into the DOM which is needed for fixed menus to make sure that menu options do not overflow the allowed space'
@@ -197,7 +205,7 @@ class MenuSection extends Component
 				top: @state.y
 				style:
 					zIndex: state.toggle_drag && 999 || 'initial'
-				big: props.big
+				big: @props.big
 				split_y: -1
 				split_x: 1
 				bounding_box: document.body.getBoundingClientRect()
@@ -251,15 +259,16 @@ class MenuSection extends Component
 					height: '200px'
 					width: '100%'
 
+MenuSection.contextType = StyleContext
 
 
 class SelectPresetButton extends Component
-	render: (props)->
+	render: ->
 		h 'div',
 			className: css['color-preset-button-wrap']
 			h Input,
 				type: 'button'
-				select: props.select
+				select: @props.select
 				onClick: =>
 					@props.onPresetSelect(@props.primary,@props.secondary) 
 				label: 'select'
@@ -267,10 +276,10 @@ class SelectPresetButton extends Component
 				className: css['color-preset-button']
 				h 'div',
 					style: 
-						background: props.primary
+						background: @props.primary
 				h 'div',
 					style: 
-						background: props.secondary
+						background: @props.secondary
 
 
 
@@ -346,7 +355,10 @@ class Demo extends Component
 		if state.primary != @state.primary || @state.secondary != state.secondary
 			@forceUpdate()
 	
-	render: (props,state)->
+	render: ()->
+		# log 'render'
+		state = @state
+		props = @props
 		h Style,
 			primary: state.primary #these should be accessed in child context (bad example)
 			secondary: state.secondary #these should be accessed in child context (bad example)
@@ -749,4 +761,4 @@ class Demo extends Component
 
 
 
-render(h(Demo),document.body)
+render(h(Demo),window.demo)

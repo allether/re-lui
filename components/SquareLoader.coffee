@@ -1,4 +1,3 @@
-{h} = require 'preact'
 css = require './Style.less'
 cn = require 'classnames'
 class SquareLoader

@@ -1,7 +1,11 @@
-{h,Component} = require 'preact'
 Bar = require './Bar.coffee'
 css = require './Style.less'
 Overlay = require './Overlay.coffee'
+{createContext} = require 'react'
+
+
+MenuTabContext = createContext()
+global.MenuTabContext = MenuTabContext
 class MenuTab extends Component
 	constructor: (props)->
 		super(props)
@@ -11,10 +15,15 @@ class MenuTab extends Component
 			# show_backdrop: false
 
 
-
-	
-
-	getChildContext: ->
+	getContext: ->
+		onContextTabReveal: @context.onContextTabReveal
+		spliceTabBranch: @context.spliceTabBranch
+		onClickBackdrop: @context.onClickBackdrop
+		backdrop_color: @context.backdrop_color
+		alternate: @context.alternate
+		render_unrevealed_children: if @props.render_unrevealed_children? then @props.render_unrevealed_children else @context.render_unrevealed_children
+		bounding_box: if @props.bounding_box? then @props.bounding_box else @context.bounding_box
+		big: if @props.big? then @props.big else @context.big
 		vert: @getBarSplitVert(@props)
 		onContextTabReveal: @onContextTabReveal
 		tab_branch: @context.tab_branch
@@ -23,6 +32,8 @@ class MenuTab extends Component
 		bar_dir_y: @state.bar_dir_y
 		split_x: @state.split_x
 		split_y: @state.split_y
+		force_split_x: if @props.force_split_x? then @props.force_split_x else @context.force_split_x
+		force_split_y: if @props.force_split_y? then @props.force_split_y else @context.force_split_y
 		hover_reveal_enabled: if @props.hover_reveal_enabled? then @props.hover_reveal_enabled else @context.hover_reveal_enabled
 		click_reveal_enabled: if @props.click_reveal_enabled? then @props.click_reveal_enabled else @context.click_reveal_enabled
 		big: if @props.big? then @props.big else @context.big
@@ -51,8 +62,8 @@ class MenuTab extends Component
 		@context.tab_branch.length = 0
 		@context.tab_branch[0] = @
 		@context.onContextTabReveal(@context.tab_branch,e)
-		e.preventDefault()
-		e.stopPropagation()
+		# e.preventDefault()
+		# e.stopPropagation()
 		return false
 	
 
@@ -76,15 +87,16 @@ class MenuTab extends Component
 		@props.onMouseEnter?(e)
 		# log @context.hover_reveal_enabled,@state.reveal
 		if @props.hover_reveal_enabled == false
-			return
+			return false
 
 		if @context.hover_reveal_enabled && @state.reveal
-			return
+			return false
 
-		if !@state.reveal
-			@revealSelfTab(e)
+		if !@state.reveal && @props.children
+			return @revealSelfTab(e)
+	
 		
-		return false
+		# return false
 
 	onClickBackdrop: (e)=>
 		if @props.onClickBackdrop
@@ -97,8 +109,10 @@ class MenuTab extends Component
 	
 
 	onTabMouseLeave: (e)=>
+		# log 'mouse leave'
 		@props.onMouseLeave?(e)
 		if (@props.hover_reveal_enabled == false || @context.hover_reveal_enabled == false) || (@props.click_reveal_enabled || @context.click_reveal_enabled) || @props.reveal?
+			# log 'ret'
 			return
 
 		@context.spliceTabBranch(@)
@@ -107,6 +121,7 @@ class MenuTab extends Component
 	getFullBoundingBoxOverflowBounds: (rr)->
 		split_vert = !@context.vert
 		bb = @props.bounding_box || @context.bounding_box
+		# log bb,rr
 		rr.top = rr.top - bb.y
 		rr.bottom = rr.bottom - (bb.y+bb.height)
 		rr.left = rr.left - bb.x
@@ -118,6 +133,7 @@ class MenuTab extends Component
 		split_vert = !@context.vert
 		rr = {}
 		rect = @base?.getBoundingClientRect()
+		# log rect
 		if !rect
 			return rr
 		
@@ -165,8 +181,6 @@ class MenuTab extends Component
 			else
 				rr.top -= ch - rect.height
 
-		
-
 		return rr
 
 
@@ -186,7 +200,8 @@ class MenuTab extends Component
 		if @context.reveal == false
 			@state.reveal = false
 			return
-	
+
+
 	getBarSplitVert: (props)->
 		if props.vert?
 			split_vert = props.vert
@@ -214,7 +229,7 @@ class MenuTab extends Component
 
 	
 		ob = @getFullBoundingBoxOverflowBounds(@getFullBoundingBox(split_x,split_y,bar_dir_x,bar_dir_y))
-
+		# log ob
 
 		if split_y > 0 && ob.bottom > 0 && split_vert
 			split_y = -1
@@ -261,6 +276,7 @@ class MenuTab extends Component
 		@state.render_unrevealed_children = if props.render_unrevealed_children? then props.render_unrevealed_children else @context.render_unrevealed_children
 		@state.hover_reveal_enabled = if props.hover_reveal_enabled? then props.hover_reveal_enabled else @context.hover_reveal_enabled
 		
+		# log @state.hover_reveal_enabled
 		if @state.render_unrevealed_children || @state.reveal
 			@state.render_children = true
 		else
@@ -284,7 +300,7 @@ class MenuTab extends Component
 			else
 				@state.backdrop_visible = false
 
-		if !props.children.length
+		if !props.children
 			@state.hide_rendered_children = false
 			return
 		@state.hide_rendered_children = false
@@ -294,7 +310,7 @@ class MenuTab extends Component
 		if @state.skipped_last_children_render && @state.render_children
 			@state.skipped_last_children_render = false
 			force_update = true
-		else if !@state.render_children && @props.children.length
+		else if !@state.render_children && @props.children
 			@state.skipped_last_children_render = true
 		
 		# log 'update'
@@ -303,18 +319,20 @@ class MenuTab extends Component
 			@state.hide_rendered_children = true
 			setTimeout @forceUpdate.bind(@),0
 
+	baseRef: (el)=>
+		@base = el
+		# log @base
 
-
-	render: (props,state)->
+	render: ->
+		props = @props
+		state = @state
 		if @state.backdrop_visible 
 			@state.z_index = (@context.level+1)*100 + 10000
 		else
 			@state.z_index = (@context.level+1)*100
 
 		reveal = state.reveal
-		if props.children.length && !props.disabled && props.content
-			if props.content.attributes && !(props.content.attributes.select?)
-				props.content.attributes.select = state.reveal
+		
 		backdrop = null
 		if @state.backdrop_visible
 			backdrop = h Overlay,
@@ -327,10 +345,11 @@ class MenuTab extends Component
 
 		if !@state.render_children
 			return h 'div',
+				ref: @baseRef
 				style: Object.assign({zIndex: @state.z_index},props.tab_style)
 				className: css['tab-wrapper'] + ' ' + (props.className || '')
-				onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave
-				onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter
+				onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave || undefined
+				onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter || undefined
 				onClick: @onTabClick
 				props.content
 				backdrop
@@ -375,15 +394,16 @@ class MenuTab extends Component
 		else
 			bar_style.visible = 'visible'
 
-
-		bar = h Bar,
-			big: if props.big? then props.big else @context.big
-			className: css['menu-bar']
-			ref: @childContainer
-			vert: @state.bar_children_split_vert
-			style: bar_style
-			props.children
-
+	
+		bar = h MenuContext.Provider,
+			value: @getContext()
+			h Bar,
+				big: if props.big? then props.big else @context.big
+				className: css['menu-bar']
+				ref: @childContainer
+				vert: @state.bar_children_split_vert
+				style: bar_style
+				props.children
 
 		
 		tab_style = {}
@@ -394,15 +414,19 @@ class MenuTab extends Component
 		tab_style.flexDirection = flex_dir
 		
 		h 'div',
+			ref: @baseRef
 			className: css['tab-wrapper'] + ' ' + (props.className || '')
-			onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave
-			onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter
+			onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave || undefined
+			onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter || undefined
 			onClick: @onTabClick
 			onKeyDown: @props.onKeyDown
 			style: tab_style
-			props.content
+			h MenuTabContext.Provider,
+				value: reveal
+				props.content
 			bar
 			backdrop
 
 # MenuTab.defaultProps = 
+MenuTab.contextType = MenuContext
 module.exports = MenuTab
