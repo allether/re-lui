@@ -1,5 +1,7 @@
 css = require './Style.less'
 cn = require 'classnames'
+{StyleContext} = require './Style.coffee'
+
 class Section extends Component
 	render: ->
 		h 'div',

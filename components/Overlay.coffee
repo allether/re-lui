@@ -1,6 +1,7 @@
 cn = require 'classnames'
 Color = require 'color'
 css = require './Style.less'
+{StyleContext} = require './Style.coffee'
 
 class Overlay extends Component
 	constructor: (props)->

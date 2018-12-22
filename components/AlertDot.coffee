@@ -1,5 +1,6 @@
 css = require './Style.less'
 cn = require 'classnames'
+{StyleContext} = require './Style.coffee'
 
 
 class AlertDot extends Component

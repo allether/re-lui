@@ -7,7 +7,7 @@ global.Component = Component
 {render} = require 'react-dom'
 
 window.log = console.log.bind(console)
-Style = require './components/Style.coffee'
+{StyleContext,Style} = require './components/Style.coffee'
 AlertDot = require './components/AlertDot.coffee'
 Input = require './components/Input.coffee'
 Menu = require './components/Menu.coffee'

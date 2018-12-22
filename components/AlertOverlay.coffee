@@ -1,6 +1,8 @@
 Overlay = require './Overlay.coffee'
 Slide = require 're-slide'
 cn = require 'classnames'
+{StyleContext} = require './Style.coffee'
+
 css = require './Style.less'
 # log StyleContext
 class AlertOverlay extends Component

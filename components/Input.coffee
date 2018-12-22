@@ -3,6 +3,8 @@ cn = require 'classnames'
 Color = require 'color'
 Slide = require 're-slide'
 AlertDot = require './AlertDot.coffee'
+{StyleContext} = require './Style.coffee'
+
 require './MaterialIcons.css'
 
 
@@ -63,7 +65,7 @@ class Input extends Component
 			
 
 	onClick: (e)=>
-		log @_input
+		# log @_input
 		@_input?.click()
 		@_input?.focus()
 		@props.onClick?(e)

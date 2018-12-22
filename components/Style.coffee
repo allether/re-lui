@@ -7,7 +7,7 @@ global.Component = Component
 
 # class Pallet extends Component
 # 	constructor: ->
-global.StyleContext = createContext({})
+StyleContext = createContext({})
 
 class Style extends Component
 	constructor: ->
@@ -118,4 +118,4 @@ Style.defaultProps =
 
 
 
-module.exports = Style
+module.exports = {Style,StyleContext}

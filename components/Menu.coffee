@@ -2,6 +2,8 @@ css = require './Style.less'
 Bar = require './Bar.coffee'
 Color = require 'color'
 {createContext} = require 'react'
+{StyleContext} = require './Style.coffee'
+
 # Overlay = require './Overlay.coffee'
 
 MenuContext = createContext({})
