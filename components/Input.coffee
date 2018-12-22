@@ -366,6 +366,8 @@ class Input extends Component
 			if props.value
 				label2 = h 'div',
 					className: cn css['label'],css['label-2']
+					style:
+						opacity: 1
 					props.value.length && (props.value.length + ' files') || props.value.name
 			else
 				label2 = h 'div',
