@@ -1,7 +1,7 @@
 {
   "name": "re-lui",
   "version": "0.3.0",
-  "description": "not so generic collection of general purpose preact ui components",
+  "description": "basic react web ui components",
   "main": "./dist/index.js",
   "scripts": {
     "client-dev": "webpack-dev-server --config ./scripts/demo.config.js --mode development",
