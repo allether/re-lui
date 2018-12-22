@@ -98,7 +98,7 @@ class Input extends Component
 			focus = false
 			btn_style.cursor = 'default'
 		
-		if props.type == 'button'
+		if props.type == 'button' || props.type == 'file'
 			btn_style.cursor = 'pointer'
 		
 		if props.btn_type == 'primary'
@@ -350,10 +350,27 @@ class Input extends Component
 					props.value
 
 
-		if props.type == 'list'
+		else if props.type == 'list'
 			chips = @renderChips(props,state)
 			# log @state.list_value
 			value = @state.list_value
+
+		else if props.type == 'file'
+			if props.value
+				label2 = h 'div',
+					className: cn css['label'],css['label-2']
+					props.value.length && (props.value.length + ' files') || props.value.name
+			else
+				label2 = h 'div',
+					className: cn css['label'],css['label-2']
+					style:
+						color: @context.__theme.primary.color[3]
+					'browse or drop file'
+			alert = h 'div',
+				className: cn 'material-icons',css['overlay-icon']
+				style:
+					color: @context.__theme.primary.inv[3]
+				'play_for_work'
 
 		# if props.type == 'select'
 
@@ -414,6 +431,7 @@ class Input extends Component
 			input
 			color_circle
 			alert
+			label2
 			props.children
 
 

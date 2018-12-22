@@ -232,14 +232,37 @@ a{
 		// height: auto;
 		vertical-align: middle;
     	line-height: normal;
+    	position: relative;
 		min-width: 100px;
 		&.hidden{
 			min-width: 0px;
 			height: 0;
 		}
+		&[type="file"]{
+			width: 100%;
+			cursor: pointer;
+			// z-index: 2;
+			/* visibility: hidden; */
+			height: 100%;
+			left: 0;
+			top: 0;
+			position: absolute;
+			opacity: 0;
+			-webkit-appearance: none;
+		}
+	}
+	.label-2{
+		// font-weight: 600;
+		padding-right: 20px;
 	}
 	select{
 		cursor: pointer;
+	}
+	.overlay-icon{
+		position: absolute;
+		right: 0;
+		top: 0;
+		padding: 3px;
 	}
 
 	::placeholder{

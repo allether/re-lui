@@ -177,6 +177,10 @@ class MenuSection extends Component
 								label: 'tab 3.b.b'
 								type: 'button'
 								i: 'chat'
+			
+
+
+
 			h 'p',{},'the menu below is a fixed menu. click and drag the drag button to drag the menu around the screen and see how it responds.'
 			h Input,
 				type: 'checkbox'
@@ -586,6 +590,32 @@ class Demo extends Component
 						label: 'Messsage:'
 						bar: yes
 						placeholder: 'type text...'
+				h Section,
+					title: 'input files with a custom drag and drop area.'
+					h Input,
+						type: 'file'
+						style: 
+							minWidth: '300px'
+							padding: '40px'
+						onInput: (e)=>
+							@setState
+								file_value: e.target.files[0]
+						# checked: state.toggle_drag
+						label: 'input file'
+						value: @state.file_value
+						bar: yes
+						i: 'work'
+					h 'p',{}
+					h Input,
+						type: 'file'
+						onInput: (e)=>
+							@setState
+								file_value2: e.target.files[0]
+						# checked: state.toggle_drag
+						label: 'some label'
+						value: @state.file_value2
+						# bar: yes
+						i: 'business'
 				h Section,
 					title: 'select type input'
 					h Input,
