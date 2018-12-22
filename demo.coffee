@@ -604,6 +604,7 @@ class Demo extends Component
 						label: 'input file'
 						value: @state.file_value
 						bar: yes
+						is_valid: no
 						i: 'work'
 					h 'p',{}
 					h Input,
