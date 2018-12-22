@@ -321,6 +321,12 @@ pre{
 .square-btn-big{
 	padding: 0 @padding-size*1;
 	height: 40;
+	&.btn-icon-square{
+		width: 40;
+		i{
+			margin-left: 0;
+		}
+	}
 	input{
 		height: 40;
 		margin: 0 @margin-size*1;
@@ -346,6 +352,9 @@ pre{
 .square-btn-small{
 	padding: 0 @padding-size;
 	height: 30;
+	&.btn-icon-square{
+		width: 30;
+	}
 	input{
 		height: 30;
 		margin: 0 @margin-size;
@@ -389,21 +398,9 @@ pre{
 		display: flex; //inline-grid;
 	}	
 	
-
-	// &.bar-big>.btn-icon-square{
-	// 	width: 40;
-	// 	i{
-	// 		margin-left: 0;
-	// 	}
-	// }
-	// &.bar-small>.btn-icon-square,&.bar-small>.tab-wrapper>.btn-icon-square{
-	// 	width: 30;
-	// }
-
 	&>.btn,&>.tab-wrapper>.btn{
 		.sqaure-btn()
 	}
-
 	&.bar-big>.btn,&.bar-big>.tab-wrapper>.btn{
 		.square-btn-big()
 	}
