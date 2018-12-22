@@ -18,7 +18,7 @@ var cfg = {
 	entry: {
 		index: "./components/index.coffee",
 	},
-	externals: ["react","react-dom","classnames","color"],
+	externals: ["re-slide","react","react-dom","classnames","color"],
 	output: {
 		path: path.join(__dirname,'..','/dist'),
 		publicPath: '/',

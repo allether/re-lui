@@ -63,6 +63,7 @@ class Input extends Component
 			
 
 	onClick: (e)=>
+		log @_input
 		@_input?.click()
 		@_input?.focus()
 		@props.onClick?(e)
@@ -394,6 +395,7 @@ class Input extends Component
 			input_props = 
 				className: input_hidden && css['hidden']
 				onKeyDown: @onKeyDown
+				type: @props.type
 				onChange: @onInput
 				ref: @inputRef
 				placeholder: @props.placeholder
