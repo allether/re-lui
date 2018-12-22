@@ -260,6 +260,13 @@ class Input extends Component
 		value = if props.value? then props.value else state.value
 		select = props.select
 		focus = state.focus || state.hover || select
+		
+
+		if props.style
+			style = Object.assign @getButtonStyle(props,state),props.style
+		else
+			style = @getButtonStyle(props,state)
+		
 
 		if props.type == 'label'
 			select = false
@@ -363,13 +370,9 @@ class Input extends Component
 			else
 				label2 = h 'div',
 					className: cn css['label'],css['label-2']
-					style:
-						color: @context.__theme.primary.color[3]
 					'browse or drop file'
-			alert = h 'div',
+			overlay_icon = h 'div',
 				className: cn 'material-icons',css['overlay-icon']
-				style:
-					color: @context.__theme.primary.inv[3]
 				'play_for_work'
 
 		# if props.type == 'select'
@@ -408,14 +411,12 @@ class Input extends Component
 
 
 
-		if props.invalid || props.is_valid == false
-			alert = h AlertDot,
-				error: yes
+		# if props.invalid || props.is_valid == false
+		# 	alert = h AlertDot,
+		# 		error: yes
 
-		if props.style
-			style = Object.assign @getButtonStyle(props,state),props.style
-		else
-			style = @getButtonStyle(props,state)
+
+
 		h (props.href && 'a' || 'div'),
 			onClick: @onClick
 			onMouseEnter: @onMouseEnter
@@ -430,8 +431,8 @@ class Input extends Component
 			bar
 			input
 			color_circle
-			alert
 			label2
+			overlay_icon
 			props.children
 
 

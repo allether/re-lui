@@ -603,6 +603,7 @@ class Demo extends Component
 						# checked: state.toggle_drag
 						label: 'input file'
 						value: @state.file_value
+						btn_type: 'primary'
 						bar: yes
 						is_valid: no
 						i: 'work'
