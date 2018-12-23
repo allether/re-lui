@@ -627,6 +627,7 @@ class Demo extends Component
 						# checked: state.toggle_drag
 						label: 'some label'
 						# value: @state.file_value2
+						big: yes
 						# bar: yes
 						i: 'business'
 				h Section,
