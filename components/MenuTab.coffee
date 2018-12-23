@@ -43,11 +43,16 @@ class MenuTab extends Component
 
 	childContainer: (el)=>
 		@_child_container = el?.base
-	
 
-	
+
+
 	componentDidMount: ()->
 		@forceUpdate()
+
+
+	componentWillUnmount: ->
+		clearTimeout @_hide_backdrop_timeout
+
 
 	componentWillMount: ->
 		@state.hide_rendered_children = true
@@ -57,19 +62,14 @@ class MenuTab extends Component
 			setTimeout @forceUpdate.bind(@),0
 
 	
-
-
 	revealSelfTab: (e)=>
 		@context.tab_branch.length = 0
 		@context.tab_branch[0] = @
 		@context.onContextTabReveal(@context.tab_branch,e)
-		# e.preventDefault()
-		# e.stopPropagation()
 		return false
 	
 
 	onContextTabReveal: (tree,e)=>
-		# log tree
 		tree.unshift @
 		@context.onContextTabReveal(tree,e)
 
@@ -294,6 +294,7 @@ class MenuTab extends Component
 			if @props.show_backdrop
 				clearTimeout(@_hide_backdrop_timeout)
 				@_hide_backdrop_timeout = setTimeout ()=>
+					@_hide_backdrop_timeout = null
 					if !@props.show_backdrop
 						@setState
 							backdrop_visible: false

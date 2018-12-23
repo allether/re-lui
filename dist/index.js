@@ -1236,6 +1236,10 @@ MenuTab = class MenuTab extends Component {
     return this.forceUpdate();
   }
 
+  componentWillUnmount() {
+    return clearTimeout(this._hide_backdrop_timeout);
+  }
+
   componentWillMount() {
     this.state.hide_rendered_children = true;
     this.calculateRevealState(this.props, this.state);
@@ -1250,14 +1254,11 @@ MenuTab = class MenuTab extends Component {
     this.context.tab_branch.length = 0;
     this.context.tab_branch[0] = this;
     this.context.onContextTabReveal(this.context.tab_branch, e);
-    // e.preventDefault()
-    // e.stopPropagation()
     return false;
   }
 
   onContextTabReveal(tree, e) {
     boundMethodCheck(this, MenuTab);
-    // log tree
     tree.unshift(this);
     return this.context.onContextTabReveal(tree, e);
   }
@@ -1486,6 +1487,7 @@ MenuTab = class MenuTab extends Component {
       if (this.props.show_backdrop) {
         clearTimeout(this._hide_backdrop_timeout);
         this._hide_backdrop_timeout = setTimeout(() => {
+          this._hide_backdrop_timeout = null;
           if (!this.props.show_backdrop) {
             return this.setState({
               backdrop_visible: false
