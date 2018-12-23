@@ -612,12 +612,11 @@ class Demo extends Component
 						onInput: (e)=>
 							@setState
 								file_value: e.target.files[0]
-						# checked: state.toggle_drag
 						label: 'input file'
-						value: @state.file_value
 						btn_type: 'primary'
 						bar: yes
-						is_valid: no
+						# value: @state.file_value?
+						is_valid: @state.file_value?
 						i: 'work'
 					h 'p',{}
 					h Input,
@@ -627,7 +626,7 @@ class Demo extends Component
 								file_value2: e.target.files[0]
 						# checked: state.toggle_drag
 						label: 'some label'
-						value: @state.file_value2
+						# value: @state.file_value2
 						# bar: yes
 						i: 'business'
 				h Section,

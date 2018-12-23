@@ -217,6 +217,7 @@ a{
 			top: 0;
 			position: absolute;
 			opacity: 0;
+			z-index: 1;
 			-webkit-appearance: none;
 		}
 	}
@@ -230,10 +231,12 @@ a{
 		opacity: 0.5;
 	}
 	.overlay-icon{
+		transition: opacity @ease;
 		position: absolute;
 		right: 0;
 		top: 0;
 		opacity: 0.5;
+		font-size: @fontsize;
 		padding: 3px;
 	}
 

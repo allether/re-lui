@@ -13,23 +13,28 @@ class Input extends Component
 		super(props)
 		@state=
 			value: ''
+			input_files: undefined
 		if props.type == 'color'
 			@state.is_dark = Color(props.value).isDark()
 		@list = []
 	onInput: (e)=>
-		# log e
-		if !@props.onInput
-			return @setState
-				value: e.target.value
 		e.preventDefault()
 		e.stopPropagation()
-		if @props.type == 'list'
-			if @state.list_chip_value
-				@props.onInput?(@state.list_chip_value+','+e.target.value)
-			else
-				@props.onInput?(e.target.value)
-		else
-			@props.onInput?(e)
+		
+		if @props.onInput
+			if @props.type == 'file' && e.target.files && e.target.files.length
+				input_files = []
+				for file in e.target.files
+					input_files.push file.name
+				# log 'set state'
+				@setState 
+					input_files: input_files
+			else if @props.type == 'list'
+				if @state.list_chip_value
+					@props.onInput(@state.list_chip_value+','+e.target.value)
+					return false
+			@props.onInput(e)
+		
 		return false
 	onFocus: (e)=>
 		@setState
@@ -47,6 +52,7 @@ class Input extends Component
 		@setState
 			focus: if @props.type == 'color' || @props.type == 'button' || @props.type == 'checkbox' then no else @state.focus
 			hover: no
+			drag: no
 		@props.onMouseLeave?(e)
 	onKeyDown: (e)=>
 		code = e.key
@@ -66,32 +72,40 @@ class Input extends Component
 			
 
 	onClick: (e)=>
-		# log @_input
 		@_input?.click()
 		@_input?.focus()
 		@props.onClick?(e)
 	
+
 	onInputClick: (e)=>
-		# e.preventDefault()
 		e.stopPropagation()
 		return false
+
+
 	setValue: (value)=>
 		@_input.value = value
+
+
 	inputRef: (el)=>
 		@_input = el
+
 
 	componentWillUpdate: (props)->
 		if props.type == 'color' && props.value != @props.value
 			@state.is_dark = Color(props.value).isDark()
+
+		# if props.type == 'file'
+		# 	log @state.input_files
+		# if props.type == 'file' && @state.input_files && (!@state.input_files.length || !props.value)
+		# 	@setState
+		# 		input_files: null
+
 	
 	getButtonStyle: (props,state)->
 		offset = offset || 0
 		value = if props.value? then props.value else state.value
 		select = props.select
 		focus = (state.focus) || state.hover
-		# if props.type == 'label'
-		# 	focus = false
-		# log focus
 		if props.focus?
 			focus = props.focus
 
@@ -267,14 +281,33 @@ class Input extends Component
 			# log @state.reveal
 			@renderInput()
 
+	onDragEnter: (e)=>
+		# log e
+		e.preventDefault()
+		e.stopPropagation()
+		@setState
+			hover: yes
+			drag: yes
+		return false
+	onDragLeave: (e)=>
+		# log e
+		e.preventDefault()
+		e.stopPropagation()
+		@setState
+			hover: no
+			drag: no
+		return false
 
 	renderInput: ->
 		# log 'render input'
 		props = @props
 		state = @state
-		value = if props.value? then props.value else state.value
+		value = @props.value
 		select = props.select
 		focus = state.focus || state.hover || select
+
+		if @state.input_files && @state.input_files.length
+			value = @state.input_files.length > 1 && (@state.input_files.length + ' files') || @state.input_files[0]
 		
 
 		if props.style
@@ -378,20 +411,22 @@ class Input extends Component
 			value = @state.list_value
 
 		else if props.type == 'file'
-			if props.value
+			if @state.input_files && @state.input_files.length
 				label2 = h 'div',
 					className: cn css['label'],css['label-2']
 					style:
 						opacity: 1
-					props.value.length && (props.value.length + ' files') || props.value.name
-				value = undefined
+					value
 			else
-				label2 = h 'div',
+				label2 = h 'label',
 					className: cn css['label'],css['label-2']
 					'browse or drop file'
 			overlay_icon = h 'div',
 				className: cn 'material-icons',css['overlay-icon']
-				'play_for_work'
+				style:
+					opacity: (@state.input_files || @state.drag) && 1 || 0.3
+				'insert_drive_file'
+			value = ''
 
 		# if props.type == 'select'
 
@@ -401,6 +436,7 @@ class Input extends Component
 				onKeyDown: @onKeyDown
 				type: @props.type
 				onChange: @onInput
+				onDragEnter: @onDragEnter
 				ref: @inputRef
 				placeholder: @props.placeholder
 				onFocus: @onFocus
