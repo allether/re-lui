@@ -49,17 +49,18 @@ class Input extends Component
 			hover: no
 		@props.onMouseLeave?(e)
 	onKeyDown: (e)=>
-		if e.code == 'Enter' && @props.onEnter
+		code = e.key
+		if code == 'Enter' && @props.onEnter
 			@_input.blur()
 			return @props.onEnter(e)
 
 
-		if e.code == 'Enter' && @props.type == 'checkbox'
+		if code == 'Enter' && @props.type == 'checkbox'
 			@_input.click()
 		else if @props.type == 'list'
-			if (e.code == 'Enter') && @props.value
+			if (code == 'Enter') && @props.value
 				@props.onInput?(@props.value + ',')
-			else if e.code == 'Backspace' && !@_input.value && @props.value
+			else if code == 'Backspace' && !@_input.value && @props.value
 				log @props.value.substr(0,@props.value.length-1)
 				@props.onInput?(@props.value.substr(0,@props.value.length-1))
 			

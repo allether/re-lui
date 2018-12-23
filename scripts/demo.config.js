@@ -18,9 +18,9 @@ var cfg = {
 	entry: {
 		demo: path.join(__dirname,'..','/demo.coffee')
 	},
-	// resolve: {
-	// 	modules: ['node_modules']
-	// },
+	resolve: {
+		extensions: [ '.js', '.coffee' ]
+	},	
 	output: {
 		path: path.join(__dirname,'..','/dist'),
 		publicPath: '/dist',

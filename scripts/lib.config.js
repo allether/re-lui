@@ -18,6 +18,9 @@ var cfg = {
 	entry: {
 		index: "./components/index.coffee",
 	},
+	resolve: {
+		extensions: [ '.js', '.coffee' ]
+	},
 	externals: ["re-slide","react","react-dom","classnames","color"],
 	output: {
 		path: path.join(__dirname,'..','/dist'),

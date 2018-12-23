@@ -1,14 +1,26 @@
-{Style,StyleContext} = require './Style.coffee'
-module.exports = 
-	Bar : require './Bar.coffee'
-	Input : require './Input.coffee'
-	Menu : require './Menu.coffee'
-	MenuTab : require './MenuTab.coffee'
-	Section : require './Section.coffee'
-	Style : Style
-	StyleContext: StyleContext
-	AlertDot : require './AlertDot.coffee'
-	Overlay: require './Overlay.coffee'
-	AlertOverlay: require './AlertOverlay.coffee'
-	SquareLoader: require './SquareLoader.coffee'
-	Chip: require './Chip.coffee'
+{Style,StyleContext} = require './Style'
+Bar = require './Bar'
+Menu = require './Menu'
+MenuTab = require './MenuTab'
+Input = require './Input'
+Section = require './Section'
+AlertDot = require './AlertDot'
+Overlay = require './Overlay'
+AlertOverlay = require './AlertOverlay'
+SquareLoader = require './SquareLoader'
+Chip = require './Chip'
+
+
+
+module.exports.Bar = Bar
+module.exports.Input = Input
+module.exports.Menu = Menu
+module.exports.Style = Style
+module.exports.StyleContext = StyleContext
+module.exports.Section = Section
+module.exports.MenuTab = MenuTab
+module.exports.AlertDot = AlertDot
+module.exports.Overlay = Overlay
+module.exports.AlertOverlay = AlertOverlay
+module.exports.SquareLoader = SquareLoader
+module.exports.Chip = Chip
