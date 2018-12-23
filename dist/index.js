@@ -548,15 +548,15 @@ Input = class Input extends Component {
 
   componentWillUpdate(props) {
     if (props.type === 'color' && props.value !== this.props.value) {
-      return this.state.is_dark = Color(props.value).isDark();
+      this.state.is_dark = Color(props.value).isDark();
+    }
+    if (props.type === 'file' && this.state.input_files && !props.value) {
+      return this.setState({
+        input_files: null
+      });
     }
   }
 
-  // if props.type == 'file'
-  // 	log @state.input_files
-  // if props.type == 'file' && @state.input_files && (!@state.input_files.length || !props.value)
-  // 	@setState
-  // 		input_files: null
   getButtonStyle(props, state) {
     var btn_style, focus, offset, select, value;
     offset = offset || 0;

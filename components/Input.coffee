@@ -94,11 +94,9 @@ class Input extends Component
 		if props.type == 'color' && props.value != @props.value
 			@state.is_dark = Color(props.value).isDark()
 
-		# if props.type == 'file'
-		# 	log @state.input_files
-		# if props.type == 'file' && @state.input_files && (!@state.input_files.length || !props.value)
-		# 	@setState
-		# 		input_files: null
+		if props.type == 'file' && @state.input_files && !props.value
+			@setState
+				input_files: null
 
 	
 	getButtonStyle: (props,state)->
