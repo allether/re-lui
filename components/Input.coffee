@@ -384,6 +384,7 @@ class Input extends Component
 					style:
 						opacity: 1
 					props.value.length && (props.value.length + ' files') || props.value.name
+				value = undefined
 			else
 				label2 = h 'div',
 					className: cn css['label'],css['label-2']
