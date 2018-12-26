@@ -12,6 +12,7 @@ class Input extends Component
 	constructor: (props)->
 		super(props)
 		@state=
+			is_touch: false
 			value: ''
 			input_files: undefined
 		if props.type == 'color'
@@ -72,6 +73,8 @@ class Input extends Component
 			
 
 	onClick: (e)=>
+		if @state.is_touch
+			return false
 		@_input?.click()
 		@_input?.focus()
 		@props.onClick?(e)
@@ -97,6 +100,19 @@ class Input extends Component
 		if props.type == 'file' && @state.input_files && !props.value
 			@setState
 				input_files: null
+
+	onTouchStart: (e)=>
+		@setState
+			is_touch: yes
+			hover: yes
+
+	onTouchEnd: (e)=>
+		@setState
+			hover: no
+		@_input?.click()
+		@_input?.focus()
+		@props.onClick?(e)
+		
 
 	
 	getButtonStyle: (props,state)->
@@ -473,6 +489,8 @@ class Input extends Component
 
 		h (props.href && 'a' || 'div'),
 			onClick: @onClick
+			onTouchStart: @onTouchStart
+			onTouchEnd: @onTouchEnd
 			onMouseEnter: @onMouseEnter
 			onMouseLeave: @onMouseLeave
 			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
