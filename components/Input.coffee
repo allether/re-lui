@@ -5,7 +5,6 @@ Slide = require 're-slide'
 AlertDot = require './AlertDot.coffee'
 {StyleContext} = require './Style.coffee'
 
-require './MaterialIcons.css'
 
 
 class Input extends Component
