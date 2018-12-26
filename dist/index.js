@@ -525,6 +525,8 @@ Input = class Input extends Component {
     var base, ref, ref1;
     boundMethodCheck(this, Input);
     if (this.state.is_touch) {
+      e.stopPropagation();
+      e.preventDefault();
       return false;
     }
     if ((ref = this._input) != null) {

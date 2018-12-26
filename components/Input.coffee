@@ -74,6 +74,8 @@ class Input extends Component
 
 	onClick: (e)=>
 		if @state.is_touch
+			e.stopPropagation()
+			e.preventDefault()
 			return false
 		@_input?.click()
 		@_input?.focus()
