@@ -464,6 +464,7 @@ Input = class Input extends Component {
   onFocus(e) {
     var base;
     boundMethodCheck(this, Input);
+    'input focus event';
     this.setState({
       focus: true
     });
@@ -473,6 +474,7 @@ Input = class Input extends Component {
   onBlur(e) {
     var base;
     boundMethodCheck(this, Input);
+    'input blur event';
     this.setState({
       focus: false
     });
@@ -520,20 +522,14 @@ Input = class Input extends Component {
   }
 
   onClick(e) {
-    var base, ref, ref1;
+    var base, ref;
     boundMethodCheck(this, Input);
-    if (this.state.is_touch) {
-      e.stopPropagation();
-      e.preventDefault();
-      return false;
-    }
     if ((ref = this._input) != null) {
-      ref.click();
+      ref.focus();
     }
-    if ((ref1 = this._input) != null) {
-      ref1.focus();
+    if (!this.props.is_touch) {
+      return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
     }
-    return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
   }
 
   onInputClick(e) {
@@ -578,10 +574,10 @@ Input = class Input extends Component {
       hover: false
     });
     if ((ref = this._input) != null) {
-      ref.click();
+      ref.focus();
     }
     if ((ref1 = this._input) != null) {
-      ref1.focus();
+      ref1.click();
     }
     return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
   }
@@ -774,7 +770,7 @@ Input = class Input extends Component {
 
   onDragEnter(e) {
     boundMethodCheck(this, Input);
-    // log e
+    // log 'drag enter'
     e.preventDefault();
     e.stopPropagation();
     this.setState({
@@ -786,6 +782,7 @@ Input = class Input extends Component {
 
   onDragLeave(e) {
     boundMethodCheck(this, Input);
+    // log 'drag leave'
     // log e
     e.preventDefault();
     e.stopPropagation();
@@ -975,8 +972,8 @@ Input = class Input extends Component {
       onClick: this.onClick,
       onTouchStart: this.onTouchStart,
       onTouchEnd: this.onTouchEnd,
-      onMouseEnter: this.onMouseEnter,
-      onMouseLeave: this.onMouseLeave,
+      onMouseEnter: !this.state.is_touch && this.onMouseEnter || void 0,
+      onMouseLeave: !this.state.is_touch && this.onMouseLeave || void 0,
       className: cn(props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], css['input'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.className),
       href: props.href,
       style: style

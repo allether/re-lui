@@ -37,10 +37,12 @@ class Input extends Component
 		
 		return false
 	onFocus: (e)=>
+		'input focus event'
 		@setState
 			focus: yes
 		@props.onFocus?(e)
 	onBlur: (e)=>
+		'input blur event'
 		@setState
 			focus: no
 		@props.onBlur?(e)
@@ -72,13 +74,9 @@ class Input extends Component
 			
 
 	onClick: (e)=>
-		if @state.is_touch
-			e.stopPropagation()
-			e.preventDefault()
-			return false
-		@_input?.click()
 		@_input?.focus()
-		@props.onClick?(e)
+		if !@props.is_touch
+			@props.onClick?(e)
 	
 
 	onInputClick: (e)=>
@@ -110,9 +108,12 @@ class Input extends Component
 	onTouchEnd: (e)=>
 		@setState
 			hover: no
-		@_input?.click()
 		@_input?.focus()
+		@_input?.click()
 		@props.onClick?(e)
+		
+		
+		
 		
 
 	
@@ -297,7 +298,7 @@ class Input extends Component
 			@renderInput()
 
 	onDragEnter: (e)=>
-		# log e
+		# log 'drag enter'
 		e.preventDefault()
 		e.stopPropagation()
 		@setState
@@ -305,6 +306,7 @@ class Input extends Component
 			drag: yes
 		return false
 	onDragLeave: (e)=>
+		# log 'drag leave'
 		# log e
 		e.preventDefault()
 		e.stopPropagation()
@@ -492,8 +494,8 @@ class Input extends Component
 			onClick: @onClick
 			onTouchStart: @onTouchStart
 			onTouchEnd: @onTouchEnd
-			onMouseEnter: @onMouseEnter
-			onMouseLeave: @onMouseLeave
+			onMouseEnter: !@state.is_touch && @onMouseEnter || undefined
+			onMouseLeave:  !@state.is_touch && @onMouseLeave || undefined
 			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
 			href: props.href	
 			style: style
