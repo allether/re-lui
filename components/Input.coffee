@@ -75,7 +75,8 @@ class Input extends Component
 
 	onClick: (e)=>
 		@_input?.focus()
-		if !@props.is_touch
+		if !@state.is_touch
+			@_input?.click()
 			@props.onClick?(e)
 	
 

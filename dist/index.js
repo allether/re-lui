@@ -522,12 +522,15 @@ Input = class Input extends Component {
   }
 
   onClick(e) {
-    var base, ref;
+    var base, ref, ref1;
     boundMethodCheck(this, Input);
     if ((ref = this._input) != null) {
       ref.focus();
     }
-    if (!this.props.is_touch) {
+    if (!this.state.is_touch) {
+      if ((ref1 = this._input) != null) {
+        ref1.click();
+      }
       return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
     }
   }
