@@ -13,12 +13,12 @@ addFontsToHead = ->
 	a = document.createElement('link')
 	a.setAttribute('href','https://fonts.googleapis.com/icon?family=Material+Icons')
 	a.setAttribute('rel','stylesheet')
-	document.head.append(a)
+	document.head.appendChild(a)
 
 	b = document.createElement('link')
 	b.setAttribute('href','https://fonts.googleapis.com/css?family=Open+Sans:400,700')
 	b.setAttribute('rel','stylesheet')
-	document.head.append(b)
+	document.head.appendChild(b)
 
 addFontsToHead()
 
