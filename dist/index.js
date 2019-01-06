@@ -797,8 +797,9 @@ Input = class Input extends Component {
   }
 
   renderInput() {
-    var bar, chips, color_circle, focus, icon, input, input_hidden, input_props, label, label2, overlay_icon, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, value;
+    var bar, chips, color_circle, focus, icon, input, input_hidden, input_name, input_props, label, label2, overlay_icon, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, value;
     // log 'render input'
+    input_name = this.props.name;
     props = this.props;
     state = this.state;
     value = this.props.value;
@@ -936,6 +937,7 @@ Input = class Input extends Component {
         onKeyDown: this.onKeyDown,
         type: this.props.type,
         onChange: this.onInput,
+        name: input_name,
         onDragEnter: this.onDragEnter,
         ref: this.inputRef,
         placeholder: this.props.placeholder,
@@ -971,8 +973,9 @@ Input = class Input extends Component {
     // if props.invalid || props.is_valid == false
     // 	alert = h AlertDot,
     // 		error: yes
-    return h(props.href && 'a' || 'div', {
+    return h(props.href && 'a' || 'label', {
       onClick: this.onClick,
+      for: input_name,
       onTouchStart: this.onTouchStart,
       onTouchEnd: this.onTouchEnd,
       onMouseEnter: !this.state.is_touch && this.onMouseEnter || void 0,
@@ -988,6 +991,7 @@ Input = class Input extends Component {
 Input.contextType = StyleContext;
 
 Input.defaultProps = {
+  name: 'input',
   type: 'text',
   btn_type: 'default',
   i_type: 'default'

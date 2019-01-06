@@ -318,6 +318,8 @@ class Input extends Component
 
 	renderInput: ->
 		# log 'render input'
+
+		input_name = @props.name
 		props = @props
 		state = @state
 		value = @props.value
@@ -454,6 +456,7 @@ class Input extends Component
 				onKeyDown: @onKeyDown
 				type: @props.type
 				onChange: @onInput
+				name: input_name
 				onDragEnter: @onDragEnter
 				ref: @inputRef
 				placeholder: @props.placeholder
@@ -491,8 +494,9 @@ class Input extends Component
 		# 		error: yes
 		
 
-		h (props.href && 'a' || 'div'),
+		h (props.href && 'a' || 'label'),
 			onClick: @onClick
+			for: input_name
 			onTouchStart: @onTouchStart
 			onTouchEnd: @onTouchEnd
 			onMouseEnter: !@state.is_touch && @onMouseEnter || undefined
@@ -514,6 +518,7 @@ class Input extends Component
 
 Input.contextType = StyleContext
 Input.defaultProps = 
+	name: 'input'
 	type: 'text'
 	btn_type: 'default'
 	i_type: 'default'
