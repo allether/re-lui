@@ -18,24 +18,24 @@ class Input extends Component
 			@state.is_dark = Color(props.value).isDark()
 		@list = []
 	onInput: (e)=>
-		e.preventDefault()
-		e.stopPropagation()
+		# e.preventDefault()
+		# e.stopPropagation()
 		
 		if @props.onInput
 			if @props.type == 'file' && e.target.files && e.target.files.length
 				input_files = []
 				for file in e.target.files
 					input_files.push file.name
-				# log 'set state'
+				log input_files
 				@setState 
 					input_files: input_files
 			else if @props.type == 'list'
 				if @state.list_chip_value
 					@props.onInput(@state.list_chip_value+','+e.target.value)
-					return false
+					return
 			@props.onInput(e)
-		
-		return false
+		return
+		# return false
 	onFocus: (e)=>
 		'input focus event'
 		@setState
@@ -438,7 +438,7 @@ class Input extends Component
 						opacity: 1
 					value
 			else
-				label2 = h 'label',
+				label2 = h 'span',
 					className: cn css['label'],css['label-2']
 					'browse or drop file'
 			overlay_icon = h 'div',

@@ -409,6 +409,7 @@ Input = class Input extends Component {
   constructor(props) {
     super(props);
     this.onInput = this.onInput.bind(this);
+    // return false
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
@@ -436,8 +437,8 @@ Input = class Input extends Component {
   onInput(e) {
     var file, input_files, j, len, ref;
     boundMethodCheck(this, Input);
-    e.preventDefault();
-    e.stopPropagation();
+    // e.preventDefault()
+    // e.stopPropagation()
     if (this.props.onInput) {
       if (this.props.type === 'file' && e.target.files && e.target.files.length) {
         input_files = [];
@@ -446,19 +447,18 @@ Input = class Input extends Component {
           file = ref[j];
           input_files.push(file.name);
         }
-        // log 'set state'
+        log(input_files);
         this.setState({
           input_files: input_files
         });
       } else if (this.props.type === 'list') {
         if (this.state.list_chip_value) {
           this.props.onInput(this.state.list_chip_value + ',' + e.target.value);
-          return false;
+          return;
         }
       }
       this.props.onInput(e);
     }
-    return false;
   }
 
   onFocus(e) {
@@ -918,7 +918,7 @@ Input = class Input extends Component {
           }
         }, value);
       } else {
-        label2 = h('label', {
+        label2 = h('span', {
           className: cn(css['label'], css['label-2'])
         }, 'browse or drop file');
       }
