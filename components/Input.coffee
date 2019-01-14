@@ -105,12 +105,14 @@ class Input extends Component
 		@setState
 			is_touch: yes
 			hover: yes
+		@props.onTouchStart?(e)
 
 	onTouchEnd: (e)=>
 		@setState
 			hover: no
-		@_input?.focus()
-		@_input?.click()
+		if @props.type != 'file'
+			@_input?.focus()
+			@_input?.click()
 		@props.onClick?(e)
 		
 		
@@ -495,8 +497,8 @@ class Input extends Component
 		
 
 		h (props.href && 'a' || 'label'),
-			onClick: @onClick
-			for: input_name
+			onClick: !IS_TOUCH && @onClick || undefined
+			htmlFor: input_name
 			onTouchStart: @onTouchStart
 			onTouchEnd: @onTouchEnd
 			onMouseEnter: !@state.is_touch && @onMouseEnter || undefined

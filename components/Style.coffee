@@ -4,7 +4,7 @@ css = require './Style.less'
 {createElement,Component,createContext} = require 'react'
 global.h = createElement
 global.Component = Component
-
+global.IS_TOUCH = require('./is_touch')()
 # class Pallet extends Component
 # 	constructor: ->
 StyleContext = createContext({})

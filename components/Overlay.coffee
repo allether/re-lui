@@ -3,6 +3,7 @@ Color = require 'color'
 css = require './Style.less'
 {StyleContext} = require './Style.coffee'
 
+
 class Overlay extends Component
 	constructor: (props)->
 		super(props)
@@ -56,7 +57,16 @@ class Overlay extends Component
 	componentWillUnmount: ->
 		clearTimeout @_timeout
 		@_timeout = null
-			
+	
+	onClick: (e)=>
+		if @_touch || !@props.visible then return
+		@props.onClick(e)
+	
+	onTouchEnd: (e)=>
+		@_touch = true
+		if !@props.visible then return
+		@props.onClick(e)
+
 
 	render: ->
 		overlay_style = Object.assign 
@@ -66,7 +76,8 @@ class Overlay extends Component
 		,@props.style
 		
 		h 'div',
-			onClick: @props.onClick
+			onClick: !IS_TOUCH && @onClick || undefined
+			onTouchEnd: @onTouchEnd
 			className: cn(css['overlay'],!@state.visible && css['overlay-hidden'],@props.className,@props.transparent && css['overlay-transparent'])
 			style: overlay_style
 			@props.children

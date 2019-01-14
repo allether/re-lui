@@ -10,7 +10,13 @@ var cfg = {
 			    modules: true,
 			    // importLoaders: 1,
 			     localIdentName: 'lui-[local]'//localIdentName: 'lui-[hash:base64:5]'
-			  }},'less-loader'] },
+			  }},{
+			  	loader:'less-loader',
+			  	options:{
+			  		modifyVars:{"dim":process.env.DIM+"px"}
+			  	}
+
+			  }] },
 			{ test: /\.(css)$/, exclude: /^(https?:)?\/\//, use: ['style-loader','css-loader'] },
 			{ test: /\.(woff|woff2|eot|ttf|png)$/,loader: 'url-loader?limit=65000' }
 		]
@@ -25,7 +31,7 @@ var cfg = {
 	output: {
 		path: path.join(__dirname,'..','/dist'),
 		publicPath: '/',
-		filename: "index.js",
+		filename: process.env.LIBNAME+".js",
 		libraryTarget: 'commonjs2'
 	}
 }
