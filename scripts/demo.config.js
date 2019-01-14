@@ -14,9 +14,9 @@ var cfg = {
 			    localIdentName: 'lui-[local]'
 			  }},{
 			  	loader:'less-loader',
-			  	options:{
-			  		modifyVars:{"dim":"30px"}
-			  	}
+			  	// options:{
+			  	// 	modifyVars:{"dim":"30px"}
+			  	// }
 
 			  }] },
 			{ test: /\.(css)$/, exclude: /^(https?:)?\/\//, use: ['style-loader','css-loader'] },

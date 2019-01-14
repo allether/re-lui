@@ -50,12 +50,12 @@ body{
 	font-weight: 700;
 }
 .section-title-bar{
-	height: 4;
+	height: @border-radius*2;
 	width: @dim*2;
 	border-radius: @border-radius;
-	margin-left: 6;
-    margin-top: 4;
-    margin-bottom: 4;
+	margin-left: @margin-size*2;
+    margin-top: @fontsize/5;
+    // margin-bottom: @margin-size;
 }
 
 
@@ -73,8 +73,8 @@ a{
 }
 .input-bar{
 	transition: inherit;
-	height: 18px;
-	width: 4;
+	height: @dim / 1.5;
+	width: @border-radius*2;
 	flex-shrink: 0;
 	margin: 0 @margin-size*2;
 	border-radius: @border-radius;
@@ -160,7 +160,7 @@ a{
 		width: 300;
 		.input-bar{
 			width: 30%;
-			height: 4;
+			height: @border-radius*2;
 			margin-right: 0;
 			margin-left: 0;
 			margin-top: @margin-size*2;
