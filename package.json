@@ -1,6 +1,6 @@
 {
   "name": "re-lui",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "basic react web ui components",
   "main": "./dist/lui-mid.js",
   "scripts": {
@@ -26,7 +26,7 @@
     "less-loader": "^4.1.0",
     "normalize.css": "^8.0.1",
     "raw-loader": "^0.5.1",
-    "re-slide": "^1.0.4",
+    "re-slide": "^1.0.5",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-virtualized": "^9.21.0",
