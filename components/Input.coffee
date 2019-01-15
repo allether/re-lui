@@ -106,14 +106,16 @@ class Input extends Component
 			is_touch: yes
 			hover: yes
 		@props.onTouchStart?(e)
+		@props.onClick?(e)
+		if @props.type != 'file'
+			@_input?.focus()
+			@_input?.click()
 
 	onTouchEnd: (e)=>
 		@setState
 			hover: no
-		if @props.type != 'file'
-			@_input?.focus()
-			@_input?.click()
-		@props.onClick?(e)
+		
+		
 		
 		
 		
