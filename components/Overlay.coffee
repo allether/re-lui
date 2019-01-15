@@ -60,12 +60,12 @@ class Overlay extends Component
 	
 	onClick: (e)=>
 		if @_touch || !@props.visible then return
-		@props.onClick(e)
+		@props.onClick?(e)
 	
-	onTouchEnd: (e)=>
+	onTouchStart: (e)=>
 		@_touch = true
 		if !@props.visible then return
-		@props.onClick(e)
+		@props.onClick?(e)
 
 
 	render: ->
@@ -77,7 +77,7 @@ class Overlay extends Component
 		
 		h 'div',
 			onClick: !IS_TOUCH && @onClick || undefined
-			onTouchEnd: @onTouchEnd
+			onTouchStart: @onTouchStart
 			className: cn(css['overlay'],!@state.visible && css['overlay-hidden'],@props.className,@props.transparent && css['overlay-transparent'])
 			style: overlay_style
 			@props.children

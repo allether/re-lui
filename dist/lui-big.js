@@ -1663,7 +1663,7 @@ Overlay = class Overlay extends Component {
     super(props);
     this.setBackdropColor = this.setBackdropColor.bind(this);
     this.onClick = this.onClick.bind(this);
-    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
     this.state = {
       visible: props.initial_visible != null ? props.initial_visible : props.visible,
       render: props.visible
@@ -1730,20 +1730,22 @@ Overlay = class Overlay extends Component {
   }
 
   onClick(e) {
+    var base;
     boundMethodCheck(this, Overlay);
     if (this._touch || !this.props.visible) {
       return;
     }
-    return this.props.onClick(e);
+    return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
   }
 
-  onTouchEnd(e) {
+  onTouchStart(e) {
+    var base;
     boundMethodCheck(this, Overlay);
     this._touch = true;
     if (!this.props.visible) {
       return;
     }
-    return this.props.onClick(e);
+    return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
   }
 
   render() {
@@ -1755,7 +1757,7 @@ Overlay = class Overlay extends Component {
     }, this.props.style);
     return h('div', {
       onClick: !IS_TOUCH && this.onClick || void 0,
-      onTouchEnd: this.onTouchEnd,
+      onTouchStart: this.onTouchStart,
       className: cn(css['overlay'], !this.state.visible && css['overlay-hidden'], this.props.className, this.props.transparent && css['overlay-transparent']),
       style: overlay_style
     }, this.props.children);
