@@ -447,7 +447,7 @@ Input = class Input extends Component {
           file = ref[j];
           input_files.push(file.name);
         }
-        log(input_files);
+        // log input_files
         this.setState({
           input_files: input_files
         });
@@ -811,7 +811,11 @@ Input = class Input extends Component {
     select = props.select;
     focus = state.focus || state.hover || select;
     if (this.state.input_files && this.state.input_files.length) {
-      value = this.state.input_files.length > 1 && (this.state.input_files.length + ' files') || this.state.input_files[0];
+      if (this.props.value != null) {
+        value = this.props.value;
+      } else {
+        value = this.state.input_files.length > 1 && (this.state.input_files.length + ' files') || this.state.input_files[0];
+      }
     }
     if (props.style) {
       style = Object.assign(this.getButtonStyle(props, state), props.style);
@@ -923,11 +927,9 @@ Input = class Input extends Component {
           }
         }, value);
       } else {
-        if (!this.props.label) {
-          label2 = h('span', {
-            className: cn(css['label'], css['label-2'])
-          }, 'browse or drop file');
-        }
+        label2 = h('span', {
+          className: cn(css['label'], css['label-2'])
+        }, this.props.placeholder != null ? this.props.placeholder || 'browse or drop file' : void 0);
       }
       overlay_icon = h('div', {
         className: cn('material-icons', css['overlay-icon']),

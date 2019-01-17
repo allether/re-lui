@@ -332,7 +332,7 @@ class Input extends Component
 
 		if @state.input_files && @state.input_files.length
 			if @props.value?
-				value = value
+				value = @props.value
 			else
 				value = @state.input_files.length > 1 && (@state.input_files.length + ' files') || @state.input_files[0]
 		
