@@ -26,7 +26,7 @@ class Input extends Component
 				input_files = []
 				for file in e.target.files
 					input_files.push file.name
-				log input_files
+				# log input_files
 				@setState 
 					input_files: input_files
 			else if @props.type == 'list'
@@ -331,7 +331,10 @@ class Input extends Component
 		focus = state.focus || state.hover || select
 
 		if @state.input_files && @state.input_files.length
-			value = @state.input_files.length > 1 && (@state.input_files.length + ' files') || @state.input_files[0]
+			if @props.value?
+				value = value
+			else
+				value = @state.input_files.length > 1 && (@state.input_files.length + ' files') || @state.input_files[0]
 		
 
 		if props.style
@@ -442,10 +445,9 @@ class Input extends Component
 						opacity: 1
 					value
 			else
-				if !@props.label
-					label2 = h 'span',
-						className: cn css['label'],css['label-2']
-						'browse or drop file'
+				label2 = h 'span',
+					className: cn css['label'],css['label-2']
+					if @props.placeholder? then @props.placeholder || 'browse or drop file'
 				
 			overlay_icon = h 'div',
 				className: cn 'material-icons',css['overlay-icon']
