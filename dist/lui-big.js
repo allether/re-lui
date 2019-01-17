@@ -925,7 +925,7 @@ Input = class Input extends Component {
       } else {
         label2 = h('span', {
           className: cn(css['label'], css['label-2'])
-        }, 'browse or drop file');
+        }, this.props.label !== false && this.props.label || 'browse or drop file');
       }
       overlay_icon = h('div', {
         className: cn('material-icons', css['overlay-icon']),
