@@ -954,6 +954,9 @@ Input = class Input extends Component {
         onBlur: this.onBlur,
         value: value
       };
+      if (this.props.input_props) {
+        Object.assign(input_props, this.props.input_props);
+      }
       
       // input_props = Object.assign {},props,self_input_props
       if (props.type === 'button') {

@@ -471,6 +471,9 @@ class Input extends Component
 				onFocus: @onFocus
 				onBlur: @onBlur
 				value: value
+
+			if @props.input_props
+				Object.assign input_props,@props.input_props
 		
 			# input_props = Object.assign {},props,self_input_props
 
