@@ -1982,11 +1982,6 @@ Style = class Style extends Component {
   constructor() {
     super();
     this.renderStyle = this.renderStyle.bind(this);
-    this.white = Color('#F4F4F4');
-    this.black = Color('#141414');
-    this.false = Color('#FC0020');
-    this.warn = Color('#E7BC08');
-    this.true = Color('#21FF48');
     this.state = {
       rendered_style: true
     };
@@ -1998,24 +1993,27 @@ Style = class Style extends Component {
 
   renderStyle(props, state) {
     boundMethodCheck(this, Style);
-    this._theme = generateStyle({
-      lighten_factor: props.lighten_factor,
-      darken_factor: props.darken_factor,
-      primary_factors: props.primary_factors,
-      secondary_factors: props.secondary_factors,
-      false: this.false,
-      true: this.true,
-      warn: this.warn,
-      primary: props.primary,
-      secondary: props.secondary
-    });
+    if (props.style) {
+      this._theme = props.style;
+    } else {
+      this._theme = generateStyle({
+        lighten_factor: props.lighten_factor,
+        darken_factor: props.darken_factor,
+        primary_factors: props.primary_factors,
+        secondary_factors: props.secondary_factors,
+        false: Color(props.false),
+        true: Color(props.true),
+        warn: Color(props.warn),
+        primary: props.primary,
+        secondary: props.secondary
+      });
+    }
     this.primary = this._theme.primary;
     return this.secondary = this._theme.secondary;
   }
 
-  // console.log props.primary,props.secondary
   componentWillUpdate(props, state) {
-    if (this.props.primary !== props.primary || this.props.secondary !== props.secondary || this.props.tertiary !== props.tertiary) {
+    if (this.props.style !== props.style || this.props.primary !== props.primary || this.props.secondary !== props.secondary || this.props.tertiary !== props.tertiary) {
       this.renderStyle(props, state);
       return state.rendered_style = true;
     }
@@ -2038,6 +2036,9 @@ Style = class Style extends Component {
 Style.defaultProps = {
   primary: '#18262a',
   secondary: 'whitesmoke',
+  true: '#21FF48',
+  false: '#FC0020',
+  warn: '#E7BC08',
   darken_factor: .75,
   lighten_factor: 9.0,
   primary_factors: {
@@ -2093,9 +2094,9 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var AlertDot, AlertOverlay, Bar, Chip, Input, Menu, MenuTab, Overlay, Section, SquareLoader, Style, StyleContext;
+var AlertDot, AlertOverlay, Bar, Chip, Input, Menu, MenuTab, Overlay, Section, SquareLoader, Style, StyleContext, generateStyle;
 
-({Style, StyleContext} = __webpack_require__(/*! ./Style */ "./components/Style.coffee"));
+({Style, StyleContext, generateStyle} = __webpack_require__(/*! ./Style */ "./components/Style.coffee"));
 
 Bar = __webpack_require__(/*! ./Bar */ "./components/Bar.coffee");
 
@@ -2126,6 +2127,8 @@ module.exports.Menu = Menu;
 module.exports.Style = Style;
 
 module.exports.StyleContext = StyleContext;
+
+module.exports.generateStyle = generateStyle;
 
 module.exports.Section = Section;
 

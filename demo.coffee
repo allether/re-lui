@@ -201,8 +201,8 @@ class MenuSection extends Component
 				fixed: state.toggle_drag && yes
 				render_hidden_children: no
 				hover_reveal_enabled: !state.toggle_drag
-				left: @state.x
-				top: @state.y
+				left: @state.x || 0
+				top: @state.y || 0
 				style:
 					zIndex: state.toggle_drag && 999 || 'initial'
 				big: @props.big

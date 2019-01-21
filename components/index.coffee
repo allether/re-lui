@@ -1,4 +1,4 @@
-{Style,StyleContext} = require './Style'
+{Style,StyleContext,generateStyle} = require './Style'
 Bar = require './Bar'
 Menu = require './Menu'
 MenuTab = require './MenuTab'
@@ -11,12 +11,12 @@ SquareLoader = require './SquareLoader'
 Chip = require './Chip'
 
 
-
 module.exports.Bar = Bar
 module.exports.Input = Input
 module.exports.Menu = Menu
 module.exports.Style = Style
 module.exports.StyleContext = StyleContext
+module.exports.generateStyle = generateStyle
 module.exports.Section = Section
 module.exports.MenuTab = MenuTab
 module.exports.AlertDot = AlertDot

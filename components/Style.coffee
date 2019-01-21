@@ -120,11 +120,6 @@ generateStyle = (props)->
 class Style extends Component
 	constructor: ->
 		super()
-		@white = Color('#F4F4F4')
-		@black = Color('#141414')
-		@false = Color('#FC0020')
-		@warn = Color('#E7BC08')
-		@true = Color('#21FF48')
 		@state = 
 			rendered_style: yes
 
@@ -134,34 +129,38 @@ class Style extends Component
 
 
 	renderStyle: (props,state)=>
-		@_theme = generateStyle
-			lighten_factor: props.lighten_factor
-			darken_factor: props.darken_factor
-			primary_factors: props.primary_factors
-			secondary_factors: props.secondary_factors
-			false: @false
-			true: @true
-			warn: @warn
-			primary: props.primary
-			secondary: props.secondary
+		if props.style
+			@_theme = props.style
+		else
+			@_theme = generateStyle
+				lighten_factor: props.lighten_factor
+				darken_factor: props.darken_factor
+				primary_factors: props.primary_factors
+				secondary_factors: props.secondary_factors
+				false: Color(props.false)
+				true:  Color(props.true)
+				warn: Color(props.warn)
+				primary: props.primary
+				secondary: props.secondary
 
 
 		@primary = @_theme.primary
 		@secondary = @_theme.secondary
 
-		# console.log props.primary,props.secondary
 
 
 	componentWillUpdate: (props,state)->
-		if @props.primary != props.primary || @props.secondary != props.secondary || @props.tertiary != props.tertiary
+		if @props.style != props.style || @props.primary != props.primary || @props.secondary != props.secondary || @props.tertiary != props.tertiary
 			@renderStyle(props,state)
 			state.rendered_style = true
+
 
 
 	componentDidUpdate: ->
 		if @state.rendered_style
 			@state.rendered_style = false
-			
+
+
 
 	render: ->
 		h StyleContext.Provider,
@@ -172,6 +171,9 @@ class Style extends Component
 Style.defaultProps = 
 	primary: '#18262a'
 	secondary: 'whitesmoke'
+	true: '#21FF48'
+	false: '#FC0020'
+	warn: '#E7BC08'
 	darken_factor: .75
 	lighten_factor: 9.0
 	primary_factors: 
