@@ -23,6 +23,100 @@ addFontsToHead = ->
 addFontsToHead()
 
 
+
+createPallet = (color,inv,factors)->
+	color_factor = color_factor || 1
+	inv_factor = inv_factor || 1
+
+	c = {}
+	c.color = [
+		color.hex()
+		color.mix(inv,factors.color[0]).hex()
+		color.mix(inv,factors.color[1]).hex()
+		color.mix(inv,factors.color[2]).hex()
+		color.mix(inv,factors.color[3]).hex()
+	]
+
+	c.inv = [
+		inv.hex()
+		inv.mix(color,factors.inv[0]).hex()
+		inv.mix(color,factors.inv[1]).hex()
+		inv.mix(color,factors.inv[2]).hex()
+		inv.mix(color,factors.inv[3]).hex()
+	]
+
+	return c
+
+
+lightenPallet = (props)=>
+	c = createPallet(props.color,props.color.lighten(props.lighten_factor),props.factors)
+	c.highlight = props.color.lighten(1).saturate(.85).hex()
+	c.true = props.color.lighten(1).mix(props.true,0.7).hex();
+	c.false = props.color.lighten(1).mix(props.false,0.7).hex();
+	c.warn = props.color.lighten(1).mix(props.warn,0.7).hex();
+	return c
+
+
+darkenPallet = (props)->
+	c = createPallet(props.color,props.color.darken(props.darken_factor),props.factors)
+	c.highlight = props.color.darken(0.5).saturate(.85).hex()
+	c.true = props.color.darken(0.5).mix(props.true,0.7).hex();
+	c.false = props.color.darken(0.5).mix(props.false,0.7).hex();
+	c.warn = props.color.darken(0.5).mix(props.warn,0.7).hex();
+	return c
+
+
+
+generateStyle = (props)->
+	primary_c = Color(props.primary)
+	secondary_c = Color(props.secondary)
+
+	if primary_c.isLight()
+		primary = darkenPallet
+			color: primary_c
+			lighten_factor: props.lighten_factor
+			darken_factor: props.darken_factor
+			factors: props.primary_factors
+			true: props.true
+			false: props.false
+			warn: props.warn
+		
+	else
+		primary = lightenPallet
+			color: primary_c
+			lighten_factor: props.lighten_factor
+			darken_factor: props.darken_factor
+			factors: props.primary_factors
+			true: props.true
+			false: props.false
+			warn: props.warn
+
+
+	if secondary_c.isLight()
+		secondary = darkenPallet
+			color: secondary_c
+			lighten_factor: props.lighten_factor
+			darken_factor: props.darken_factor
+			factors: props.secondary_factors
+			true: props.true
+			false: props.false
+			warn: props.warn
+	else
+		secondary = lightenPallet
+			color: secondary_c
+			lighten_factor: props.lighten_factor
+			darken_factor: props.darken_factor
+			factors: props.secondary_factors
+			true: props.true
+			false: props.false
+			warn: props.warn
+
+
+	return	
+		primary: primary
+		secondary: secondary
+
+
 class Style extends Component
 	constructor: ->
 		super()
@@ -35,69 +129,27 @@ class Style extends Component
 			rendered_style: yes
 
 	componentWillMount: ->
-		@renderStyle(@props)
+		@renderStyle(@props,@state)
 
 
 
-	createPallet: (color,inv,factors)->
-		color_factor = color_factor || 1
-		inv_factor = inv_factor || 1
-
-		c = {}
-		c.color = [
-			color.hex()
-			color.mix(inv,factors.color[0]).hex()
-			color.mix(inv,factors.color[1]).hex()
-			color.mix(inv,factors.color[2]).hex()
-			color.mix(inv,factors.color[3]).hex()
-		]
-
-		c.inv = [
-			inv.hex()
-			inv.mix(color,factors.inv[0]).hex()
-			inv.mix(color,factors.inv[1]).hex()
-			inv.mix(color,factors.inv[2]).hex()
-			inv.mix(color,factors.inv[3]).hex()
-		]
-
-		return c
+	renderStyle: (props,state)=>
+		@_theme = generateStyle
+			lighten_factor: props.lighten_factor
+			darken_factor: props.darken_factor
+			primary_factors: props.primary_factors
+			secondary_factors: props.secondary_factors
+			false: @false
+			true: @true
+			warn: @warn
+			primary: props.primary
+			secondary: props.secondary
 
 
-	lightenPallet: (color,factors)=>
-		c = @createPallet(color,color.lighten(@props.lighten_factor),factors)
-		c.highlight = color.lighten(1).saturate(.85).hex()
-		c.true = color.lighten(1).mix(@true,0.7).hex();
-		c.false = color.lighten(1).mix(@false,0.7).hex();
-		c.warn = color.lighten(1).mix(@warn,0.7).hex();
-		return c
+		@primary = @_theme.primary
+		@secondary = @_theme.secondary
 
-
-	darkenPallet: (color,factors)->
-		c = @createPallet(color,color.darken(@props.darken_factor),factors)
-		c.highlight = color.darken(0.5).saturate(.85).hex()
-		c.true = color.darken(0.5).mix(@true,0.7).hex();
-		c.false = color.darken(0.5).mix(@false,0.7).hex();
-		c.warn = color.darken(0.5).mix(@warn,0.7).hex();
-		return c
-
-
-	renderStyle: (props)=>
-		primary_c = Color(props.primary)
-		secondary_c = Color(props.secondary)
-
-		if primary_c.isLight()
-			@primary = @darkenPallet(primary_c,props.primary_factors)
-		else
-			@primary = @lightenPallet(primary_c,props.primary_factors)
-
-		if secondary_c.isLight()
-			@secondary = @darkenPallet(secondary_c,props.secondary_factors)
-		else
-			@secondary = @lightenPallet(secondary_c,props.secondary_factors)
-		
-		@_theme = 
-			primary: @primary
-			secondary: @secondary
+		# console.log props.primary,props.secondary
 
 
 	componentWillUpdate: (props,state)->
@@ -105,12 +157,11 @@ class Style extends Component
 			@renderStyle(props,state)
 			state.rendered_style = true
 
+
 	componentDidUpdate: ->
 		if @state.rendered_style
 			@state.rendered_style = false
-			# @props.onSetStyle?(@primary,@secondary)
-
-
+			
 
 	render: ->
 		h StyleContext.Provider,
@@ -132,4 +183,4 @@ Style.defaultProps =
 
 
 
-module.exports = {Style,StyleContext}
+module.exports = {Style,StyleContext,generateStyle}

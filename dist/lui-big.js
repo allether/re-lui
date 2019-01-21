@@ -1861,7 +1861,7 @@ module.exports = SquareLoader;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var Color, Component, Style, StyleContext, addFontsToHead, createContext, createElement, css,
+/* WEBPACK VAR INJECTION */(function(global) {var Color, Component, Style, StyleContext, addFontsToHead, createContext, createElement, createPallet, css, darkenPallet, generateStyle, lightenPallet,
   boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
 
 Color = __webpack_require__(/*! color */ "color");
@@ -1896,10 +1896,91 @@ addFontsToHead = function() {
 
 addFontsToHead();
 
+createPallet = function(color, inv, factors) {
+  var c, color_factor, inv_factor;
+  color_factor = color_factor || 1;
+  inv_factor = inv_factor || 1;
+  c = {};
+  c.color = [color.hex(), color.mix(inv, factors.color[0]).hex(), color.mix(inv, factors.color[1]).hex(), color.mix(inv, factors.color[2]).hex(), color.mix(inv, factors.color[3]).hex()];
+  c.inv = [inv.hex(), inv.mix(color, factors.inv[0]).hex(), inv.mix(color, factors.inv[1]).hex(), inv.mix(color, factors.inv[2]).hex(), inv.mix(color, factors.inv[3]).hex()];
+  return c;
+};
+
+lightenPallet = (props) => {
+  var c;
+  c = createPallet(props.color, props.color.lighten(props.lighten_factor), props.factors);
+  c.highlight = props.color.lighten(1).saturate(.85).hex();
+  c.true = props.color.lighten(1).mix(props.true, 0.7).hex();
+  c.false = props.color.lighten(1).mix(props.false, 0.7).hex();
+  c.warn = props.color.lighten(1).mix(props.warn, 0.7).hex();
+  return c;
+};
+
+darkenPallet = function(props) {
+  var c;
+  c = createPallet(props.color, props.color.darken(props.darken_factor), props.factors);
+  c.highlight = props.color.darken(0.5).saturate(.85).hex();
+  c.true = props.color.darken(0.5).mix(props.true, 0.7).hex();
+  c.false = props.color.darken(0.5).mix(props.false, 0.7).hex();
+  c.warn = props.color.darken(0.5).mix(props.warn, 0.7).hex();
+  return c;
+};
+
+generateStyle = function(props) {
+  var primary, primary_c, secondary, secondary_c;
+  primary_c = Color(props.primary);
+  secondary_c = Color(props.secondary);
+  if (primary_c.isLight()) {
+    primary = darkenPallet({
+      color: primary_c,
+      lighten_factor: props.lighten_factor,
+      darken_factor: props.darken_factor,
+      factors: props.primary_factors,
+      true: props.true,
+      false: props.false,
+      warn: props.warn
+    });
+  } else {
+    primary = lightenPallet({
+      color: primary_c,
+      lighten_factor: props.lighten_factor,
+      darken_factor: props.darken_factor,
+      factors: props.primary_factors,
+      true: props.true,
+      false: props.false,
+      warn: props.warn
+    });
+  }
+  if (secondary_c.isLight()) {
+    secondary = darkenPallet({
+      color: secondary_c,
+      lighten_factor: props.lighten_factor,
+      darken_factor: props.darken_factor,
+      factors: props.secondary_factors,
+      true: props.true,
+      false: props.false,
+      warn: props.warn
+    });
+  } else {
+    secondary = lightenPallet({
+      color: secondary_c,
+      lighten_factor: props.lighten_factor,
+      darken_factor: props.darken_factor,
+      factors: props.secondary_factors,
+      true: props.true,
+      false: props.false,
+      warn: props.warn
+    });
+  }
+  return {
+    primary: primary,
+    secondary: secondary
+  };
+};
+
 Style = class Style extends Component {
   constructor() {
     super();
-    this.lightenPallet = this.lightenPallet.bind(this);
     this.renderStyle = this.renderStyle.bind(this);
     this.white = Color('#F4F4F4');
     this.black = Color('#141414');
@@ -1912,61 +1993,27 @@ Style = class Style extends Component {
   }
 
   componentWillMount() {
-    return this.renderStyle(this.props);
+    return this.renderStyle(this.props, this.state);
   }
 
-  createPallet(color, inv, factors) {
-    var c, color_factor, inv_factor;
-    color_factor = color_factor || 1;
-    inv_factor = inv_factor || 1;
-    c = {};
-    c.color = [color.hex(), color.mix(inv, factors.color[0]).hex(), color.mix(inv, factors.color[1]).hex(), color.mix(inv, factors.color[2]).hex(), color.mix(inv, factors.color[3]).hex()];
-    c.inv = [inv.hex(), inv.mix(color, factors.inv[0]).hex(), inv.mix(color, factors.inv[1]).hex(), inv.mix(color, factors.inv[2]).hex(), inv.mix(color, factors.inv[3]).hex()];
-    return c;
-  }
-
-  lightenPallet(color, factors) {
-    var c;
+  renderStyle(props, state) {
     boundMethodCheck(this, Style);
-    c = this.createPallet(color, color.lighten(this.props.lighten_factor), factors);
-    c.highlight = color.lighten(1).saturate(.85).hex();
-    c.true = color.lighten(1).mix(this.true, 0.7).hex();
-    c.false = color.lighten(1).mix(this.false, 0.7).hex();
-    c.warn = color.lighten(1).mix(this.warn, 0.7).hex();
-    return c;
+    this._theme = generateStyle({
+      lighten_factor: props.lighten_factor,
+      darken_factor: props.darken_factor,
+      primary_factors: props.primary_factors,
+      secondary_factors: props.secondary_factors,
+      false: this.false,
+      true: this.true,
+      warn: this.warn,
+      primary: props.primary,
+      secondary: props.secondary
+    });
+    this.primary = this._theme.primary;
+    return this.secondary = this._theme.secondary;
   }
 
-  darkenPallet(color, factors) {
-    var c;
-    c = this.createPallet(color, color.darken(this.props.darken_factor), factors);
-    c.highlight = color.darken(0.5).saturate(.85).hex();
-    c.true = color.darken(0.5).mix(this.true, 0.7).hex();
-    c.false = color.darken(0.5).mix(this.false, 0.7).hex();
-    c.warn = color.darken(0.5).mix(this.warn, 0.7).hex();
-    return c;
-  }
-
-  renderStyle(props) {
-    var primary_c, secondary_c;
-    boundMethodCheck(this, Style);
-    primary_c = Color(props.primary);
-    secondary_c = Color(props.secondary);
-    if (primary_c.isLight()) {
-      this.primary = this.darkenPallet(primary_c, props.primary_factors);
-    } else {
-      this.primary = this.lightenPallet(primary_c, props.primary_factors);
-    }
-    if (secondary_c.isLight()) {
-      this.secondary = this.darkenPallet(secondary_c, props.secondary_factors);
-    } else {
-      this.secondary = this.lightenPallet(secondary_c, props.secondary_factors);
-    }
-    return this._theme = {
-      primary: this.primary,
-      secondary: this.secondary
-    };
-  }
-
+  // console.log props.primary,props.secondary
   componentWillUpdate(props, state) {
     if (this.props.primary !== props.primary || this.props.secondary !== props.secondary || this.props.tertiary !== props.tertiary) {
       this.renderStyle(props, state);
@@ -1980,7 +2027,6 @@ Style = class Style extends Component {
     }
   }
 
-  // @props.onSetStyle?(@primary,@secondary)
   render() {
     return h(StyleContext.Provider, {
       value: this._theme
@@ -2004,7 +2050,7 @@ Style.defaultProps = {
   }
 };
 
-module.exports = {Style, StyleContext};
+module.exports = {Style, StyleContext, generateStyle};
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node_modules/webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
 
