@@ -7,7 +7,7 @@ global.Component = Component
 {render} = require 'react-dom'
 
 window.log = console.log.bind(console)
-{StyleContext,Style} = require './components/Style.coffee'
+{StyleContext,Style,generateStyle} = require './components/Style.coffee'
 AlertDot = require './components/AlertDot.coffee'
 Input = require './components/Input.coffee'
 Menu = require './components/Menu.coffee'
@@ -19,6 +19,12 @@ AlertOverlay = require './components/AlertOverlay.coffee'
 css = require './demo.less'
 lerp_logo = require './lerp-logo-40.svg'
 
+
+
+style = generateStyle Object.assign {},Style.defaultProps,
+	primary: '#a0ff02'
+
+log style
 
 class SvgIcon extends Component
 	componentDidMount: ->

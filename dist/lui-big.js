@@ -1878,8 +1878,6 @@ global.Component = Component;
 
 global.IS_TOUCH = __webpack_require__(/*! ./is_touch */ "./components/is_touch.js")();
 
-// class Pallet extends Component
-// 	constructor: ->
 StyleContext = createContext({});
 
 addFontsToHead = function() {
@@ -1927,18 +1925,21 @@ darkenPallet = function(props) {
 };
 
 generateStyle = function(props) {
-  var primary, primary_c, secondary, secondary_c;
+  var c_false, c_true, c_warn, primary, primary_c, secondary, secondary_c;
   primary_c = Color(props.primary);
   secondary_c = Color(props.secondary);
+  c_true = Color(props.true);
+  c_false = Color(props.false);
+  c_warn = Color(props.warn);
   if (primary_c.isLight()) {
     primary = darkenPallet({
       color: primary_c,
       lighten_factor: props.lighten_factor,
       darken_factor: props.darken_factor,
       factors: props.primary_factors,
-      true: props.true,
-      false: props.false,
-      warn: props.warn
+      true: c_true,
+      false: c_false,
+      warn: c_warn
     });
   } else {
     primary = lightenPallet({
@@ -1946,9 +1947,9 @@ generateStyle = function(props) {
       lighten_factor: props.lighten_factor,
       darken_factor: props.darken_factor,
       factors: props.primary_factors,
-      true: props.true,
-      false: props.false,
-      warn: props.warn
+      true: c_true,
+      false: c_false,
+      warn: c_warn
     });
   }
   if (secondary_c.isLight()) {
@@ -1957,9 +1958,9 @@ generateStyle = function(props) {
       lighten_factor: props.lighten_factor,
       darken_factor: props.darken_factor,
       factors: props.secondary_factors,
-      true: props.true,
-      false: props.false,
-      warn: props.warn
+      true: c_true,
+      false: c_false,
+      warn: c_warn
     });
   } else {
     secondary = lightenPallet({
@@ -1967,9 +1968,9 @@ generateStyle = function(props) {
       lighten_factor: props.lighten_factor,
       darken_factor: props.darken_factor,
       factors: props.secondary_factors,
-      true: props.true,
-      false: props.false,
-      warn: props.warn
+      true: c_true,
+      false: c_false,
+      warn: c_warn
     });
   }
   return {
@@ -2001,9 +2002,9 @@ Style = class Style extends Component {
         darken_factor: props.darken_factor,
         primary_factors: props.primary_factors,
         secondary_factors: props.secondary_factors,
-        false: Color(props.false),
-        true: Color(props.true),
-        warn: Color(props.warn),
+        false: props.false,
+        true: props.true,
+        warn: props.warn,
         primary: props.primary,
         secondary: props.secondary
       });

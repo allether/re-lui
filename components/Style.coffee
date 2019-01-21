@@ -5,8 +5,7 @@ css = require './Style.less'
 global.h = createElement
 global.Component = Component
 global.IS_TOUCH = require('./is_touch')()
-# class Pallet extends Component
-# 	constructor: ->
+
 StyleContext = createContext({})
 
 addFontsToHead = ->
@@ -71,15 +70,19 @@ generateStyle = (props)->
 	primary_c = Color(props.primary)
 	secondary_c = Color(props.secondary)
 
+	c_true = Color(props.true)
+	c_false = Color(props.false)
+	c_warn = Color(props.warn)
+
 	if primary_c.isLight()
 		primary = darkenPallet
 			color: primary_c
 			lighten_factor: props.lighten_factor
 			darken_factor: props.darken_factor
 			factors: props.primary_factors
-			true: props.true
-			false: props.false
-			warn: props.warn
+			true: c_true
+			false: c_false
+			warn: c_warn
 		
 	else
 		primary = lightenPallet
@@ -87,9 +90,9 @@ generateStyle = (props)->
 			lighten_factor: props.lighten_factor
 			darken_factor: props.darken_factor
 			factors: props.primary_factors
-			true: props.true
-			false: props.false
-			warn: props.warn
+			true: c_true
+			false: c_false
+			warn: c_warn
 
 
 	if secondary_c.isLight()
@@ -98,18 +101,18 @@ generateStyle = (props)->
 			lighten_factor: props.lighten_factor
 			darken_factor: props.darken_factor
 			factors: props.secondary_factors
-			true: props.true
-			false: props.false
-			warn: props.warn
+			true: c_true
+			false: c_false
+			warn: c_warn
 	else
 		secondary = lightenPallet
 			color: secondary_c
 			lighten_factor: props.lighten_factor
 			darken_factor: props.darken_factor
 			factors: props.secondary_factors
-			true: props.true
-			false: props.false
-			warn: props.warn
+			true: c_true
+			false: c_false
+			warn: c_warn
 
 
 	return	
@@ -137,9 +140,9 @@ class Style extends Component
 				darken_factor: props.darken_factor
 				primary_factors: props.primary_factors
 				secondary_factors: props.secondary_factors
-				false: Color(props.false)
-				true:  Color(props.true)
-				warn: Color(props.warn)
+				false: props.false
+				true:  props.true
+				warn: props.warn
 				primary: props.primary
 				secondary: props.secondary
 
