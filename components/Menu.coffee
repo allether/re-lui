@@ -91,6 +91,7 @@ class Menu extends Component
 		h MenuContext.Provider,
 			value: @getContext()
 			h Bar,
+				btn: false
 				vert: @props.vert
 				big: @props.big
 				style: bar_style

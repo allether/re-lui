@@ -12,7 +12,7 @@ class Bar extends Component
 		# log props.vert
 		bar_props = 
 			ref: @baseRef
-			className: cn(@props.vert && css['bar-vert'],css['bar'],@props.big && css['bar-big'] || css['bar-small'],@props.className)
+			className: cn(@props.btn && css['bar-btn'],@props.vert && css['bar-vert'],css['bar'],@props.big && css['bar-big'] || css['bar-small'],@props.className)
 			style: @props.style
 	
 		# bar_props = Object.assign {},@props,my_props

@@ -649,6 +649,7 @@ class Demo extends Component
 					title: 'Bar'
 					h 'p',{},'buttons inside bar dont have margins unless specified'
 					h Bar,
+						btn: yes
 						big: state.bar_big
 						h Input,
 							type: 'button'
@@ -658,9 +659,9 @@ class Demo extends Component
 							label: 'toggle big'
 							h AlertDot
 						h Input,
-							type: 'button'
-							btn_type: 'flat'
-							label: 'flat'
+							type: 'label'
+							# btn_type: 'flat'
+							label: 'label'
 						h Input,
 							type: 'button'
 							i: 'favorite'
@@ -670,7 +671,7 @@ class Demo extends Component
 							type: 'button'
 							i: 'save'
 							# i_type: 'primary'
-							btn_type: 'flat'
+							# btn_type: 'flat'
 						h Input,
 							type: 'button'
 							btn_type: 'default'
@@ -682,6 +683,7 @@ class Demo extends Component
 					h 'p',{},'bars can also be vertical.'
 					h Bar,
 						big: state.bar_big
+						# btn: yes
 						vert: yes
 						h Input,
 							type: 'button'

@@ -17,12 +17,11 @@ body{
 
 .section{
 	position: relative;
-	padding: @dim * 2/3;
-	padding-bottom: @dim;
+	padding: @dim * 1/3;
 }
 
 .section-content{
-	margin: 10;
+	margin: @border-radius*2 0;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -394,6 +393,13 @@ pre{
 	flex-wrap: nowrap;
 	flex-shrink: 0;
 	height: @dim;
+
+	&.bar-btn{
+		border-radius: @border-radius;
+		overflow: hidden;
+		margin: 4 4;
+		margin-top: 8;
+	}
 
 	&.bar-big{
 		height: @dim * 4/3;
