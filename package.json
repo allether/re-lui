@@ -1,6 +1,6 @@
 {
   "name": "re-lui",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "basic react web ui components",
   "main": "./dist/lui-mid.js",
   "scripts": {
