@@ -135,10 +135,10 @@ class Input extends Component
 		btn_style = {}
 		if props.type == 'label'
 			focus = false
-			btn_style.cursor = 'default'
+			# btn_style.cursor = 'default'
 		
-		if props.type == 'button' || props.type == 'file'
-			btn_style.cursor = 'pointer'
+		# if props.type == 'button' || props.type == 'file'
+			# btn_style.cursor = 'pointer'
 		
 		if props.btn_type == 'primary'
 			if select
@@ -364,11 +364,7 @@ class Input extends Component
 					background: @context.primary.inv[2]
 			
 			toggle = h Slide,
-				width: 30
-				# onClick: @onClick
 				className: css['toggle']
-				beta: 70
-				height: 20
 				slide: yes
 				pos: if props.checked then 0 else 2
 				h Slide,
@@ -477,8 +473,8 @@ class Input extends Component
 		
 			# input_props = Object.assign {},props,self_input_props
 
-			if props.type == 'button'
-				input_props.style = cursor: 'pointer'
+			# if props.type == 'button'
+				# input_props.style = cursor: 'pointer'
 
 			input_props.onClick = @onInputClick
 			if props.input_props

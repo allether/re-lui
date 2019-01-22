@@ -198,6 +198,7 @@ class MenuSection extends Component
 			h 'p',{},'the menu below is a fixed menu. click and drag the drag button to drag the menu around the screen and see how it responds.'
 			h Input,
 				type: 'checkbox'
+				big: yes
 				onClick: @onDrag
 				checked: state.toggle_drag
 				label: 'toggle drag'
