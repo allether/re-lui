@@ -85,6 +85,7 @@ a{
 }
 
 .btn{
+	white-space: pre;
 	font-family: @monofont;
 	user-select: none;
 	outline: none;
@@ -120,7 +121,7 @@ a{
 		margin-top: 0;
 	}
 	.label{
-		white-space: nowrap;
+		white-space: inherit;
 		flex-shrink: 0;
 		height: auto;
 		vertical-align: middle;
@@ -138,9 +139,11 @@ a{
 		top: -@dim/2;
 		font-size: @fontsize;
 	}
+
 	.label-opaque{
 		opacity: 0.5;
 	}
+
 	.top-label.label-opaque{
 		opacity: 0.8;
 	}
