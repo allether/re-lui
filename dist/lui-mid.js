@@ -923,9 +923,15 @@ Input = class Input extends Component {
           }
         }, value);
       } else {
-        label2 = h('span', {
-          className: cn(css['label'], css['label-2'])
-        }, this.props.placeholder != null ? this.props.placeholder || 'browse or drop file' : void 0);
+        if (this.props.placeholder != null) {
+          label2 = this.props.placeholder && h('span', {
+            className: cn(css['label'], css['label-2'])
+          }, this.props.placeholder);
+        } else {
+          label2 = this.props.placeholder && h('span', {
+            className: cn(css['label'], css['label-2'])
+          }, 'browse or drop file');
+        }
       }
       overlay_icon = h('div', {
         className: cn('material-icons', css['overlay-icon']),

@@ -441,9 +441,14 @@ class Input extends Component
 						opacity: 1
 					value
 			else
-				label2 = h 'span',
-					className: cn css['label'],css['label-2']
-					if @props.placeholder? then @props.placeholder || 'browse or drop file'
+				if @props.placeholder?
+					label2 = @props.placeholder && h 'span',
+						className: cn css['label'],css['label-2']
+						@props.placeholder
+				else
+					label2 = @props.placeholder && h 'span',
+						className: cn css['label'],css['label-2']
+						'browse or drop file'
 				
 			overlay_icon = h 'div',
 				className: cn 'material-icons',css['overlay-icon']
