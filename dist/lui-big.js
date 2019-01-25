@@ -916,7 +916,7 @@ Input = class Input extends Component {
       value = this.state.list_value;
     } else if (props.type === 'file') {
       if (this.state.input_files && this.state.input_files.length) {
-        label2 = h('div', {
+        label2 = value && h('div', {
           className: cn(css['label'], css['label-2']),
           style: {
             opacity: 1
