@@ -802,7 +802,7 @@ Input = class Input extends Component {
   }
 
   renderInput() {
-    var bar, chips, color_circle, focus, icon, input, input_hidden, input_name, input_props, label, label2, overlay_icon, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, value;
+    var bar, chips, color_circle, focus, icon, input, input_hidden, input_name, input_props, label, label2, outer_props, overlay_icon, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, value;
     // log 'render input'
     input_name = this.props.name;
     props = this.props;
@@ -981,11 +981,7 @@ Input = class Input extends Component {
         input = h('input', input_props);
       }
     }
-    
-    // if props.invalid || props.is_valid == false
-    // 	alert = h AlertDot,
-    // 		error: yes
-    return h(props.href && 'a' || 'label', {
+    outer_props = {
       onClick: !IS_TOUCH && this.onClick || void 0,
       htmlFor: input_name,
       onTouchStart: this.onTouchStart,
@@ -995,7 +991,13 @@ Input = class Input extends Component {
       className: cn(props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], css['input'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.className),
       href: props.href,
       style: style
-    }, chips, icon, label, toggle, bar, input, color_circle, label2, overlay_icon, props.children);
+    };
+    Object.assign(outer_props, this.props.outer_props);
+    
+    // if props.invalid || props.is_valid == false
+    // 	alert = h AlertDot,
+    // 		error: yes
+    return h(props.href && 'a' || 'label', outer_props, chips, icon, label, toggle, bar, input, color_circle, label2, overlay_icon, props.children);
   }
 
 };

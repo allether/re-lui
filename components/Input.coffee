@@ -496,7 +496,19 @@ class Input extends Component
 							opt
 			else
 				input = h 'input',input_props
-			
+		outer_props = 
+			onClick: !IS_TOUCH && @onClick || undefined
+			htmlFor: input_name
+			onTouchStart: @onTouchStart
+			onTouchEnd: @onTouchEnd
+			onMouseEnter: !@state.is_touch && @onMouseEnter || undefined
+			onMouseLeave:  !@state.is_touch && @onMouseLeave || undefined
+			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
+			href: props.href	
+			style: style
+
+
+		Object.assign outer_props,@props.outer_props
 		
 
 
@@ -507,15 +519,7 @@ class Input extends Component
 		
 
 		h (props.href && 'a' || 'label'),
-			onClick: !IS_TOUCH && @onClick || undefined
-			htmlFor: input_name
-			onTouchStart: @onTouchStart
-			onTouchEnd: @onTouchEnd
-			onMouseEnter: !@state.is_touch && @onMouseEnter || undefined
-			onMouseLeave:  !@state.is_touch && @onMouseLeave || undefined
-			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
-			href: props.href	
-			style: style
+			outer_props
 			chips
 			icon
 			label
