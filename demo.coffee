@@ -588,6 +588,30 @@ class Demo extends Component
 						onInput:@onToggle
 						type: 'checkbox'
 						label: 'toggle label'
+					h Bar,
+						btn: yes
+						h Input,
+							checked: state.toggle_checked
+							onInput:@onToggle
+							type: 'checkbox'
+							checkbox_type: 'circle'
+							label: 'circle style'
+						h Input,
+							checked: state.toggle_checked
+							onInput:@onToggle
+							type: 'checkbox'
+							btn_type: 'flat'
+							checkbox_type: 'circle'
+							label: 'circle style'
+						h Input,
+							checked: state.toggle_checked
+							onInput:@onToggle
+							type: 'checkbox'
+							btn_type: 'primary'
+							checkbox_type: 'circle'
+							label: 'circle style'
+
+
 					h Input,
 						checked: state.toggle_checked
 						onInput: @onToggle

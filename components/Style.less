@@ -285,6 +285,32 @@ pre{
 // 	margin-top: 0;
 // }
 
+.checkbox-circle{
+	height: @dim * 2/3;
+	width: @dim * 2/3;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	margin: 0 @margin-size;
+	overflow: hidden;
+	z-index: 1;
+	transform: translate(0);
+	transition: background @ease, transform @ease, opacity @ease;
+}
+.checkbox-circle-inner{
+	height: @dim * 2/3;
+	width: @dim * 2/3;
+	border-radius: 50%;
+	transform: scale(0.6);
+	transition: background @ease, transform @ease, opacity @ease;
+	// opacity: 0.4;
+	&.active{
+		// opacity: 1;
+		transform: scale(0.7);
+	}
+}
+
 .toggle{
 	
 	
@@ -486,6 +512,13 @@ pre{
 	background: none;
 	// pointer-events: none;
 }
+
+
+
+
+
+
+
 
 
 

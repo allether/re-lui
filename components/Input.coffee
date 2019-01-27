@@ -3,6 +3,7 @@ cn = require 'classnames'
 Color = require 'color'
 Slide = require 're-slide'
 AlertDot = require './AlertDot.coffee'
+CircleToggle = require './CircleToggle.coffee'
 {StyleContext} = require './Style.coffee'
 
 
@@ -242,10 +243,13 @@ class Input extends Component
 				bar_style.background = @context.secondary.warn
 			else if props.btn_type == 'primary'
 				bar_style.background = @context.secondary.color[0]
+				bar_style.color = @context.secondary.color[1]
 			else if props.btn_type == 'flat'
 				bar_style.background = @context.primary.inv[1]
+				bar_style.color = @context.primary.inv[2]
 			else
 				bar_style.background = @context.primary.inv[2]
+				bar_style.color = @context.primary.inv[3]
 			
 		else if props.invalid == true || props.is_valid == false
 			bar_style.background = @context.secondary.false
@@ -329,6 +333,7 @@ class Input extends Component
 		value = @props.value
 		select = props.select
 		focus = state.focus || state.hover || select
+		button_style = @getButtonStyle(props,state)
 
 		if @state.input_files && @state.input_files.length
 			if @props.value?
@@ -338,9 +343,12 @@ class Input extends Component
 		
 
 		if props.style
-			style = Object.assign @getButtonStyle(props,state),props.style
+			style = Object.assign button_style,props.style
 		else
-			style = @getButtonStyle(props,state)
+			style = button_style
+
+		icon_style = @getIconStyle(props,state)
+		bar_style = @getBarStyle(props,state)
 		
 
 		if props.type == 'label'
@@ -348,50 +356,70 @@ class Input extends Component
 		if props.type == 'color' || props.type == 'checkbox' || props.type == 'button'
 			input_hidden = true
 
+
+		
+
+
 		if props.type == 'checkbox'
-			toggle_bar_on_style = 
-				background: @context.secondary.true
-			toggle_bar_off_style = 
-				background: @context.secondary.false
-			if props.btn_type == 'primary'
-				toggle_bar_style = 
-					background: @context.secondary.color[0]
-			else if props.btn_type == 'flat'
-				toggle_bar_style = 
-					background: @context.primary.inv[1]
+
+			if props.checkbox_type == 'circle'
+				if @props.checked
+					if @props.btn_type == 'primary'
+						toggle_circle_fill_color = @context.secondary.true
+					else
+						toggle_circle_fill_color = @context.primary.true
+				else
+					toggle_circle_fill_color = bar_style.color 
+
+					# toggle_circle_fill_color = @context.secondary.color[0]
+				toggle = h CircleToggle,
+					background: bar_style.background
+					color: toggle_circle_fill_color
+					is_selected: props.checked
 			else
-				toggle_bar_style = 
-					background: @context.primary.inv[2]
-			
-			toggle = h Slide,
-				className: css['toggle']
-				slide: yes
-				pos: if props.checked then 0 else 2
-				h Slide,
-					className: css['toggle-on']
-					style: toggle_bar_on_style
-					beta: 100
-					offset: -12
-				h Slide,
-					width: 12
-					className: css['toggle-bar']
-					center: yes
-					style: toggle_bar_style
-					h 'i',
-						className: 'material-icons'
-						'more_vert'
-				h Slide,
-					className: css['toggle-off']
-					style: toggle_bar_off_style
-					beta: 100
-					offset: -12
+				toggle_bar_on_style = 
+					background: @context.secondary.true
+				toggle_bar_off_style = 
+					background: @context.secondary.false
+				if props.btn_type == 'primary'
+					toggle_bar_style = 
+						background: @context.secondary.color[0]
+				else if props.btn_type == 'flat'
+					toggle_bar_style = 
+						background: @context.primary.inv[1]
+				else
+					toggle_bar_style = 
+						background: @context.primary.inv[2]
+				
+				toggle = h Slide,
+					className: css['toggle']
+					slide: yes
+					pos: if props.checked then 0 else 2
+					h Slide,
+						className: css['toggle-on']
+						style: toggle_bar_on_style
+						beta: 100
+						offset: -12
+					h Slide,
+						width: 12
+						className: css['toggle-bar']
+						center: yes
+						style: toggle_bar_style
+						h 'i',
+							className: 'material-icons'
+							'more_vert'
+					h Slide,
+						className: css['toggle-off']
+						style: toggle_bar_off_style
+						beta: 100
+						offset: -12
 
 
 		if props.i
 			icon = h 'i',
 				onClick: @props.onIconClick
 				className: 'material-icons'
-				style: @getIconStyle(props,state)
+				style: icon_style
 				props.i 
 		
 
@@ -399,7 +427,7 @@ class Input extends Component
 			icon = h 'i',
 				onClick: @props.onIconClick
 				className: props.i_class
-				style: @getIconStyle(props,state)
+				style: icon_style
 
 
 		if props.label
@@ -413,7 +441,7 @@ class Input extends Component
 		if props.bar
 			bar = h 'div',
 				className: css['input-bar']
-				style: Object.assign @getBarStyle(props,state),props.bar_style
+				style: Object.assign bar_style,props.bar_style
 
 
 		if props.type == 'color'
@@ -520,10 +548,10 @@ class Input extends Component
 
 		h (props.href && 'a' || 'label'),
 			outer_props
+			toggle
 			chips
 			icon
 			label
-			toggle
 			bar
 			input
 			color_circle

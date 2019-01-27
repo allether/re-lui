@@ -383,6 +383,41 @@ module.exports = Chip;
 
 /***/ }),
 
+/***/ "./components/CircleToggle.coffee":
+/*!****************************************!*\
+  !*** ./components/CircleToggle.coffee ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var CircleToggle, cn, css;
+
+css = __webpack_require__(/*! ./Style.less */ "./components/Style.less");
+
+cn = __webpack_require__(/*! classnames */ "classnames");
+
+CircleToggle = class CircleToggle extends Component {
+  render() {
+    return h('div', {
+      className: css['checkbox-circle'],
+      style: {
+        background: this.props.background
+      }
+    }, h('div', {
+      className: cn(css['checkbox-circle-inner'], this.props.is_selected && css['active']),
+      style: {
+        background: this.props.color
+      }
+    }));
+  }
+
+};
+
+module.exports = CircleToggle;
+
+
+/***/ }),
+
 /***/ "./components/Input.coffee":
 /*!*********************************!*\
   !*** ./components/Input.coffee ***!
@@ -390,7 +425,7 @@ module.exports = Chip;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var AlertDot, Color, Input, Slide, StyleContext, cn, css,
+var AlertDot, CircleToggle, Color, Input, Slide, StyleContext, cn, css,
   boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
 
 css = __webpack_require__(/*! ./Style.less */ "./components/Style.less");
@@ -402,6 +437,8 @@ Color = __webpack_require__(/*! color */ "color");
 Slide = __webpack_require__(/*! re-slide */ "re-slide");
 
 AlertDot = __webpack_require__(/*! ./AlertDot.coffee */ "./components/AlertDot.coffee");
+
+CircleToggle = __webpack_require__(/*! ./CircleToggle.coffee */ "./components/CircleToggle.coffee");
 
 ({StyleContext} = __webpack_require__(/*! ./Style.coffee */ "./components/Style.coffee"));
 
@@ -711,10 +748,13 @@ Input = class Input extends Component {
         bar_style.background = this.context.secondary.warn;
       } else if (props.btn_type === 'primary') {
         bar_style.background = this.context.secondary.color[0];
+        bar_style.color = this.context.secondary.color[1];
       } else if (props.btn_type === 'flat') {
         bar_style.background = this.context.primary.inv[1];
+        bar_style.color = this.context.primary.inv[2];
       } else {
         bar_style.background = this.context.primary.inv[2];
+        bar_style.color = this.context.primary.inv[3];
       }
     } else if (props.invalid === true || props.is_valid === false) {
       bar_style.background = this.context.secondary.false;
@@ -802,7 +842,7 @@ Input = class Input extends Component {
   }
 
   renderInput() {
-    var bar, chips, color_circle, focus, icon, input, input_hidden, input_name, input_props, label, label2, outer_props, overlay_icon, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, value;
+    var bar, bar_style, button_style, chips, color_circle, focus, icon, icon_style, input, input_hidden, input_name, input_props, label, label2, outer_props, overlay_icon, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, toggle_circle_fill_color, value;
     // log 'render input'
     input_name = this.props.name;
     props = this.props;
@@ -810,6 +850,7 @@ Input = class Input extends Component {
     value = this.props.value;
     select = props.select;
     focus = state.focus || state.hover || select;
+    button_style = this.getButtonStyle(props, state);
     if (this.state.input_files && this.state.input_files.length) {
       if (this.props.value != null) {
         value = this.props.value;
@@ -818,10 +859,12 @@ Input = class Input extends Component {
       }
     }
     if (props.style) {
-      style = Object.assign(this.getButtonStyle(props, state), props.style);
+      style = Object.assign(button_style, props.style);
     } else {
-      style = this.getButtonStyle(props, state);
+      style = button_style;
     }
+    icon_style = this.getIconStyle(props, state);
+    bar_style = this.getBarStyle(props, state);
     if (props.type === 'label') {
       select = false;
     }
@@ -829,59 +872,78 @@ Input = class Input extends Component {
       input_hidden = true;
     }
     if (props.type === 'checkbox') {
-      toggle_bar_on_style = {
-        background: this.context.secondary.true
-      };
-      toggle_bar_off_style = {
-        background: this.context.secondary.false
-      };
-      if (props.btn_type === 'primary') {
-        toggle_bar_style = {
-          background: this.context.secondary.color[0]
-        };
-      } else if (props.btn_type === 'flat') {
-        toggle_bar_style = {
-          background: this.context.primary.inv[1]
-        };
+      if (props.checkbox_type === 'circle') {
+        if (this.props.checked) {
+          if (this.props.btn_type === 'primary') {
+            toggle_circle_fill_color = this.context.secondary.true;
+          } else {
+            toggle_circle_fill_color = this.context.primary.true;
+          }
+        } else {
+          toggle_circle_fill_color = bar_style.color;
+        }
+        
+        // toggle_circle_fill_color = @context.secondary.color[0]
+        toggle = h(CircleToggle, {
+          background: bar_style.background,
+          color: toggle_circle_fill_color,
+          is_selected: props.checked
+        });
       } else {
-        toggle_bar_style = {
-          background: this.context.primary.inv[2]
+        toggle_bar_on_style = {
+          background: this.context.secondary.true
         };
+        toggle_bar_off_style = {
+          background: this.context.secondary.false
+        };
+        if (props.btn_type === 'primary') {
+          toggle_bar_style = {
+            background: this.context.secondary.color[0]
+          };
+        } else if (props.btn_type === 'flat') {
+          toggle_bar_style = {
+            background: this.context.primary.inv[1]
+          };
+        } else {
+          toggle_bar_style = {
+            background: this.context.primary.inv[2]
+          };
+        }
+        toggle = h(Slide, {
+          className: css['toggle'],
+          slide: true,
+          pos: props.checked ? 0 : 2
+        }, h(Slide, {
+          className: css['toggle-on'],
+          style: toggle_bar_on_style,
+          beta: 100,
+          offset: -12
+        }), h(Slide, {
+          width: 12,
+          className: css['toggle-bar'],
+          center: true,
+          style: toggle_bar_style
+        }, h('i', {
+          className: 'material-icons'
+        }, 'more_vert')), h(Slide, {
+          className: css['toggle-off'],
+          style: toggle_bar_off_style,
+          beta: 100,
+          offset: -12
+        }));
       }
-      toggle = h(Slide, {
-        className: css['toggle'],
-        slide: true,
-        pos: props.checked ? 0 : 2
-      }, h(Slide, {
-        className: css['toggle-on'],
-        style: toggle_bar_on_style,
-        beta: 100,
-        offset: -12
-      }), h(Slide, {
-        width: 12,
-        className: css['toggle-bar'],
-        center: true,
-        style: toggle_bar_style
-      }, h('i', {
-        className: 'material-icons'
-      }, 'more_vert')), h(Slide, {
-        className: css['toggle-off'],
-        style: toggle_bar_off_style,
-        beta: 100,
-        offset: -12
-      }));
     }
     if (props.i) {
       icon = h('i', {
         onClick: this.props.onIconClick,
         className: 'material-icons',
-        style: this.getIconStyle(props, state)
+        style: icon_style
       }, props.i);
     } else if (props.i_class) {
       icon = h('i', {
         onClick: this.props.onIconClick,
         className: props.i_class,
-        style: this.getIconStyle(props, state)
+        style: icon_style
       });
     }
     if (props.label) {
@@ -895,7 +957,7 @@ Input = class Input extends Component {
     if (props.bar) {
       bar = h('div', {
         className: css['input-bar'],
-        style: Object.assign(this.getBarStyle(props, state), props.bar_style)
+        style: Object.assign(bar_style, props.bar_style)
       });
     }
     if (props.type === 'color') {
@@ -997,7 +1059,7 @@ Input = class Input extends Component {
     // if props.invalid || props.is_valid == false
     // 	alert = h AlertDot,
     // 		error: yes
-    return h(props.href && 'a' || 'label', outer_props, chips, icon, label, toggle, bar, input, color_circle, label2, overlay_icon, props.children);
+    return h(props.href && 'a' || 'label', outer_props, toggle, chips, icon, label, bar, input, color_circle, label2, overlay_icon, props.children);
   }
 
 };
@@ -2228,7 +2290,7 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/li
 exports.i(__webpack_require__(/*! -!../node_modules/css-loader??ref--6-1!./Font.css */ "./node_modules/css-loader/index.js?!./components/Font.css"), "");
 
 // module
-exports.push([module.i, "body {\n  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n  font-size: 13px;\n  font-family: \"Open Sans\";\n  font-weight: 300;\n  box-sizing: border-box;\n  text-rendering: optimizeSpeed;\n  -webkit-font-smoothing: subpixel-antialiased;\n}\n* {\n  box-sizing: border-box;\n}\n.lui-section {\n  position: relative;\n  padding: 10px;\n}\n.lui-section-content {\n  margin: 6px 0;\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n}\n.lui-section-content p {\n  width: 100%;\n  margin-top: 8;\n  margin-bottom: 8;\n}\n.lui-section-title {\n  margin: 0;\n  margin-top: 0;\n  margin-left: 0;\n  width: 100%;\n  /* padding-right: 30; */\n  text-transform: capitalize;\n  display: inline-flex;\n  align-items: center;\n  font-size: 13px;\n  flex-wrap: wrap;\n  font-weight: 700;\n}\n.lui-section-title-bar {\n  height: 6px;\n  width: 60px;\n  border-radius: 3px;\n  margin-left: 6px;\n  margin-top: 2.16666667px;\n}\n.lui-alert-dot {\n  border-radius: 50%;\n  width: 10px;\n  height: 10px;\n  position: absolute;\n  top: -3.33333333px;\n  right: -3.33333333px;\n}\na {\n  text-decoration: none;\n}\n.lui-input-bar {\n  transition: inherit;\n  height: 20px;\n  width: 6px;\n  flex-shrink: 0;\n  margin: 0 6px;\n  border-radius: 3px;\n}\n.lui-modal-shadow {\n  box-shadow: 0px 0px 10px #00000014;\n}\n.lui-btn {\n  white-space: pre;\n  font-family: \"monor\";\n  user-select: none;\n  outline: none;\n  border: none;\n  padding: 0 10px;\n  min-height: 30px;\n  min-width: 30px;\n  margin: 4 4;\n  display: inline-flex;\n  margin-top: 8;\n  align-items: center;\n  position: relative;\n  justify-content: flex-start;\n  border-radius: 3px;\n  font-weight: 400;\n  transition: filter 0.3s ease, background 0.3s ease, color 0.3s ease;\n  cursor: default;\n}\n.lui-btn textarea {\n  border: none;\n  color: inherit;\n  background: none;\n  padding: 3 3px;\n  min-width: 100%;\n  width: 100%;\n  min-height: 100;\n  outline: none;\n}\n.lui-btn .lui-chip {\n  margin-top: 0;\n}\n.lui-btn .lui-label {\n  white-space: inherit;\n  flex-shrink: 0;\n  height: auto;\n  vertical-align: middle;\n  line-height: normal;\n  margin: 0 3px;\n}\n.lui-btn .lui-top-label {\n  transition: opacity 0.3s ease;\n  opacity: 0;\n  padding: 0;\n  margin: 0;\n  position: absolute;\n  left: 0;\n  top: -15px;\n  font-size: 13px;\n}\n.lui-btn .lui-label-opaque {\n  opacity: 0.5;\n}\n.lui-btn .lui-top-label.lui-label-opaque {\n  opacity: 0.8;\n}\n.lui-btn i {\n  font-size: 20px;\n  transition: color 0.3s ease;\n  margin: 0 3px;\n  margin-left: 0;\n}\n.lui-btn.lui-btn-textarea {\n  padding: 10px;\n  flex-wrap: wrap;\n  height: auto;\n  min-height: 100;\n  width: 300;\n}\n.lui-btn.lui-btn-textarea .lui-input-bar {\n  width: 30%;\n  height: 6px;\n  margin-right: 0;\n  margin-left: 0;\n  margin-top: 6px;\n  margin-bottom: 3px;\n}\n.lui-btn.lui-btn-textarea .lui-label {\n  width: 100%;\n}\n.lui-btn.lui-btn-big {\n  height: 40px !important;\n  padding: 0 20px;\n}\n.lui-btn.lui-btn-big.lui-btn-icon-square {\n  width: 40px;\n}\n.lui-btn.lui-btn-big i {\n  font-size: 25px;\n  margin-left: 0;\n}\n.lui-btn.lui-btn-big .lui-overlay-icon {\n  padding: 13px;\n}\n.lui-btn.lui-btn-icon-square {\n  padding: 0;\n  width: 30px;\n  flex-grow: 0 !important;\n  align-items: center;\n  justify-content: center;\n}\n.lui-btn.lui-btn-icon-square i {\n  margin: 0 !important;\n}\n.lui-btn input,\n.lui-btn select {\n  -webkit-appearance: none;\n  width: 100%;\n  user-select: all;\n  outline: none;\n  background: none;\n  border: none;\n  color: inherit;\n  margin: 0 3px;\n  padding: 0;\n  vertical-align: middle;\n  line-height: normal;\n  position: relative;\n  min-width: 100px;\n}\n.lui-btn input.lui-hidden,\n.lui-btn select.lui-hidden {\n  min-width: 0px;\n  height: 0;\n}\n.lui-btn input[type=\"file\"],\n.lui-btn select[type=\"file\"] {\n  width: 100%;\n  /* visibility: hidden; */\n  height: 100%;\n  left: 0;\n  top: 0;\n  position: absolute;\n  opacity: 0;\n  z-index: 1;\n  -webkit-appearance: none;\n}\n.lui-btn .lui-label-2 {\n  padding-right: 20px;\n  opacity: 0.5;\n}\n.lui-btn .lui-overlay-icon {\n  transition: opacity 0.3s ease;\n  position: absolute;\n  right: 0;\n  top: 0;\n  opacity: 0.5;\n  font-size: 15px;\n  padding: 8px;\n}\n.lui-btn ::placeholder {\n  color: inherit;\n  opacity: 0.5;\n}\npre {\n  font-family: \"monor\";\n  font-size: inherit;\n}\n.lui-hidden {\n  opacity: 0 !important;\n  width: 0 !important;\n  margin: 0 !important;\n}\n.lui-chip {\n  height: 20px;\n  border-radius: 3px;\n  margin: 0 3px;\n  padding: 0 6px;\n  display: inline-flex;\n  flex-shrink: 0;\n  font-size: 11;\n  align-items: center;\n  justify-content: center;\n}\n.lui-toggle {\n  border-radius: 3px;\n  height: 20px;\n  width: 30px;\n  margin-left: 3px;\n}\n.lui-toggle i {\n  font-size: 17.33333333px !important;\n}\n.lui-toggle .lui-toggle-on {\n  background: red;\n}\n.lui-toggle .lui-toggle-off {\n  background: green;\n}\n.lui-input-color-circle {\n  margin-left: 3px;\n  min-width: 70;\n}\n.lui-input-color-text {\n  font-size: 10px;\n  opacity: 0.6;\n}\n.lui-disabled {\n  filter: grayscale(0.6) opacity(0.6);\n  cursor: default;\n  pointer-events: none;\n}\n.lui-toggle-bar i {\n  opacity: 0.3;\n  margin-right: 0;\n  font-size: 15px;\n}\n.lui-sqaure-btn {\n  margin: 0;\n  border-radius: 0;\n  flex-grow: 1;\n  flex-shrink: 0;\n}\n.lui-square-btn-big {\n  padding: 0 10px;\n  height: 40px;\n}\n.lui-square-btn-big.lui-btn-icon-square {\n  width: 40px;\n}\n.lui-square-btn-big.lui-btn-icon-square i {\n  margin-left: 0;\n}\n.lui-square-btn-big input {\n  height: 40px;\n  margin: 0 3px;\n}\n.lui-square-btn-big .lui-alert-dot {\n  top: 4;\n  right: 4;\n}\n.lui-square-btn-big .lui-label-2 {\n  padding-right: 30px;\n}\n.lui-square-btn-big .lui-label {\n  margin: 0 3px;\n}\n.lui-square-btn-big i {\n  font-size: 25px;\n}\n.lui-square-btn-small {\n  padding: 0 10px;\n  height: 30px;\n}\n.lui-square-btn-small.lui-btn-icon-square {\n  width: 30px;\n}\n.lui-square-btn-small input {\n  height: 30px;\n  margin: 0 3px;\n}\n.lui-square-btn-small .lui-alert-dot {\n  top: 2;\n  right: 2;\n}\n.lui-square-btn-small .lui-label {\n  margin: 0 3px;\n}\n.lui-square-btn-small i {\n  font-size: 20px;\n}\n.lui-square-btn-small .lui-label-2 {\n  padding-right: 20px;\n}\n.lui-square-btn-small .lui-overlay-icon {\n  padding: 10px;\n}\n.lui-bar {\n  display: flex;\n  flex-wrap: nowrap;\n  flex-shrink: 0;\n  height: 30px;\n}\n.lui-bar.lui-bar-btn {\n  border-radius: 3px;\n  overflow: hidden;\n  margin: 4 4;\n  margin-top: 8;\n}\n.lui-bar.lui-bar-big {\n  height: 40px;\n}\n.lui-bar.lui-bar-small {\n  height: 30px;\n}\n.lui-bar.lui-bar-vert {\n  height: auto;\n  width: auto;\n  flex-direction: column;\n  display: flex;\n}\n.lui-bar > .lui-btn,\n.lui-bar > .lui-tab-wrapper > .lui-btn {\n  margin: 0;\n  border-radius: 0;\n  flex-grow: 1;\n  flex-shrink: 0;\n}\n.lui-bar.lui-bar-big > .lui-btn,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn {\n  padding: 0 10px;\n  height: 40px;\n}\n.lui-bar.lui-bar-big > .lui-btn.lui-btn-icon-square,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square {\n  width: 40px;\n}\n.lui-bar.lui-bar-big > .lui-btn.lui-btn-icon-square i,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square i {\n  margin-left: 0;\n}\n.lui-bar.lui-bar-big > .lui-btn input,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn input {\n  height: 40px;\n  margin: 0 3px;\n}\n.lui-bar.lui-bar-big > .lui-btn .lui-alert-dot,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-alert-dot {\n  top: 4;\n  right: 4;\n}\n.lui-bar.lui-bar-big > .lui-btn .lui-label-2,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-label-2 {\n  padding-right: 30px;\n}\n.lui-bar.lui-bar-big > .lui-btn .lui-label,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-label {\n  margin: 0 3px;\n}\n.lui-bar.lui-bar-big > .lui-btn i,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn i {\n  font-size: 25px;\n}\n.lui-bar.lui-bar-small > .lui-btn,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn {\n  padding: 0 10px;\n  height: 30px;\n}\n.lui-bar.lui-bar-small > .lui-btn.lui-btn-icon-square,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square {\n  width: 30px;\n}\n.lui-bar.lui-bar-small > .lui-btn input,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn input {\n  height: 30px;\n  margin: 0 3px;\n}\n.lui-bar.lui-bar-small > .lui-btn .lui-alert-dot,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-alert-dot {\n  top: 2;\n  right: 2;\n}\n.lui-bar.lui-bar-small > .lui-btn .lui-label,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-label {\n  margin: 0 3px;\n}\n.lui-bar.lui-bar-small > .lui-btn i,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn i {\n  font-size: 20px;\n}\n.lui-bar.lui-bar-small > .lui-btn .lui-label-2,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-label-2 {\n  padding-right: 20px;\n}\n.lui-bar.lui-bar-small > .lui-btn .lui-overlay-icon,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-overlay-icon {\n  padding: 10px;\n}\n.lui-tab-wrapper,\n.lui-tab-content {\n  position: relative;\n  display: flex;\n  width: auto;\n  flex-shrink: 0;\n}\n.lui-menu-bar {\n  position: absolute;\n  width: fit-content;\n  min-width: max-content;\n  display: flex;\n}\n.lui-overlay {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 1;\n  transition: opacity 0.3s ease;\n}\n.lui-overlay.lui-overlay-hidden {\n  pointer-events: none;\n  opacity: 0;\n}\n.lui-overlay .lui-overlay-slide {\n  width: 100vw;\n  height: 100vh;\n}\n.lui-overlay-transparent {\n  background: none;\n}\n.lui-loader {\n  position: absolute;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin: auto;\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #FFFFFF;\n  animation: lui-_ii_rotate 1s infinite ease-in-out;\n  transition: opacity 0.3s ease;\n}\n.lui-loader-stop {\n  animation: lui-_ii_rotate 0.3s ease-in-out;\n  animation-iteration-count: 0;\n  opacity: 0.2;\n  transition: opacity 0.3s ease-in-out, transform 0.1s ease-in-out;\n}\n@keyframes lui-_ii_rotate {\n  0% {\n    transform: perspective(20px) rotateX(0deg) rotateY(0deg);\n  }\n  50% {\n    transform: perspective(20px) rotateX(-180deg) rotateY(0deg);\n  }\n  100% {\n    transform: perspective(20px) rotateX(-180deg) rotateY(-180deg);\n  }\n}\n", ""]);
+exports.push([module.i, "body {\n  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\n  font-size: 13px;\n  font-family: \"Open Sans\";\n  font-weight: 300;\n  box-sizing: border-box;\n  text-rendering: optimizeSpeed;\n  -webkit-font-smoothing: subpixel-antialiased;\n}\n* {\n  box-sizing: border-box;\n}\n.lui-section {\n  position: relative;\n  padding: 10px;\n}\n.lui-section-content {\n  margin: 6px 0;\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n}\n.lui-section-content p {\n  width: 100%;\n  margin-top: 8;\n  margin-bottom: 8;\n}\n.lui-section-title {\n  margin: 0;\n  margin-top: 0;\n  margin-left: 0;\n  width: 100%;\n  /* padding-right: 30; */\n  text-transform: capitalize;\n  display: inline-flex;\n  align-items: center;\n  font-size: 13px;\n  flex-wrap: wrap;\n  font-weight: 700;\n}\n.lui-section-title-bar {\n  height: 6px;\n  width: 60px;\n  border-radius: 3px;\n  margin-left: 6px;\n  margin-top: 2.16666667px;\n}\n.lui-alert-dot {\n  border-radius: 50%;\n  width: 10px;\n  height: 10px;\n  position: absolute;\n  top: -3.33333333px;\n  right: -3.33333333px;\n}\na {\n  text-decoration: none;\n}\n.lui-input-bar {\n  transition: inherit;\n  height: 20px;\n  width: 6px;\n  flex-shrink: 0;\n  margin: 0 6px;\n  border-radius: 3px;\n}\n.lui-modal-shadow {\n  box-shadow: 0px 0px 10px #00000014;\n}\n.lui-btn {\n  white-space: pre;\n  font-family: \"monor\";\n  user-select: none;\n  outline: none;\n  border: none;\n  padding: 0 10px;\n  min-height: 30px;\n  min-width: 30px;\n  margin: 4 4;\n  display: inline-flex;\n  margin-top: 8;\n  align-items: center;\n  position: relative;\n  justify-content: flex-start;\n  border-radius: 3px;\n  font-weight: 400;\n  transition: filter 0.3s ease, background 0.3s ease, color 0.3s ease;\n  cursor: default;\n}\n.lui-btn textarea {\n  border: none;\n  color: inherit;\n  background: none;\n  padding: 3 3px;\n  min-width: 100%;\n  width: 100%;\n  min-height: 100;\n  outline: none;\n}\n.lui-btn .lui-chip {\n  margin-top: 0;\n}\n.lui-btn .lui-label {\n  white-space: inherit;\n  flex-shrink: 0;\n  height: auto;\n  vertical-align: middle;\n  line-height: normal;\n  margin: 0 3px;\n}\n.lui-btn .lui-top-label {\n  transition: opacity 0.3s ease;\n  opacity: 0;\n  padding: 0;\n  margin: 0;\n  position: absolute;\n  left: 0;\n  top: -15px;\n  font-size: 13px;\n}\n.lui-btn .lui-label-opaque {\n  opacity: 0.5;\n}\n.lui-btn .lui-top-label.lui-label-opaque {\n  opacity: 0.8;\n}\n.lui-btn i {\n  font-size: 20px;\n  transition: color 0.3s ease;\n  margin: 0 3px;\n  margin-left: 0;\n}\n.lui-btn.lui-btn-textarea {\n  padding: 10px;\n  flex-wrap: wrap;\n  height: auto;\n  min-height: 100;\n  width: 300;\n}\n.lui-btn.lui-btn-textarea .lui-input-bar {\n  width: 30%;\n  height: 6px;\n  margin-right: 0;\n  margin-left: 0;\n  margin-top: 6px;\n  margin-bottom: 3px;\n}\n.lui-btn.lui-btn-textarea .lui-label {\n  width: 100%;\n}\n.lui-btn.lui-btn-big {\n  height: 40px !important;\n  padding: 0 20px;\n}\n.lui-btn.lui-btn-big.lui-btn-icon-square {\n  width: 40px;\n}\n.lui-btn.lui-btn-big i {\n  font-size: 25px;\n  margin-left: 0;\n}\n.lui-btn.lui-btn-big .lui-overlay-icon {\n  padding: 13px;\n}\n.lui-btn.lui-btn-icon-square {\n  padding: 0;\n  width: 30px;\n  flex-grow: 0 !important;\n  align-items: center;\n  justify-content: center;\n}\n.lui-btn.lui-btn-icon-square i {\n  margin: 0 !important;\n}\n.lui-btn input,\n.lui-btn select {\n  -webkit-appearance: none;\n  width: 100%;\n  user-select: all;\n  outline: none;\n  background: none;\n  border: none;\n  color: inherit;\n  margin: 0 3px;\n  padding: 0;\n  vertical-align: middle;\n  line-height: normal;\n  position: relative;\n  min-width: 100px;\n}\n.lui-btn input.lui-hidden,\n.lui-btn select.lui-hidden {\n  min-width: 0px;\n  height: 0;\n}\n.lui-btn input[type=\"file\"],\n.lui-btn select[type=\"file\"] {\n  width: 100%;\n  /* visibility: hidden; */\n  height: 100%;\n  left: 0;\n  top: 0;\n  position: absolute;\n  opacity: 0;\n  z-index: 1;\n  -webkit-appearance: none;\n}\n.lui-btn .lui-label-2 {\n  padding-right: 20px;\n  opacity: 0.5;\n}\n.lui-btn .lui-overlay-icon {\n  transition: opacity 0.3s ease;\n  position: absolute;\n  right: 0;\n  top: 0;\n  opacity: 0.5;\n  font-size: 15px;\n  padding: 8px;\n}\n.lui-btn ::placeholder {\n  color: inherit;\n  opacity: 0.5;\n}\npre {\n  font-family: \"monor\";\n  font-size: inherit;\n}\n.lui-hidden {\n  opacity: 0 !important;\n  width: 0 !important;\n  margin: 0 !important;\n}\n.lui-chip {\n  height: 20px;\n  border-radius: 3px;\n  margin: 0 3px;\n  padding: 0 6px;\n  display: inline-flex;\n  flex-shrink: 0;\n  font-size: 11;\n  align-items: center;\n  justify-content: center;\n}\n.lui-checkbox-circle {\n  height: 20px;\n  width: 20px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 50%;\n  margin: 0 3px;\n  overflow: hidden;\n  z-index: 1;\n  transform: translate(0);\n  transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;\n}\n.lui-checkbox-circle-inner {\n  height: 20px;\n  width: 20px;\n  border-radius: 50%;\n  transform: scale(0.6);\n  transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;\n}\n.lui-checkbox-circle-inner.lui-active {\n  transform: scale(0.7);\n}\n.lui-toggle {\n  border-radius: 3px;\n  height: 20px;\n  width: 30px;\n  margin-left: 3px;\n}\n.lui-toggle i {\n  font-size: 17.33333333px !important;\n}\n.lui-toggle .lui-toggle-on {\n  background: red;\n}\n.lui-toggle .lui-toggle-off {\n  background: green;\n}\n.lui-input-color-circle {\n  margin-left: 3px;\n  min-width: 70;\n}\n.lui-input-color-text {\n  font-size: 10px;\n  opacity: 0.6;\n}\n.lui-disabled {\n  filter: grayscale(0.6) opacity(0.6);\n  cursor: default;\n  pointer-events: none;\n}\n.lui-toggle-bar i {\n  opacity: 0.3;\n  margin-right: 0;\n  font-size: 15px;\n}\n.lui-sqaure-btn {\n  margin: 0;\n  border-radius: 0;\n  flex-grow: 1;\n  flex-shrink: 0;\n}\n.lui-square-btn-big {\n  padding: 0 10px;\n  height: 40px;\n}\n.lui-square-btn-big.lui-btn-icon-square {\n  width: 40px;\n}\n.lui-square-btn-big.lui-btn-icon-square i {\n  margin-left: 0;\n}\n.lui-square-btn-big input {\n  height: 40px;\n  margin: 0 3px;\n}\n.lui-square-btn-big .lui-alert-dot {\n  top: 4;\n  right: 4;\n}\n.lui-square-btn-big .lui-label-2 {\n  padding-right: 30px;\n}\n.lui-square-btn-big .lui-label {\n  margin: 0 3px;\n}\n.lui-square-btn-big i {\n  font-size: 25px;\n}\n.lui-square-btn-small {\n  padding: 0 10px;\n  height: 30px;\n}\n.lui-square-btn-small.lui-btn-icon-square {\n  width: 30px;\n}\n.lui-square-btn-small input {\n  height: 30px;\n  margin: 0 3px;\n}\n.lui-square-btn-small .lui-alert-dot {\n  top: 2;\n  right: 2;\n}\n.lui-square-btn-small .lui-label {\n  margin: 0 3px;\n}\n.lui-square-btn-small i {\n  font-size: 20px;\n}\n.lui-square-btn-small .lui-label-2 {\n  padding-right: 20px;\n}\n.lui-square-btn-small .lui-overlay-icon {\n  padding: 10px;\n}\n.lui-bar {\n  display: flex;\n  flex-wrap: nowrap;\n  flex-shrink: 0;\n  height: 30px;\n}\n.lui-bar.lui-bar-btn {\n  border-radius: 3px;\n  overflow: hidden;\n  margin: 4 4;\n  margin-top: 8;\n}\n.lui-bar.lui-bar-big {\n  height: 40px;\n}\n.lui-bar.lui-bar-small {\n  height: 30px;\n}\n.lui-bar.lui-bar-vert {\n  height: auto;\n  width: auto;\n  flex-direction: column;\n  display: flex;\n}\n.lui-bar > .lui-btn,\n.lui-bar > .lui-tab-wrapper > .lui-btn {\n  margin: 0;\n  border-radius: 0;\n  flex-grow: 1;\n  flex-shrink: 0;\n}\n.lui-bar.lui-bar-big > .lui-btn,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn {\n  padding: 0 10px;\n  height: 40px;\n}\n.lui-bar.lui-bar-big > .lui-btn.lui-btn-icon-square,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square {\n  width: 40px;\n}\n.lui-bar.lui-bar-big > .lui-btn.lui-btn-icon-square i,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square i {\n  margin-left: 0;\n}\n.lui-bar.lui-bar-big > .lui-btn input,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn input {\n  height: 40px;\n  margin: 0 3px;\n}\n.lui-bar.lui-bar-big > .lui-btn .lui-alert-dot,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-alert-dot {\n  top: 4;\n  right: 4;\n}\n.lui-bar.lui-bar-big > .lui-btn .lui-label-2,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-label-2 {\n  padding-right: 30px;\n}\n.lui-bar.lui-bar-big > .lui-btn .lui-label,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-label {\n  margin: 0 3px;\n}\n.lui-bar.lui-bar-big > .lui-btn i,\n.lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn i {\n  font-size: 25px;\n}\n.lui-bar.lui-bar-small > .lui-btn,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn {\n  padding: 0 10px;\n  height: 30px;\n}\n.lui-bar.lui-bar-small > .lui-btn.lui-btn-icon-square,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square {\n  width: 30px;\n}\n.lui-bar.lui-bar-small > .lui-btn input,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn input {\n  height: 30px;\n  margin: 0 3px;\n}\n.lui-bar.lui-bar-small > .lui-btn .lui-alert-dot,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-alert-dot {\n  top: 2;\n  right: 2;\n}\n.lui-bar.lui-bar-small > .lui-btn .lui-label,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-label {\n  margin: 0 3px;\n}\n.lui-bar.lui-bar-small > .lui-btn i,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn i {\n  font-size: 20px;\n}\n.lui-bar.lui-bar-small > .lui-btn .lui-label-2,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-label-2 {\n  padding-right: 20px;\n}\n.lui-bar.lui-bar-small > .lui-btn .lui-overlay-icon,\n.lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-overlay-icon {\n  padding: 10px;\n}\n.lui-tab-wrapper,\n.lui-tab-content {\n  position: relative;\n  display: flex;\n  width: auto;\n  flex-shrink: 0;\n}\n.lui-menu-bar {\n  position: absolute;\n  width: fit-content;\n  min-width: max-content;\n  display: flex;\n}\n.lui-overlay {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 1;\n  transition: opacity 0.3s ease;\n}\n.lui-overlay.lui-overlay-hidden {\n  pointer-events: none;\n  opacity: 0;\n}\n.lui-overlay .lui-overlay-slide {\n  width: 100vw;\n  height: 100vh;\n}\n.lui-overlay-transparent {\n  background: none;\n}\n.lui-loader {\n  position: absolute;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin: auto;\n  width: 10px;\n  height: 10px;\n  border-radius: 3px;\n  background-color: #FFFFFF;\n  animation: lui-_ii_rotate 1s infinite ease-in-out;\n  transition: opacity 0.3s ease;\n}\n.lui-loader-stop {\n  animation: lui-_ii_rotate 0.3s ease-in-out;\n  animation-iteration-count: 0;\n  opacity: 0.2;\n  transition: opacity 0.3s ease-in-out, transform 0.1s ease-in-out;\n}\n@keyframes lui-_ii_rotate {\n  0% {\n    transform: perspective(20px) rotateX(0deg) rotateY(0deg);\n  }\n  50% {\n    transform: perspective(20px) rotateX(-180deg) rotateY(0deg);\n  }\n  100% {\n    transform: perspective(20px) rotateX(-180deg) rotateY(-180deg);\n  }\n}\n", ""]);
 
 // exports
 exports.locals = {
@@ -2250,6 +2312,9 @@ exports.locals = {
 	"overlay-icon": "lui-overlay-icon",
 	"hidden": "lui-hidden",
 	"label-2": "lui-label-2",
+	"checkbox-circle": "lui-checkbox-circle",
+	"checkbox-circle-inner": "lui-checkbox-circle-inner",
+	"active": "lui-active",
 	"toggle": "lui-toggle",
 	"toggle-on": "lui-toggle-on",
 	"toggle-off": "lui-toggle-off",
