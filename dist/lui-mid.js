@@ -1650,6 +1650,9 @@ MenuTab = class MenuTab extends Component {
     } else if (!this.state.split_vert && this.state.split_x < 0) {
       bar_style.right = '100%';
       bar_style.left = null;
+    } else {
+      bar_style.left = '0%';
+      bar_style.right = null;
     }
     if (this.state.split_vert && this.state.split_y < 0) {
       bar_style.top = null;
