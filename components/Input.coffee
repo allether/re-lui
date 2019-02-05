@@ -242,8 +242,8 @@ class Input extends Component
 			if props.required && !props.value
 				bar_style.background = @context.secondary.warn
 			else if props.btn_type == 'primary'
-				bar_style.background = @context.secondary.color[0]
-				bar_style.color = @context.secondary.color[1]
+				bar_style.background = @context.secondary.color[2]
+				bar_style.color = @context.secondary.color[3]
 			else if props.btn_type == 'flat'
 				bar_style.background = @context.primary.inv[1]
 				bar_style.color = @context.primary.inv[2]
@@ -341,14 +341,17 @@ class Input extends Component
 			else
 				value = @state.input_files.length > 1 && (@state.input_files.length + ' files') || @state.input_files[0]
 		
-
+		icon_style = @getIconStyle(props,state)
+		bar_style = @getBarStyle(props,state)
+		
 		if props.style
 			style = Object.assign button_style,props.style
 		else
 			style = button_style
 
-		icon_style = @getIconStyle(props,state)
-		bar_style = @getBarStyle(props,state)
+		if props.i_style
+			Object.assign icon_style,props.i_style
+
 		
 
 		if props.type == 'label'

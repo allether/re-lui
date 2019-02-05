@@ -47,7 +47,7 @@ class Overlay extends Component
 				@_timeout = setTimeout ()=>
 					@setState
 						render: @props.visible
-				,1000
+				,350
 	
 	componentDidMount: (p_props,p_state)->
 		if @state.visible != @props.visible
@@ -59,12 +59,18 @@ class Overlay extends Component
 		@_timeout = null
 	
 	onClick: (e)=>
-		if @_touch || !@props.visible then return
+		if @_touch || !@props.visible
+			e.preventDefault()
+			e.stopPropagation()
+			return false
 		@props.onClick?(e)
 	
 	onTouchStart: (e)=>
 		@_touch = true
-		if !@props.visible then return
+		if !@props.visible
+			e.preventDefault()
+			e.stopPropagation()
+			return false
 		@props.onClick?(e)
 
 
@@ -72,13 +78,14 @@ class Overlay extends Component
 		overlay_style = Object.assign 
 			zIndex: @props.z_index || 666
 			display: !@state.render && 'none' || ''
+			pointerEvents: !@state.render && 'none'
 			background: @props.transparent && 'none' || @state.backdrop_opaque_color
 		,@props.style
 		
 		h 'div',
 			onClick: !IS_TOUCH && @onClick || undefined
 			onTouchStart: @onTouchStart
-			className: cn(css['overlay'],!@state.visible && css['overlay-hidden'],@props.className,@props.transparent && css['overlay-transparent'])
+			className: cn(css['overlay'],@props.center && css['center'],!@state.visible && css['overlay-hidden'],@props.className,@props.transparent && css['overlay-transparent'])
 			style: overlay_style
 			@props.children
 
