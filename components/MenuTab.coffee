@@ -13,7 +13,7 @@ class MenuTab extends Component
 		@state =
 			reveal: props.reveal || false
 			pre_render_visibility : false
-			# show_backdrop: false
+
 
 
 	getContext: ->
@@ -39,6 +39,7 @@ class MenuTab extends Component
 		click_reveal_enabled: if @props.click_reveal_enabled? then @props.click_reveal_enabled else @context.click_reveal_enabled
 		big: if @props.big? then @props.big else @context.big
 		reveal: if @state.reveal == false then false else @context.reveal
+
 
 
 	childContainer: (el)=>

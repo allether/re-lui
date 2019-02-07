@@ -387,12 +387,15 @@ class Input extends Component
 				if props.btn_type == 'primary'
 					toggle_bar_style = 
 						background: @context.secondary.color[0]
+						color: @context.secondary.color[1]
 				else if props.btn_type == 'flat'
 					toggle_bar_style = 
 						background: @context.primary.inv[1]
+						color: @context.secondary.inv[2]
 				else
 					toggle_bar_style = 
 						background: @context.primary.inv[2]
+						color: @context.secondary.inv[3]
 				
 				toggle = h Slide,
 					className: css['toggle']
@@ -405,12 +408,12 @@ class Input extends Component
 						offset: -12
 					h Slide,
 						width: 12
-						className: css['toggle-bar']
 						center: yes
 						style: toggle_bar_style
-						h 'i',
-							className: 'material-icons'
-							'more_vert'
+						h 'div',
+							style:
+								background: toggle_bar_style.color
+							className: css['toggle-bar']
 					h Slide,
 						className: css['toggle-off']
 						style: toggle_bar_off_style
