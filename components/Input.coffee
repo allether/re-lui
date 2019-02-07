@@ -391,11 +391,11 @@ class Input extends Component
 				else if props.btn_type == 'flat'
 					toggle_bar_style = 
 						background: @context.primary.inv[1]
-						color: @context.secondary.inv[2]
+						color: @context.primary.inv[2]
 				else
 					toggle_bar_style = 
 						background: @context.primary.inv[2]
-						color: @context.secondary.inv[3]
+						color: @context.primary.inv[3]
 				
 				toggle = h Slide,
 					className: css['toggle']

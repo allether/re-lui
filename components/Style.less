@@ -24,6 +24,7 @@ body{
 .section{
 	position: relative;
 	padding: @dim * 1/3;
+	flex-shrink: 0;
 }
 
 .section-content{
@@ -322,7 +323,7 @@ pre{
 
 .toggle{
 	
-	
+	transform: translate(0);
 	border-radius: @border-radius;
 	height: @dim * 2/3 !important;
 	width: @dim !important;
