@@ -1,6 +1,6 @@
 {
   "name": "re-lui",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "basic react web ui components",
   "main": "./dist/lui-mid.js",
   "scripts": {
@@ -24,6 +24,7 @@
     "css-loader": "^1.0.1",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
+    "mini-css-extract-plugin": "^0.5.0",
     "normalize.css": "^8.0.1",
     "raw-loader": "^0.5.1",
     "re-slide": "^1.0.6",

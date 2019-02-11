@@ -1,5 +1,13 @@
 var webpack = require("webpack");
 var path = require("path");
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+var extract_css = new MiniCssExtractPlugin({
+	filename: process.env.LIBNAME+".css",
+	chunkFilename: process.env.LIBNAME+"-[id].css"
+})
+
+
 var cfg = {
 	devtool: 'source-map',
 	module: {
@@ -17,7 +25,8 @@ var cfg = {
 			  	}
 
 			  }] },
-			{ test: /\.(css)$/, exclude: /^(https?:)?\/\//, use: ['style-loader','css-loader'] },
+			{ test: /\.(less)$/, use: [{loader: MiniCssExtractPlugin.loader},'css-loader','less-loader']},
+			{ test: /\.(css)$/, exclude: /^(https?:)?\/\//, use: [{loader: MiniCssExtractPlugin.loader},'css-loader'] },
 			{ test: /\.(woff|woff2|eot|ttf|png)$/,loader: 'url-loader?limit=65000' }
 		]
 	},
@@ -33,6 +42,7 @@ var cfg = {
 		publicPath: '/',
 		filename: process.env.LIBNAME+".js",
 		libraryTarget: 'commonjs2'
-	}
+	},
+	plugins: [extract_css]
 }
 module.exports = cfg;
