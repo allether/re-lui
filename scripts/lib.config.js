@@ -14,7 +14,7 @@ var cfg = {
 		rules: [
 			{ test: /\.coffee$/, use: "coffee-loader"},
 			{ test: /\.(xml|html|txt|md|glsl|svg)$/, loader: "raw-loader" },
-			{ test: /\.(less)$/, exclude: /^(https?:)?\/\//,use: ['style-loader',{loader:'css-loader',options: {
+			{ test: /\.(less)$/, exclude: /^(https?:)?\/\//,use: [{loader: MiniCssExtractPlugin.loader},{loader:'css-loader',options: {
 			    modules: true,
 			    // importLoaders: 1,
 			     localIdentName: 'lui-[local]'//localIdentName: 'lui-[hash:base64:5]'
@@ -25,7 +25,6 @@ var cfg = {
 			  	}
 
 			  }] },
-			{ test: /\.(less)$/, use: [{loader: MiniCssExtractPlugin.loader},'css-loader','less-loader']},
 			{ test: /\.(css)$/, exclude: /^(https?:)?\/\//, use: [{loader: MiniCssExtractPlugin.loader},'css-loader'] },
 			{ test: /\.(woff|woff2|eot|ttf|png)$/,loader: 'url-loader?limit=65000' }
 		]
