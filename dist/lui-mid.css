@@ -365,7 +365,7 @@ template {
 body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   font-size: 13px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   font-weight: 300;
   box-sizing: border-box;
   text-rendering: optimizeSpeed;
@@ -441,7 +441,7 @@ a {
 }
 .lui-btn {
   white-space: pre;
-  font-family: "monor";
+  font-family: "monor", monospace;
   user-select: none;
   outline: none;
   border: none;
@@ -596,7 +596,7 @@ a {
   opacity: 0.5;
 }
 pre {
-  font-family: "monor";
+  font-family: "monor", monospace;
   font-size: inherit;
 }
 .lui-hidden {
