@@ -1946,7 +1946,7 @@ module.exports = SquareLoader;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var Color, Component, Style, StyleContext, addFontsToHead, createContext, createElement, createPallet, css, darkenPallet, generateStyle, lightenPallet,
+/* WEBPACK VAR INJECTION */(function(global) {var Color, Component, Style, StyleContext, createContext, createElement, createPallet, css, darkenPallet, generateStyle, lightenPallet,
   boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
 
 Color = __webpack_require__(/*! color */ "color");
@@ -1964,20 +1964,6 @@ global.Component = Component;
 global.IS_TOUCH = __webpack_require__(/*! ./is_touch */ "./components/is_touch.js")();
 
 StyleContext = createContext({});
-
-addFontsToHead = function() {
-  var a, b;
-  a = document.createElement('link');
-  a.setAttribute('href', 'https://fonts.googleapis.com/icon?family=Material+Icons');
-  a.setAttribute('rel', 'stylesheet');
-  document.head.appendChild(a);
-  b = document.createElement('link');
-  b.setAttribute('href', 'https://fonts.googleapis.com/css?family=Open+Sans:400,700');
-  b.setAttribute('rel', 'stylesheet');
-  return document.head.appendChild(b);
-};
-
-addFontsToHead();
 
 createPallet = function(color, inv, factors) {
   var c, color_factor, inv_factor;
