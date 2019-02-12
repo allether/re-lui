@@ -39,7 +39,7 @@ var cfg = {
 	output: {
 		path: path.join(__dirname,'..','/dist'),
 		publicPath: '/',
-		filename: process.env.LIBNAME+".js",
+		filename: "lui.js",
 		libraryTarget: 'commonjs2'
 	},
 	plugins: [extract_css]
