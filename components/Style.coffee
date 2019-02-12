@@ -10,7 +10,6 @@ StyleContext = createContext({})
 
 
 
-
 createPallet = (color,inv,factors)->
 	color_factor = color_factor || 1
 	inv_factor = inv_factor || 1
