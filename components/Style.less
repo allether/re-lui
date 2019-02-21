@@ -7,8 +7,8 @@ body{
 	font-family: @mainfont;
 	font-weight: 300;
 	box-sizing: border-box;
-	text-rendering: optimizeSpeed;
-    -webkit-font-smoothing: subpixel-antialiased;
+	// text-rendering: optimizeSpeed;
+ //    -webkit-font-smoothing: subpixel-antialiased;
 }
 *{
 	box-sizing: border-box;
@@ -94,7 +94,8 @@ a{
 .btn{
 	white-space: pre;
 	font-family: @monofont;
-	user-select: none;
+	max-width: 100%;
+	// user-select: none;
 	outline: none;
 	// padding: 0 12;
 	border: none;
@@ -102,8 +103,8 @@ a{
 	min-height: @dim;
 	min-width: @dim;
 	margin: @margin-size;
-	margin-left: 0;
-	margin-right: @margin-size*2;
+	// margin-left: 0;
+	// margin-right: @margin-size*2;
 	// margin-left: 0;
 	display: inline-flex;
 	// margin-top: 8;
@@ -130,8 +131,9 @@ a{
 		margin-top: 0;
 	}
 	.label{
-		white-space: inherit;
-		flex-shrink: 0;
+		max-width: 100%;
+		white-space: initial;
+		flex-shrink: 1;
 		height: auto;
 		vertical-align: middle;
 		// text-align: center;
@@ -183,7 +185,7 @@ a{
 		}
 	}
 	&.btn-big{
-		height: @dim * 4/3 !important;
+		min-height: @dim * 4/3 !important;
 		padding: 0 @padding-size*2;
 		&.btn-icon-square{
 			width: @dim * 4/3;
@@ -239,6 +241,10 @@ a{
 			z-index: 1;
 			-webkit-appearance: none;
 		}
+	}
+	select{
+		min-width: auto;
+		cursor: pointer;
 	}
 	
 	// select{
@@ -322,7 +328,7 @@ pre{
 }
 
 .toggle{
-	
+	flex-shrink: 0;
 	transform: translate(0);
 	border-radius: @border-radius;
 	height: @dim * 2/3 !important;
@@ -450,23 +456,24 @@ pre{
 	display: flex;
 	flex-wrap: nowrap;
 	flex-shrink: 0;
-	height: @dim;
+	height: auto;
+	max-width: 100%;
 
 	&.bar-btn{
 		border-radius: @border-radius;
 		overflow: hidden;
 		transform: translate(0);
 		margin: @margin-size;
-		margin-left: 0;
-		margin-right: @margin-size*2;
+		// margin-left: 0;
+		// margin-right: @margin-size*2;
 	}
 
-	&.bar-big{
-		height: @dim * 4/3;
-	}
-	&.bar-small{
-		height: @dim;
-	}
+	// &.bar-big{
+	// 	height: @dim * 4/3;
+	// }
+	// &.bar-small{
+	// 	height: @dim;
+	// }
 	&.bar-vert{
 		height: auto;
 		width: auto;
@@ -516,8 +523,8 @@ pre{
 		opacity: 0;
 	}
 	.overlay-slide{
-		width: 100vw;
-		height: 100vh;
+		width: 100%;
+		height: 100%;
 	}
 }
 

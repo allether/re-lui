@@ -1,5 +1,5 @@
 Color = require 'color'
-require 'normalize.css'
+# require 'normalize.css'
 css = require './Style.less'
 {createElement,Component,createContext} = require 'react'
 global.h = createElement

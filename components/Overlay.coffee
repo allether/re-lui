@@ -51,8 +51,10 @@ class Overlay extends Component
 	
 	componentDidMount: (p_props,p_state)->
 		if @state.visible != @props.visible
-			@setState
-				visible: @props.visible
+			setTimeout =>
+				@setState
+					visible: @props.visible
+			,0
 
 	componentWillUnmount: ->
 		clearTimeout @_timeout

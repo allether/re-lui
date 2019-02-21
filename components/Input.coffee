@@ -102,19 +102,22 @@ class Input extends Component
 			@setState
 				input_files: null
 
+
 	onTouchStart: (e)=>
 		@setState
 			is_touch: yes
 			hover: yes
 		@props.onTouchStart?(e)
+
+
+	onTouchEnd: (e)=>
+		@setState
+			hover: no
 		@props.onClick?(e)
 		if @props.type != 'file'
 			@_input?.focus()
 			@_input?.click()
 
-	onTouchEnd: (e)=>
-		@setState
-			hover: no
 		
 		
 		
@@ -356,6 +359,9 @@ class Input extends Component
 
 		if props.type == 'label'
 			select = false
+		else
+			style.userSelect = 'none'
+			style.cursor = 'pointer'
 		if props.type == 'color' || props.type == 'checkbox' || props.type == 'button'
 			input_hidden = true
 
@@ -424,7 +430,7 @@ class Input extends Component
 		if props.i
 			icon = h 'i',
 				onClick: @props.onIconClick
-				className: 'material-icons'
+				className: props.i_class || 'material-icons'
 				style: icon_style
 				props.i 
 		

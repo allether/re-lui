@@ -257,7 +257,7 @@ Bar = class Bar extends Component {
     // log props.vert
     bar_props = {
       ref: this.baseRef,
-      className: cn(this.props.btn && css['bar-btn'], this.props.vert && css['bar-vert'], css['bar'], this.props.big && css['bar-big'] || css['bar-small'], this.props.className),
+      className: cn(this.props.className, this.props.btn && css['bar-btn'], this.props.vert && css['bar-vert'], css['bar'], this.props.big && css['bar-big'] || css['bar-small']),
       style: this.props.style
     };
     
@@ -600,17 +600,23 @@ Input = class Input extends Component {
   }
 
   onTouchStart(e) {
-    var base, base1, ref, ref1;
+    var base;
     boundMethodCheck(this, Input);
     this.setState({
       is_touch: true,
       hover: true
     });
-    if (typeof (base = this.props).onTouchStart === "function") {
-      base.onTouchStart(e);
-    }
-    if (typeof (base1 = this.props).onClick === "function") {
-      base1.onClick(e);
+    return typeof (base = this.props).onTouchStart === "function" ? base.onTouchStart(e) : void 0;
+  }
+
+  onTouchEnd(e) {
+    var base, ref, ref1;
+    boundMethodCheck(this, Input);
+    this.setState({
+      hover: false
+    });
+    if (typeof (base = this.props).onClick === "function") {
+      base.onClick(e);
     }
     if (this.props.type !== 'file') {
       if ((ref = this._input) != null) {
@@ -618,13 +624,6 @@ Input = class Input extends Component {
       }
       return (ref1 = this._input) != null ? ref1.click() : void 0;
     }
-  }
-
-  onTouchEnd(e) {
-    boundMethodCheck(this, Input);
-    return this.setState({
-      hover: false
-    });
   }
 
   getButtonStyle(props, state) {
@@ -870,6 +869,9 @@ Input = class Input extends Component {
     }
     if (props.type === 'label') {
       select = false;
+    } else {
+      style.userSelect = 'none';
+      style.cursor = 'pointer';
     }
     if (props.type === 'color' || props.type === 'checkbox' || props.type === 'button') {
       input_hidden = true;
@@ -944,7 +946,7 @@ Input = class Input extends Component {
     if (props.i) {
       icon = h('i', {
         onClick: this.props.onIconClick,
-        className: 'material-icons',
+        className: props.i_class || 'material-icons',
         style: icon_style
       }, props.i);
     } else if (props.i_class) {
@@ -1805,9 +1807,11 @@ Overlay = class Overlay extends Component {
 
   componentDidMount(p_props, p_state) {
     if (this.state.visible !== this.props.visible) {
-      return this.setState({
-        visible: this.props.visible
-      });
+      return setTimeout(() => {
+        return this.setState({
+          visible: this.props.visible
+        });
+      }, 0);
     }
   }
 
@@ -1895,7 +1899,7 @@ Section = class Section extends Component {
       style: {
         background: this.context.primary.inv[1]
       }
-    })), h('div', {
+    })), this.props.children && h('div', {
       className: cn(css['section-content'], this.props.contentClassName)
     }, this.props.children));
   }
@@ -1951,8 +1955,7 @@ module.exports = SquareLoader;
 
 Color = __webpack_require__(/*! color */ "color");
 
-__webpack_require__(/*! normalize.css */ "./node_modules/normalize.css/normalize.css");
-
+// require 'normalize.css'
 css = __webpack_require__(/*! ./Style.less */ "./components/Style.less");
 
 ({createElement, Component, createContext} = __webpack_require__(/*! react */ "react"));
@@ -2137,7 +2140,7 @@ module.exports = {Style, StyleContext, generateStyle};
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"center":"lui-center","section":"lui-section","section-content":"lui-section-content","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","modal-shadow":"lui-modal-shadow","btn":"lui-btn","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","hidden":"lui-hidden","label-2":"lui-label-2","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-big":"lui-bar-big","bar-small":"lui-bar-small","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-transparent":"lui-overlay-transparent","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
+module.exports = {"center":"lui-center","section":"lui-section","section-content":"lui-section-content","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","modal-shadow":"lui-modal-shadow","btn":"lui-btn","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","hidden":"lui-hidden","label-2":"lui-label-2","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-transparent":"lui-overlay-transparent","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
 
 /***/ }),
 
@@ -2225,17 +2228,6 @@ function is_touch_device() {
 }
 
 module.exports = is_touch_device
-
-/***/ }),
-
-/***/ "./node_modules/normalize.css/normalize.css":
-/*!**************************************************!*\
-  !*** ./node_modules/normalize.css/normalize.css ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
 
 /***/ }),
 

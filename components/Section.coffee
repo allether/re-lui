@@ -18,7 +18,7 @@ class Section extends Component
 					style:
 						background: @context.primary.inv[1]
 						
-			h 'div',
+			@props.children && h 'div',
 				className: cn(css['section-content'],@props.contentClassName)
 				@props.children
 Section.contextType = StyleContext
