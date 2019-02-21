@@ -1,6 +1,7 @@
 {render} = require 'react-dom'
 
-
+require 'normalize.css'
+require 're-slide/dist/re-slide.css'
 {createElement,Component} = require 'react'
 global.h = createElement
 global.Component = Component
