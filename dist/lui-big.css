@@ -183,7 +183,7 @@ a {
   padding: 13px;
 }
 .lui-btn.lui-btn-icon-square {
-  padding: 0;
+  padding: 0 !important;
   width: 42px;
   flex-grow: 0 !important;
   align-items: center;
@@ -513,6 +513,11 @@ pre {
 }
 .lui-overlay-transparent {
   background: none;
+}
+.lui-overlay-alert {
+  padding: 14px;
+  font-size: 11px;
+  font-family: "monor", monospace;
 }
 .lui-loader {
   position: absolute;

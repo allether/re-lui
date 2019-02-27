@@ -12,7 +12,6 @@ class Input extends Component
 	constructor: (props)->
 		super(props)
 		@state=
-			is_touch: false
 			value: ''
 			input_files: undefined
 		if props.type == 'color'
@@ -75,10 +74,19 @@ class Input extends Component
 			
 
 	onClick: (e)=>
+		# log 'on click'
+		e.preventDefault()
+		e.stopPropagation()
+		
+		if IS_TOUCH
+			return false
+		
+		 
 		@_input?.focus()
-		if !@state.is_touch
+		if !IS_TOUCH
 			@_input?.click()
 			@props.onClick?(e)
+
 	
 
 	onInputClick: (e)=>
@@ -104,15 +112,21 @@ class Input extends Component
 
 
 	onTouchStart: (e)=>
-		@setState
-			is_touch: yes
-			hover: yes
-		@props.onTouchStart?(e)
+		@state.hover = yes
+		@state.touch_started = yes
+		log 'touch started'
+		@forceUpdate()
+		# @props.onTouchStart?(e)
 
 
 	onTouchEnd: (e)=>
+
+		if !@state.touch_started
+			return false
 		@setState
 			hover: no
+			touch_started: no
+		log 'touch end'
 		@props.onClick?(e)
 		if @props.type != 'file'
 			@_input?.focus()
@@ -536,13 +550,15 @@ class Input extends Component
 							opt
 			else
 				input = h 'input',input_props
+		
+
 		outer_props = 
-			onClick: !IS_TOUCH && @onClick || undefined
+			onClick: @onClick
 			htmlFor: input_name
 			onTouchStart: @onTouchStart
 			onTouchEnd: @onTouchEnd
-			onMouseEnter: !@state.is_touch && @onMouseEnter || undefined
-			onMouseLeave:  !@state.is_touch && @onMouseLeave || undefined
+			onMouseEnter: !IS_TOUCH && @onMouseEnter || undefined
+			onMouseLeave:  !IS_TOUCH && @onMouseLeave || undefined
 			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
 			href: props.href	
 			style: style

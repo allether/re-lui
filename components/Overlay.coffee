@@ -61,18 +61,26 @@ class Overlay extends Component
 		@_timeout = null
 	
 	onClick: (e)=>
-		if @_touch || !@props.visible
+		if IS_TOUCH || !@props.visible
 			e.preventDefault()
 			e.stopPropagation()
 			return false
+		e.preventDefault()
+		e.stopPropagation()
 		@props.onClick?(e)
 	
 	onTouchStart: (e)=>
-		@_touch = true
-		if !@props.visible
-			e.preventDefault()
-			e.stopPropagation()
+		@touch_started = true
+		e.preventDefault()
+		e.stopPropagation()
+		return false
+
+	onTouchEnd: (e)=>
+		if !@touch_started
 			return false
+		@touch_started = false
+		e.preventDefault()
+		e.stopPropagation()
 		@props.onClick?(e)
 
 
@@ -85,8 +93,9 @@ class Overlay extends Component
 		,@props.style
 		
 		h 'div',
-			onClick: !IS_TOUCH && @onClick || undefined
+			onClick: @onClick
 			onTouchStart: @onTouchStart
+			onTouchEnd: @onTouchEnd
 			className: cn(css['overlay'],@props.center && css['center'],!@state.visible && css['overlay-hidden'],@props.className,@props.transparent && css['overlay-transparent'])
 			style: overlay_style
 			@props.children

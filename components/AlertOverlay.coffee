@@ -58,7 +58,7 @@ class AlertOverlay extends Component
 					center: yes
 					@props.children || null
 				h Slide,
-					height: 40
+					dim: 200
 					className: css['overlay-alert']
 					onClick: @props.onClick
 					style:
