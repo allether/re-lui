@@ -17,7 +17,7 @@ class Overlay extends Component
 	setBackdropColor: (bg)=>
 		if bg == 'none'
 			return 'none'
-		return Color(bg).alpha(.9).string()
+		return Color(bg).alpha(.96).string()
 	
 	componentWillMount: ->
 
@@ -61,6 +61,8 @@ class Overlay extends Component
 		@_timeout = null
 	
 	onClick: (e)=>
+		if e.target != @_overlay
+			return
 		if IS_TOUCH || !@props.visible
 			e.preventDefault()
 			e.stopPropagation()
@@ -70,19 +72,29 @@ class Overlay extends Component
 		@props.onClick?(e)
 	
 	onTouchStart: (e)=>
+		if e.target != @_overlay
+			return
 		@touch_started = true
-		e.preventDefault()
-		e.stopPropagation()
+		if @props.onClick
+			e.preventDefault()
+			e.stopPropagation()
+
 		return false
 
 	onTouchEnd: (e)=>
+		if e.target != @_overlay
+			return
+
 		if !@touch_started
 			return false
 		@touch_started = false
-		e.preventDefault()
-		e.stopPropagation()
+		if @props.onClick
+			e.preventDefault()
+			e.stopPropagation()
 		@props.onClick?(e)
 
+	overlayRef: (el)=>
+		@_overlay = el
 
 	render: ->
 		overlay_style = Object.assign 
@@ -94,6 +106,7 @@ class Overlay extends Component
 		
 		h 'div',
 			onClick: @onClick
+			ref: @overlayRef
 			onTouchStart: @onTouchStart
 			onTouchEnd: @onTouchEnd
 			className: cn(css['overlay'],@props.center && css['center'],!@state.visible && css['overlay-hidden'],@props.className,@props.transparent && css['overlay-transparent'])

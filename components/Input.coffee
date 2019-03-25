@@ -75,8 +75,9 @@ class Input extends Component
 
 	onClick: (e)=>
 		# log 'on click'
-		e.preventDefault()
-		e.stopPropagation()
+		if @props.onClick
+			e.preventDefault()
+			e.stopPropagation()
 		
 		if IS_TOUCH
 			return false
@@ -91,6 +92,7 @@ class Input extends Component
 
 	onInputClick: (e)=>
 		e.stopPropagation()
+		# e.preventDefault()
 		return false
 
 
@@ -112,21 +114,27 @@ class Input extends Component
 
 
 	onTouchStart: (e)=>
+		if @props.onClick
+			e.stopPropagation()
+			e.preventDefault()
 		@state.hover = yes
 		@state.touch_started = yes
-		log 'touch started'
+		# log 'touch started'
 		@forceUpdate()
 		# @props.onTouchStart?(e)
 
 
 	onTouchEnd: (e)=>
+		if @props.onClick
+			e.stopPropagation()
+			e.preventDefault()
 
 		if !@state.touch_started
 			return false
 		@setState
 			hover: no
 			touch_started: no
-		log 'touch end'
+		# log 'touch end'
 		@props.onClick?(e)
 		if @props.type != 'file'
 			@_input?.focus()
@@ -530,10 +538,7 @@ class Input extends Component
 			if @props.input_props
 				Object.assign input_props,@props.input_props
 		
-			# input_props = Object.assign {},props,self_input_props
 
-			# if props.type == 'button'
-				# input_props.style = cursor: 'pointer'
 
 			input_props.onClick = @onInputClick
 			if props.input_props
@@ -550,7 +555,21 @@ class Input extends Component
 							opt
 			else
 				input = h 'input',input_props
+
+
+
+		# if @props.overlay_input
+		if input && props.type == 'text'
+			input = h 'div',
+				className: css['input-wrap']
+				h 'div',
+					style:
+						color: @context.primary.color[3]
+					className: cn(css['input'],css['overlay-input'])
+					@props.overlay_input
+				input
 		
+
 
 		outer_props = 
 			onClick: @onClick
@@ -559,20 +578,21 @@ class Input extends Component
 			onTouchEnd: @onTouchEnd
 			onMouseEnter: !IS_TOUCH && @onMouseEnter || undefined
 			onMouseLeave:  !IS_TOUCH && @onMouseLeave || undefined
-			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.className)
+			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.type == 'select' && css['type-select'],props.className)
 			href: props.href	
 			style: style
 
-
+		if @props.href
+			outer_props.target = '_blank'
 		Object.assign outer_props,@props.outer_props
-		
 
 
 
-		# if props.invalid || props.is_valid == false
-		# 	alert = h AlertDot,
-		# 		error: yes
-		
+
+
+
+
+
 
 		h (props.href && 'a' || 'label'),
 			outer_props

@@ -254,14 +254,11 @@ Bar = class Bar extends Component {
 
   render() {
     var bar_props;
-    // log props.vert
     bar_props = {
       ref: this.baseRef,
       className: cn(this.props.className, this.props.btn && css['bar-btn'], this.props.vert && css['bar-vert'], css['bar'], this.props.big && css['bar-big'] || css['bar-small']),
       style: this.props.style
     };
-    
-    // bar_props = Object.assign {},@props,my_props
     return h('div', bar_props, this.props.children);
   }
 
@@ -562,8 +559,10 @@ Input = class Input extends Component {
     var base, ref, ref1;
     boundMethodCheck(this, Input);
     // log 'on click'
-    e.preventDefault();
-    e.stopPropagation();
+    if (this.props.onClick) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (IS_TOUCH) {
       return false;
     }
@@ -581,6 +580,7 @@ Input = class Input extends Component {
   onInputClick(e) {
     boundMethodCheck(this, Input);
     e.stopPropagation();
+    // e.preventDefault()
     return false;
   }
 
@@ -607,15 +607,23 @@ Input = class Input extends Component {
 
   onTouchStart(e) {
     boundMethodCheck(this, Input);
+    if (this.props.onClick) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
     this.state.hover = true;
     this.state.touch_started = true;
-    log('touch started');
+    // log 'touch started'
     return this.forceUpdate();
   }
 
   onTouchEnd(e) {
     var base, ref, ref1;
     boundMethodCheck(this, Input);
+    if (this.props.onClick) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
     if (!this.state.touch_started) {
       return false;
     }
@@ -623,7 +631,6 @@ Input = class Input extends Component {
       hover: false,
       touch_started: false
     });
-    log('touch end');
     if (typeof (base = this.props).onClick === "function") {
       base.onClick(e);
     }
@@ -1040,11 +1047,6 @@ Input = class Input extends Component {
       if (this.props.input_props) {
         Object.assign(input_props, this.props.input_props);
       }
-      
-      // input_props = Object.assign {},props,self_input_props
-
-      // if props.type == 'button'
-      // input_props.style = cursor: 'pointer'
       input_props.onClick = this.onInputClick;
       if (props.input_props) {
         Object.assign(input_props, props.input_props);
@@ -1062,6 +1064,17 @@ Input = class Input extends Component {
         input = h('input', input_props);
       }
     }
+    // if @props.overlay_input
+    if (input && props.type === 'text') {
+      input = h('div', {
+        className: css['input-wrap']
+      }, h('div', {
+        style: {
+          color: this.context.primary.color[3]
+        },
+        className: cn(css['input'], css['overlay-input'])
+      }, this.props.overlay_input), input);
+    }
     outer_props = {
       onClick: this.onClick,
       htmlFor: input_name,
@@ -1069,15 +1082,14 @@ Input = class Input extends Component {
       onTouchEnd: this.onTouchEnd,
       onMouseEnter: !IS_TOUCH && this.onMouseEnter || void 0,
       onMouseLeave: !IS_TOUCH && this.onMouseLeave || void 0,
-      className: cn(props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], css['input'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.className),
+      className: cn(props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], css['input'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
       href: props.href,
       style: style
     };
+    if (this.props.href) {
+      outer_props.target = '_blank';
+    }
     Object.assign(outer_props, this.props.outer_props);
-    
-    // if props.invalid || props.is_valid == false
-    // 	alert = h AlertDot,
-    // 		error: yes
     return h(props.href && 'a' || 'label', outer_props, toggle, chips, icon, label, bar, input, color_circle, label2, overlay_icon, props.children);
   }
 
@@ -1336,6 +1348,10 @@ MenuTab = class MenuTab extends Component {
     return this.forceUpdate();
   }
 
+  // log @props.reveal
+  // if @props.reveal
+  // 	log 'reveal tab',@
+  // 	@revealSelfTab()
   componentWillUnmount() {
     return clearTimeout(this._hide_backdrop_timeout);
   }
@@ -1351,6 +1367,7 @@ MenuTab = class MenuTab extends Component {
 
   revealSelfTab(e) {
     boundMethodCheck(this, MenuTab);
+    // log 'REVEAL SELF TAB'
     this.context.tab_branch.length = 0;
     this.context.tab_branch[0] = this;
     this.context.onContextTabReveal(this.context.tab_branch, e);
@@ -1719,7 +1736,7 @@ MenuTab = class MenuTab extends Component {
       className: css['tab-wrapper'] + ' ' + (props.className || ''),
       onMouseLeave: this.state.hover_reveal_enabled && this.onTabMouseLeave || void 0,
       onMouseEnter: this.state.hover_reveal_enabled && this.onTabMouseEnter || void 0,
-      onClick: this.onTabClick,
+      // onClick: @onTabClick
       onKeyDown: this.props.onKeyDown,
       style: tab_style
     }, h(MenuTabContext.Provider, {
@@ -1763,6 +1780,7 @@ Overlay = class Overlay extends Component {
     this.onClick = this.onClick.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.overlayRef = this.overlayRef.bind(this);
     this.state = {
       visible: props.initial_visible != null ? props.initial_visible : props.visible,
       render: props.visible
@@ -1774,7 +1792,7 @@ Overlay = class Overlay extends Component {
     if (bg === 'none') {
       return 'none';
     }
-    return Color(bg).alpha(.9).string();
+    return Color(bg).alpha(.96).string();
   }
 
   componentWillMount() {
@@ -1833,6 +1851,9 @@ Overlay = class Overlay extends Component {
   onClick(e) {
     var base;
     boundMethodCheck(this, Overlay);
+    if (e.target !== this._overlay) {
+      return;
+    }
     if (IS_TOUCH || !this.props.visible) {
       e.preventDefault();
       e.stopPropagation();
@@ -1845,22 +1866,37 @@ Overlay = class Overlay extends Component {
 
   onTouchStart(e) {
     boundMethodCheck(this, Overlay);
+    if (e.target !== this._overlay) {
+      return;
+    }
     this.touch_started = true;
-    e.preventDefault();
-    e.stopPropagation();
+    if (this.props.onClick) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     return false;
   }
 
   onTouchEnd(e) {
     var base;
     boundMethodCheck(this, Overlay);
+    if (e.target !== this._overlay) {
+      return;
+    }
     if (!this.touch_started) {
       return false;
     }
     this.touch_started = false;
-    e.preventDefault();
-    e.stopPropagation();
+    if (this.props.onClick) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
+  }
+
+  overlayRef(el) {
+    boundMethodCheck(this, Overlay);
+    return this._overlay = el;
   }
 
   render() {
@@ -1873,6 +1909,7 @@ Overlay = class Overlay extends Component {
     }, this.props.style);
     return h('div', {
       onClick: this.onClick,
+      ref: this.overlayRef,
       onTouchStart: this.onTouchStart,
       onTouchEnd: this.onTouchEnd,
       className: cn(css['overlay'], this.props.center && css['center'], !this.state.visible && css['overlay-hidden'], this.props.className, this.props.transparent && css['overlay-transparent']),
@@ -1950,11 +1987,13 @@ cn = __webpack_require__(/*! classnames */ "classnames");
 SquareLoader = class SquareLoader extends Component {
   render() {
     return h('div', {
+      className: cn(css['loader-wrapper'], this.props.center && css['absolute-center'])
+    }, h('div', {
       style: {
         background: this.props.background
       },
       className: cn(css['loader'], !this.props.is_loading && css['loader-stop'], this.props.className)
-    });
+    }));
   }
 
 };
@@ -2161,7 +2200,7 @@ module.exports = {Style, StyleContext, generateStyle};
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"center":"lui-center","section":"lui-section","section-content":"lui-section-content","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","modal-shadow":"lui-modal-shadow","btn":"lui-btn","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","hidden":"lui-hidden","label-2":"lui-label-2","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-transparent":"lui-overlay-transparent","overlay-alert":"lui-overlay-alert","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
+module.exports = {"center":"lui-center","section":"lui-section","section-content":"lui-section-content","absolute-center":"lui-absolute-center","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","overlay-input":"lui-overlay-input","input-wrap":"lui-input-wrap","modal-shadow":"lui-modal-shadow","btn":"lui-btn","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","input":"lui-input","hidden":"lui-hidden","label-2":"lui-label-2","type-select":"lui-type-select","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-transparent":"lui-overlay-transparent","overlay-alert":"lui-overlay-alert","loader-wrapper":"lui-loader-wrapper","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
 
 /***/ }),
 

@@ -9,14 +9,11 @@ class Bar extends Component
 	baseRef: (el)=>
 		@base = el
 	render: ->
-		# log props.vert
 		bar_props = 
 			ref: @baseRef
 			className: cn(@props.className,@props.btn && css['bar-btn'],@props.vert && css['bar-vert'],css['bar'],@props.big && css['bar-big'] || css['bar-small'])
 			style: @props.style
 	
-		# bar_props = Object.assign {},@props,my_props
-
 		h 'div',bar_props,@props.children
 
 

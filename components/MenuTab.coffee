@@ -49,6 +49,10 @@ class MenuTab extends Component
 
 	componentDidMount: ()->
 		@forceUpdate()
+		# log @props.reveal
+		# if @props.reveal
+		# 	log 'reveal tab',@
+		# 	@revealSelfTab()
 
 
 	componentWillUnmount: ->
@@ -64,6 +68,7 @@ class MenuTab extends Component
 
 	
 	revealSelfTab: (e)=>
+		# log 'REVEAL SELF TAB'
 		@context.tab_branch.length = 0
 		@context.tab_branch[0] = @
 		@context.onContextTabReveal(@context.tab_branch,e)
@@ -427,7 +432,7 @@ class MenuTab extends Component
 			className: css['tab-wrapper'] + ' ' + (props.className || '')
 			onMouseLeave: @state.hover_reveal_enabled && @onTabMouseLeave || undefined
 			onMouseEnter: @state.hover_reveal_enabled && @onTabMouseEnter || undefined
-			onClick: @onTabClick
+			# onClick: @onTabClick
 			onKeyDown: @props.onKeyDown
 			style: tab_style
 			h MenuTabContext.Provider,
