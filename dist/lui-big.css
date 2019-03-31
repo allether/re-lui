@@ -127,10 +127,10 @@ a {
   border: none;
   color: inherit;
   background: none;
-  padding: 3 4.2px;
+  padding: 3px 4.2px;
   min-width: 100%;
   width: 100%;
-  min-height: 100;
+  min-height: 100px;
   outline: none;
 }
 .lui-btn .lui-chip {
@@ -171,8 +171,8 @@ a {
   padding: 14px !important;
   flex-wrap: wrap;
   height: auto;
-  min-height: 100;
-  width: 300;
+  min-height: 100px;
+  min-width: 300px;
 }
 .lui-btn.lui-btn-textarea .lui-input-bar {
   width: 30%;
@@ -214,6 +214,9 @@ a {
 .lui-btn.lui-btn-icon-square i {
   margin: 0 !important;
 }
+.lui-btn input {
+  margin: 0 4.2px !important;
+}
 .lui-btn input,
 .lui-btn select,
 .lui-btn .lui-input {
@@ -224,7 +227,6 @@ a {
   background: none;
   border: none;
   color: inherit;
-  margin: 0 4.2px;
   padding: 0;
   vertical-align: middle;
   line-height: normal;
@@ -235,7 +237,7 @@ a {
 .lui-btn select.lui-hidden,
 .lui-btn .lui-input.lui-hidden {
   min-width: 0px;
-  height: 0;
+  height: 0px;
 }
 .lui-btn input[type="file"],
 .lui-btn select[type="file"],
@@ -292,7 +294,7 @@ pre {
   padding: 0 8.4px;
   display: inline-flex;
   flex-shrink: 0;
-  font-size: 11;
+  font-size: 11px;
   align-items: center;
   justify-content: center;
 }
@@ -340,7 +342,7 @@ pre {
 }
 .lui-input-color-circle {
   margin-left: 4.2px;
-  min-width: 70;
+  min-width: 70px;
 }
 .lui-input-color-text {
   font-size: 14px;

@@ -61,6 +61,8 @@ generateStyle = (props)->
 	c_false = Color(props.false)
 	c_warn = Color(props.warn)
 
+
+
 	if primary_c.isLight()
 		primary = darkenPallet
 			color: primary_c
@@ -70,6 +72,7 @@ generateStyle = (props)->
 			true: c_true
 			false: c_false
 			warn: c_warn
+		primary.is_dark = false
 		
 	else
 		primary = lightenPallet
@@ -80,6 +83,7 @@ generateStyle = (props)->
 			true: c_true
 			false: c_false
 			warn: c_warn
+		primary.is_dark = true
 
 
 	if secondary_c.isLight()
@@ -91,6 +95,7 @@ generateStyle = (props)->
 			true: c_true
 			false: c_false
 			warn: c_warn
+		secondary.is_dark = false
 	else
 		secondary = lightenPallet
 			color: secondary_c
@@ -100,6 +105,7 @@ generateStyle = (props)->
 			true: c_true
 			false: c_false
 			warn: c_warn
+		secondary.is_dark = true
 
 
 	return	

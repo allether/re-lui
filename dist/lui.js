@@ -2075,6 +2075,7 @@ generateStyle = function(props) {
       false: c_false,
       warn: c_warn
     });
+    primary.is_dark = false;
   } else {
     primary = lightenPallet({
       color: primary_c,
@@ -2085,6 +2086,7 @@ generateStyle = function(props) {
       false: c_false,
       warn: c_warn
     });
+    primary.is_dark = true;
   }
   if (secondary_c.isLight()) {
     secondary = darkenPallet({
@@ -2096,6 +2098,7 @@ generateStyle = function(props) {
       false: c_false,
       warn: c_warn
     });
+    secondary.is_dark = false;
   } else {
     secondary = lightenPallet({
       color: secondary_c,
@@ -2106,6 +2109,7 @@ generateStyle = function(props) {
       false: c_false,
       warn: c_warn
     });
+    secondary.is_dark = true;
   }
   return {
     primary: primary,
