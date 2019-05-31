@@ -7,9 +7,8 @@ body{
 	font-family: @mainfont;
 	font-weight: 300;
 	box-sizing: border-box;
-	// text-rendering: optimizeSpeed;
- //    -webkit-font-smoothing: subpixel-antialiased;
 }
+
 *{
 	box-sizing: border-box;
 }
@@ -233,7 +232,7 @@ a{
 	// .btn.input{
 	// 	margin: @margin-size !important;
 	// }
-	input{
+	input,.overlay-input{
 		margin: 0 @margin-size !important;
 	}
 	
@@ -254,6 +253,9 @@ a{
 		&.hidden{
 			min-width: 0px;
 			height: 0px;
+		}
+		&[type="time"],&[type="date"]{
+			user-select: none;
 		}
 		&[type="file"]{
 			width: 100%;
@@ -544,13 +546,15 @@ pre{
 }
 
 
+
 .menu-bar{
 	position: absolute;
 	width: fit-content;
     min-width: max-content;
-	// min-width: 100%;
 	display: flex;
 }
+
+
 
 .overlay{
 	position: fixed;
@@ -567,14 +571,20 @@ pre{
 		width: 100%;
 		height: 100%;
 	}
+	pointer-events: none;
 }
 
-.overlay-transparent{
-	background: none;
-	// pointer-events: none;
+.overlay.overlay-children-pointer-events{
+	*{
+		pointer-events: all;
+	}
 }
 
 
+
+.overlay-blocking{
+	pointer-events: all;
+}
 
 
 

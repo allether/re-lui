@@ -14,26 +14,26 @@ class Overlay extends Component
 		
 		
 	
-	setBackdropColor: (bg)=>
+	setBackdropColor: (bg,alpha)=>
 		if bg == 'none'
 			return 'none'
-		return Color(bg).alpha(.96).string()
+		return Color(bg).alpha(alpha).string()
 	
 	componentWillMount: ->
 
 		if !@props.transparent
 			@state.backdrop_color = @props.backdrop_color || @context.primary.inv[0]
-			@state.backdrop_opaque_color = @setBackdropColor(@state.backdrop_color)
+			@state.backdrop_opaque_color = @setBackdropColor(@state.backdrop_color,@props.alpha)
 		
 		@state.visible = if @props.initial_visible? then @props.initial_visible else @props.visible
 		@state.render = @props.visible
 
 	componentWillUpdate: (props,state)->
-		if props.backdrop_color != @props.backdrop_color || (@context.primary.inv[0] != @state.backdrop_color)
+		if props.backdrop_color != @props.backdrop_color || (@context.primary.inv[0] != @state.backdrop_color) || props.alpha != @props.alpha
 			if !props.transparent
 				state.backdrop_color = props.backdrop_color || @context.primary.inv[0]
-				state.backdrop_opaque_color = @setBackdropColor(state.backdrop_color)
-		
+				state.backdrop_opaque_color = @setBackdropColor(state.backdrop_color,props.alpha)
+
 		if @props.visible != props.visible
 			if props.visible
 				state.render = true
@@ -64,20 +64,15 @@ class Overlay extends Component
 		if e.target != @_overlay
 			return
 		if IS_TOUCH || !@props.visible
-			e.preventDefault()
-			e.stopPropagation()
 			return false
-		e.preventDefault()
-		e.stopPropagation()
+		
 		@props.onClick?(e)
 	
 	onTouchStart: (e)=>
 		if e.target != @_overlay
 			return
 		@touch_started = true
-		if @props.onClick
-			e.preventDefault()
-			e.stopPropagation()
+
 
 		return false
 
@@ -87,33 +82,36 @@ class Overlay extends Component
 
 		if !@touch_started
 			return false
+		
 		@touch_started = false
-		if @props.onClick
-			e.preventDefault()
-			e.stopPropagation()
 		@props.onClick?(e)
 
 	overlayRef: (el)=>
 		@_overlay = el
 
 	render: ->
+
 		overlay_style = Object.assign 
 			zIndex: @props.z_index || 666
 			display: !@state.render && 'none' || ''
 			pointerEvents: !@state.render && 'none'
 			background: @props.transparent && 'none' || @state.backdrop_opaque_color
 		,@props.style
+
 		
 		h 'div',
-			onClick: @onClick
+			onClick: @props.pointer_events && @onClick || null
 			ref: @overlayRef
-			onTouchStart: @onTouchStart
-			onTouchEnd: @onTouchEnd
-			className: cn(css['overlay'],@props.center && css['center'],!@state.visible && css['overlay-hidden'],@props.className,@props.transparent && css['overlay-transparent'])
+			onTouchStart: @props.pointer_events && @onTouchStart || null
+			onTouchEnd: @props.pointer_events && @onTouchEnd || null
+			className: cn(css['overlay'],@props.center && css['center'],!@state.visible && css['overlay-hidden'],@props.className,@props.children_pointer_events && css['overlay-children-pointer-events'],@props.pointer_events && css['overlay-blocking'])
 			style: overlay_style
 			@props.children
 
 Overlay.contextType = StyleContext
 
-
+Overlay.defaultProps = 
+	pointer_events: yes
+	transparent: no
+	alpha: 0.96
 module.exports = Overlay

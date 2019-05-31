@@ -368,6 +368,9 @@ class Input extends Component
 		
 		icon_style = @getIconStyle(props,state)
 		bar_style = @getBarStyle(props,state)
+
+		if !props.label && @props.label_width
+			icon_style.width = @props.label_width
 		
 		if props.style
 			style = Object.assign button_style,props.style
@@ -449,25 +452,19 @@ class Input extends Component
 						offset: -12
 
 
-		if props.i
+		if props.i || props.i_class
 			icon = h 'i',
 				onClick: @props.onIconClick
-				className: props.i_class || 'material-icons'
+				className: cn( props.i_class || 'material-icons',!@props.label && css['label'])
 				style: icon_style
 				props.i 
-		
-
-		else if props.i_class
-			icon = h 'i',
-				onClick: @props.onIconClick
-				className: props.i_class
-				style: icon_style
 
 
 		if props.label
 			label = h 'div',
 				style:
 					color: props.top_label && @context.primary.color[0] || undefined
+					width: @props.label_width
 				className: cn(value && css['label-opaque'],css['label'],props.top_label && css['top-label'])
 				props.label
 

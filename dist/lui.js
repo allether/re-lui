@@ -875,6 +875,9 @@ Input = class Input extends Component {
     }
     icon_style = this.getIconStyle(props, state);
     bar_style = this.getBarStyle(props, state);
+    if (!props.label && this.props.label_width) {
+      icon_style.width = this.props.label_width;
+    }
     if (props.style) {
       style = Object.assign(button_style, props.style);
     } else {
@@ -959,23 +962,18 @@ Input = class Input extends Component {
         }));
       }
     }
-    if (props.i) {
+    if (props.i || props.i_class) {
       icon = h('i', {
         onClick: this.props.onIconClick,
-        className: props.i_class || 'material-icons',
+        className: cn(props.i_class || 'material-icons', !this.props.label && css['label']),
         style: icon_style
       }, props.i);
-    } else if (props.i_class) {
-      icon = h('i', {
-        onClick: this.props.onIconClick,
-        className: props.i_class,
-        style: icon_style
-      });
     }
     if (props.label) {
       label = h('div', {
         style: {
-          color: props.top_label && this.context.primary.color[0] || void 0
+          color: props.top_label && this.context.primary.color[0] || void 0,
+          width: this.props.label_width
         },
         className: cn(value && css['label-opaque'], css['label'], props.top_label && css['top-label'])
       }, props.label);
@@ -1787,28 +1785,28 @@ Overlay = class Overlay extends Component {
     };
   }
 
-  setBackdropColor(bg) {
+  setBackdropColor(bg, alpha) {
     boundMethodCheck(this, Overlay);
     if (bg === 'none') {
       return 'none';
     }
-    return Color(bg).alpha(.96).string();
+    return Color(bg).alpha(alpha).string();
   }
 
   componentWillMount() {
     if (!this.props.transparent) {
       this.state.backdrop_color = this.props.backdrop_color || this.context.primary.inv[0];
-      this.state.backdrop_opaque_color = this.setBackdropColor(this.state.backdrop_color);
+      this.state.backdrop_opaque_color = this.setBackdropColor(this.state.backdrop_color, this.props.alpha);
     }
     this.state.visible = this.props.initial_visible != null ? this.props.initial_visible : this.props.visible;
     return this.state.render = this.props.visible;
   }
 
   componentWillUpdate(props, state) {
-    if (props.backdrop_color !== this.props.backdrop_color || (this.context.primary.inv[0] !== this.state.backdrop_color)) {
+    if (props.backdrop_color !== this.props.backdrop_color || (this.context.primary.inv[0] !== this.state.backdrop_color) || props.alpha !== this.props.alpha) {
       if (!props.transparent) {
         state.backdrop_color = props.backdrop_color || this.context.primary.inv[0];
-        state.backdrop_opaque_color = this.setBackdropColor(state.backdrop_color);
+        state.backdrop_opaque_color = this.setBackdropColor(state.backdrop_color, props.alpha);
       }
     }
     if (this.props.visible !== props.visible) {
@@ -1855,12 +1853,8 @@ Overlay = class Overlay extends Component {
       return;
     }
     if (IS_TOUCH || !this.props.visible) {
-      e.preventDefault();
-      e.stopPropagation();
       return false;
     }
-    e.preventDefault();
-    e.stopPropagation();
     return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
   }
 
@@ -1870,10 +1864,6 @@ Overlay = class Overlay extends Component {
       return;
     }
     this.touch_started = true;
-    if (this.props.onClick) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
     return false;
   }
 
@@ -1887,10 +1877,6 @@ Overlay = class Overlay extends Component {
       return false;
     }
     this.touch_started = false;
-    if (this.props.onClick) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
     return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
   }
 
@@ -1908,11 +1894,11 @@ Overlay = class Overlay extends Component {
       background: this.props.transparent && 'none' || this.state.backdrop_opaque_color
     }, this.props.style);
     return h('div', {
-      onClick: this.onClick,
+      onClick: this.props.pointer_events && this.onClick || null,
       ref: this.overlayRef,
-      onTouchStart: this.onTouchStart,
-      onTouchEnd: this.onTouchEnd,
-      className: cn(css['overlay'], this.props.center && css['center'], !this.state.visible && css['overlay-hidden'], this.props.className, this.props.transparent && css['overlay-transparent']),
+      onTouchStart: this.props.pointer_events && this.onTouchStart || null,
+      onTouchEnd: this.props.pointer_events && this.onTouchEnd || null,
+      className: cn(css['overlay'], this.props.center && css['center'], !this.state.visible && css['overlay-hidden'], this.props.className, this.props.children_pointer_events && css['overlay-children-pointer-events'], this.props.pointer_events && css['overlay-blocking']),
       style: overlay_style
     }, this.props.children);
   }
@@ -1920,6 +1906,12 @@ Overlay = class Overlay extends Component {
 };
 
 Overlay.contextType = StyleContext;
+
+Overlay.defaultProps = {
+  pointer_events: true,
+  transparent: false,
+  alpha: 0.96
+};
 
 module.exports = Overlay;
 
@@ -2204,7 +2196,7 @@ module.exports = {Style, StyleContext, generateStyle};
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"center":"lui-center","section":"lui-section","section-content":"lui-section-content","absolute-center":"lui-absolute-center","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","overlay-input":"lui-overlay-input","input-wrap":"lui-input-wrap","modal-shadow":"lui-modal-shadow","btn":"lui-btn","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","input":"lui-input","hidden":"lui-hidden","label-2":"lui-label-2","type-select":"lui-type-select","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-transparent":"lui-overlay-transparent","overlay-alert":"lui-overlay-alert","loader-wrapper":"lui-loader-wrapper","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
+module.exports = {"center":"lui-center","section":"lui-section","section-content":"lui-section-content","absolute-center":"lui-absolute-center","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","overlay-input":"lui-overlay-input","input-wrap":"lui-input-wrap","modal-shadow":"lui-modal-shadow","btn":"lui-btn","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","input":"lui-input","hidden":"lui-hidden","label-2":"lui-label-2","type-select":"lui-type-select","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-children-pointer-events":"lui-overlay-children-pointer-events","overlay-blocking":"lui-overlay-blocking","overlay-alert":"lui-overlay-alert","loader-wrapper":"lui-loader-wrapper","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
 
 /***/ }),
 

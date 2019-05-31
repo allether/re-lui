@@ -214,7 +214,8 @@ a {
 .lui-btn.lui-btn-icon-square i {
   margin: 0 !important;
 }
-.lui-btn input {
+.lui-btn input,
+.lui-btn .lui-overlay-input {
   margin: 0 4.2px !important;
 }
 .lui-btn input,
@@ -238,6 +239,14 @@ a {
 .lui-btn .lui-input.lui-hidden {
   min-width: 0px;
   height: 0px;
+}
+.lui-btn input[type="time"],
+.lui-btn select[type="time"],
+.lui-btn .lui-input[type="time"],
+.lui-btn input[type="date"],
+.lui-btn select[type="date"],
+.lui-btn .lui-input[type="date"] {
+  user-select: none;
 }
 .lui-btn input[type="file"],
 .lui-btn select[type="file"],
@@ -543,6 +552,7 @@ pre {
   height: 100%;
   opacity: 1;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 .lui-overlay.lui-overlay-hidden {
   opacity: 0;
@@ -551,8 +561,11 @@ pre {
   width: 100%;
   height: 100%;
 }
-.lui-overlay-transparent {
-  background: none;
+.lui-overlay.lui-overlay-children-pointer-events * {
+  pointer-events: all;
+}
+.lui-overlay-blocking {
+  pointer-events: all;
 }
 .lui-overlay-alert {
   padding: 14px;
