@@ -7,6 +7,7 @@ class SquareLoader extends Component
 			h 'div',
 				style:
 					background: @props.background
+					opacity: if @props.opacity? then @props.opacity else undefined
 				className: cn css['loader'],!@props.is_loading && css['loader-stop'],@props.className
 
 module.exports = SquareLoader

@@ -25,7 +25,7 @@ lerp_logo = require './lerp-logo-40.svg'
 style = generateStyle Object.assign {},Style.defaultProps,
 	primary: '#a0ff02'
 
-log style
+# log style
 
 class SvgIcon extends Component
 	componentDidMount: ->

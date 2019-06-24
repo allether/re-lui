@@ -18,9 +18,7 @@ class Input extends Component
 			@state.is_dark = Color(props.value).isDark()
 		@list = []
 	onInput: (e)=>
-		# e.preventDefault()
-		# e.stopPropagation()
-		
+		# log 'on input',e
 		if @props.onInput
 			if @props.type == 'file' && e.target.files && e.target.files.length
 				input_files = []
@@ -34,44 +32,65 @@ class Input extends Component
 					@props.onInput(@state.list_chip_value+','+e.target.value)
 					return
 			@props.onInput(e)
+		if @props.onInputValue?
+			@props.onInputValue(e.target.value)
 		return
-		# return false
+
+	inputValue: (val)=>
+		# log 'INPUT VALUE',val
+
+		@onInput
+			target:
+				value: val
+	
+	
 	onFocus: (e)=>
-		'input focus event'
 		@setState
 			focus: yes
 		@props.onFocus?(e)
+	
 	onBlur: (e)=>
-		'input blur event'
 		@setState
 			focus: no
 		@props.onBlur?(e)
+	
 	onMouseEnter: (e)=>
 		@setState
 			hover: yes
 		@props.onMouseEnter?(e)
+	
 	onMouseLeave: (e)=>
 		@setState
 			focus: if @props.type == 'color' || @props.type == 'button' || @props.type == 'checkbox' then no else @state.focus
 			hover: no
 			drag: no
 		@props.onMouseLeave?(e)
-	onKeyDown: (e)=>
-		code = e.key
-		if code == 'Enter' && @props.onEnter
+
+
+	
+	onKeyDown: (e)=> 
+		if e.key == 'Enter'
+			@onEnter(e)
+	
+	onEnter: (e)=>
+		if @props.type == 'checkbox'
+			return @_input.click()
+		else
 			@_input.blur()
-			return @props.onEnter(e)
+		
+		if @props.autofill?.length
+			autofill_match_res = @props.autofill[0].match(new RegExp('^'+@props.value,'i'))
+			# log autofill_match_res
+			if autofill_match_res?[0]
+				@props.onInputValue?(@props.autofill[0])
+				if @props.onInput
+					@props.onInput
+						target:
+							value: @props.autofill[0]
+		
+		return @props.onEnter?(e)
 
 
-		if code == 'Enter' && @props.type == 'checkbox'
-			@_input.click()
-		else if @props.type == 'list'
-			if (code == 'Enter') && @props.value
-				@props.onInput?(@props.value + ',')
-			else if code == 'Backspace' && !@_input.value && @props.value
-				log @props.value.substr(0,@props.value.length-1)
-				@props.onInput?(@props.value.substr(0,@props.value.length-1))
-			
 
 	onClick: (e)=>
 		# log 'on click'
@@ -348,7 +367,10 @@ class Input extends Component
 			hover: no
 			drag: no
 		return false
-
+	
+	outerRef: (el)=>
+		@_outer = el
+	
 	renderInput: ->
 		# log 'render input'
 
@@ -530,7 +552,7 @@ class Input extends Component
 				placeholder: @props.placeholder
 				onFocus: @onFocus
 				onBlur: @onBlur
-				value: value
+				value: value || ''
 
 			if @props.input_props
 				Object.assign input_props,@props.input_props
@@ -554,16 +576,84 @@ class Input extends Component
 				input = h 'input',input_props
 
 
+		# log @props.autofill
+		if @props.autofill
+			style.height = DIM2 * 1.6
+			style.paddingTop = DIM
 
-		# if @props.overlay_input
-		if input && props.type == 'text'
+
+		if @props.overlay_input
+			overlay_input = h 'div',
+				style:
+					color: @context.primary.color[3]
+				className: cn(css['input'],css['overlay-input'])
+				@props.overlay_input
+		
+		else if @props.autofill
+			input_val_style =
+				background: @context.primary.color[1]
+				color: @context.primary.inv[1]
+
+
+			if !@props.autofill.length
+				overlay_autofill_buttons = h 'div',
+					className: css['overlay-input-val-wrap']
+					
+					h 'div',
+						className: css['overlay-input-val']
+						style: 
+							background: @context.primary.inv[0]
+						'...'
+					
+
+			else
+
+
+				# log @props.autofill
+				autofill_match_res = @props.autofill[0].match(new RegExp('^'+@props.value,'i'))
+				if autofill_match_res?[0]
+					overlay_input_text = @props.value + @props.autofill[0].slice(@props.value.length)
+				
+				if @state.focus
+					enter_hint = h 'div',
+						style:
+							background: @context.primary.inv[0]
+						onMouseDown: @onEnter
+						className: cn(css['overlay-input-val'],css['overlay-input-hint'])
+						'enter ⏎'
+
+
+					overlay_input = h 'div',
+						style:
+							color: @context.primary.color[3]
+						className: cn(css['input'],css['overlay-input'])
+						overlay_input_text
+				
+				overlay_autofill_buttons = h 'div',
+					className: css['overlay-input-val-wrap']
+					@state.focus && (@props.autofill.slice(0,3).map (val,i)=>
+						if i == 0 && overlay_input_text
+							val_style = 
+								background: @context.secondary.color[0]
+								color: @context.secondary.inv[0]
+						else
+							val_style = input_val_style
+
+						h 'div',
+							onMouseDown: @inputValue.bind(@,val)
+							className: css['overlay-input-val']
+							style: val_style
+							key: val
+							val
+					) || null
+					enter_hint
+
+
+
+		if input && props.type == 'text' || props.type == 'email' || props.type == 'phone'
 			input = h 'div',
 				className: css['input-wrap']
-				h 'div',
-					style:
-						color: @context.primary.color[3]
-					className: cn(css['input'],css['overlay-input'])
-					@props.overlay_input
+				overlay_input
 				input
 		
 
@@ -573,9 +663,10 @@ class Input extends Component
 			htmlFor: input_name
 			onTouchStart: @onTouchStart
 			onTouchEnd: @onTouchEnd
+			ref: @outerRef
 			onMouseEnter: !IS_TOUCH && @onMouseEnter || undefined
 			onMouseLeave:  !IS_TOUCH && @onMouseLeave || undefined
-			className: cn(props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.type == 'select' && css['type-select'],props.className)
+			className: cn(props.hint && css['trans_fixed'],props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.type == 'select' && css['type-select'],props.className)
 			href: props.href	
 			style: style
 
@@ -586,6 +677,10 @@ class Input extends Component
 
 
 
+		if @props.hint
+			hint_label = h 'div',
+				className: css['hint-label']
+				@props.hint
 
 
 
@@ -602,7 +697,9 @@ class Input extends Component
 			color_circle
 			label2
 			overlay_icon
+			overlay_autofill_buttons
 			props.children
+			hint_label
 
 
 Input.contextType = StyleContext

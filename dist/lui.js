@@ -443,12 +443,13 @@ Input = class Input extends Component {
   constructor(props) {
     super(props);
     this.onInput = this.onInput.bind(this);
-    // return false
+    this.inputValue = this.inputValue.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onEnter = this.onEnter.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onInputClick = this.onInputClick.bind(this);
     this.setValue = this.setValue.bind(this);
@@ -458,6 +459,7 @@ Input = class Input extends Component {
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onDragEnter = this.onDragEnter.bind(this);
     this.onDragLeave = this.onDragLeave.bind(this);
+    this.outerRef = this.outerRef.bind(this);
     this.state = {
       value: '',
       input_files: void 0
@@ -471,8 +473,7 @@ Input = class Input extends Component {
   onInput(e) {
     var file, input_files, j, len, ref;
     boundMethodCheck(this, Input);
-    // e.preventDefault()
-    // e.stopPropagation()
+    // log 'on input',e
     if (this.props.onInput) {
       if (this.props.type === 'file' && e.target.files && e.target.files.length) {
         input_files = [];
@@ -493,12 +494,24 @@ Input = class Input extends Component {
       }
       this.props.onInput(e);
     }
+    if (this.props.onInputValue != null) {
+      this.props.onInputValue(e.target.value);
+    }
+  }
+
+  inputValue(val) {
+    boundMethodCheck(this, Input);
+    // log 'INPUT VALUE',val
+    return this.onInput({
+      target: {
+        value: val
+      }
+    });
   }
 
   onFocus(e) {
     var base;
     boundMethodCheck(this, Input);
-    'input focus event';
     this.setState({
       focus: true
     });
@@ -508,7 +521,6 @@ Input = class Input extends Component {
   onBlur(e) {
     var base;
     boundMethodCheck(this, Input);
-    'input blur event';
     this.setState({
       focus: false
     });
@@ -536,23 +548,37 @@ Input = class Input extends Component {
   }
 
   onKeyDown(e) {
-    var base, base1, code;
     boundMethodCheck(this, Input);
-    code = e.key;
-    if (code === 'Enter' && this.props.onEnter) {
-      this._input.blur();
-      return this.props.onEnter(e);
+    if (e.key === 'Enter') {
+      return this.onEnter(e);
     }
-    if (code === 'Enter' && this.props.type === 'checkbox') {
+  }
+
+  onEnter(e) {
+    var autofill_match_res, base, base1, ref;
+    boundMethodCheck(this, Input);
+    if (this.props.type === 'checkbox') {
       return this._input.click();
-    } else if (this.props.type === 'list') {
-      if ((code === 'Enter') && this.props.value) {
-        return typeof (base = this.props).onInput === "function" ? base.onInput(this.props.value + ',') : void 0;
-      } else if (code === 'Backspace' && !this._input.value && this.props.value) {
-        log(this.props.value.substr(0, this.props.value.length - 1));
-        return typeof (base1 = this.props).onInput === "function" ? base1.onInput(this.props.value.substr(0, this.props.value.length - 1)) : void 0;
+    } else {
+      this._input.blur();
+    }
+    if ((ref = this.props.autofill) != null ? ref.length : void 0) {
+      autofill_match_res = this.props.autofill[0].match(new RegExp('^' + this.props.value, 'i'));
+      // log autofill_match_res
+      if (autofill_match_res != null ? autofill_match_res[0] : void 0) {
+        if (typeof (base = this.props).onInputValue === "function") {
+          base.onInputValue(this.props.autofill[0]);
+        }
+        if (this.props.onInput) {
+          this.props.onInput({
+            target: {
+              value: this.props.autofill[0]
+            }
+          });
+        }
       }
     }
+    return typeof (base1 = this.props).onEnter === "function" ? base1.onEnter(e) : void 0;
   }
 
   onClick(e) {
@@ -856,8 +882,13 @@ Input = class Input extends Component {
     return false;
   }
 
+  outerRef(el) {
+    boundMethodCheck(this, Input);
+    return this._outer = el;
+  }
+
   renderInput() {
-    var bar, bar_style, button_style, chips, color_circle, focus, icon, icon_style, input, input_hidden, input_name, input_props, label, label2, outer_props, overlay_icon, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, toggle_circle_fill_color, value;
+    var autofill_match_res, bar, bar_style, button_style, chips, color_circle, enter_hint, focus, hint_label, icon, icon_style, input, input_hidden, input_name, input_props, input_val_style, label, label2, outer_props, overlay_autofill_buttons, overlay_icon, overlay_input, overlay_input_text, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, toggle_circle_fill_color, value;
     // log 'render input'
     input_name = this.props.name;
     props = this.props;
@@ -1040,7 +1071,7 @@ Input = class Input extends Component {
         placeholder: this.props.placeholder,
         onFocus: this.onFocus,
         onBlur: this.onBlur,
-        value: value
+        value: value || ''
       };
       if (this.props.input_props) {
         Object.assign(input_props, this.props.input_props);
@@ -1062,25 +1093,88 @@ Input = class Input extends Component {
         input = h('input', input_props);
       }
     }
-    // if @props.overlay_input
-    if (input && props.type === 'text') {
-      input = h('div', {
-        className: css['input-wrap']
-      }, h('div', {
+    // log @props.autofill
+    if (this.props.autofill) {
+      style.height = DIM2 * 1.6;
+      style.paddingTop = DIM;
+    }
+    if (this.props.overlay_input) {
+      overlay_input = h('div', {
         style: {
           color: this.context.primary.color[3]
         },
         className: cn(css['input'], css['overlay-input'])
-      }, this.props.overlay_input), input);
+      }, this.props.overlay_input);
+    } else if (this.props.autofill) {
+      input_val_style = {
+        background: this.context.primary.color[1],
+        color: this.context.primary.inv[1]
+      };
+      if (!this.props.autofill.length) {
+        overlay_autofill_buttons = h('div', {
+          className: css['overlay-input-val-wrap']
+        }, h('div', {
+          className: css['overlay-input-val'],
+          style: {
+            background: this.context.primary.inv[0]
+          }
+        }, '...'));
+      } else {
+        // log @props.autofill
+        autofill_match_res = this.props.autofill[0].match(new RegExp('^' + this.props.value, 'i'));
+        if (autofill_match_res != null ? autofill_match_res[0] : void 0) {
+          overlay_input_text = this.props.value + this.props.autofill[0].slice(this.props.value.length);
+        }
+        if (this.state.focus) {
+          enter_hint = h('div', {
+            style: {
+              background: this.context.primary.inv[0]
+            },
+            onMouseDown: this.onEnter,
+            className: cn(css['overlay-input-val'], css['overlay-input-hint'])
+          }, 'enter ⏎');
+          overlay_input = h('div', {
+            style: {
+              color: this.context.primary.color[3]
+            },
+            className: cn(css['input'], css['overlay-input'])
+          }, overlay_input_text);
+        }
+        overlay_autofill_buttons = h('div', {
+          className: css['overlay-input-val-wrap']
+        }, this.state.focus && (this.props.autofill.slice(0, 3).map((val, i) => {
+          var val_style;
+          if (i === 0 && overlay_input_text) {
+            val_style = {
+              background: this.context.secondary.color[0],
+              color: this.context.secondary.inv[0]
+            };
+          } else {
+            val_style = input_val_style;
+          }
+          return h('div', {
+            onMouseDown: this.inputValue.bind(this, val),
+            className: css['overlay-input-val'],
+            style: val_style,
+            key: val
+          }, val);
+        })) || null, enter_hint);
+      }
+    }
+    if (input && props.type === 'text' || props.type === 'email' || props.type === 'phone') {
+      input = h('div', {
+        className: css['input-wrap']
+      }, overlay_input, input);
     }
     outer_props = {
       onClick: this.onClick,
       htmlFor: input_name,
       onTouchStart: this.onTouchStart,
       onTouchEnd: this.onTouchEnd,
+      ref: this.outerRef,
       onMouseEnter: !IS_TOUCH && this.onMouseEnter || void 0,
       onMouseLeave: !IS_TOUCH && this.onMouseLeave || void 0,
-      className: cn(props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], css['input'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
+      className: cn(props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], css['input'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
       href: props.href,
       style: style
     };
@@ -1088,7 +1182,12 @@ Input = class Input extends Component {
       outer_props.target = '_blank';
     }
     Object.assign(outer_props, this.props.outer_props);
-    return h(props.href && 'a' || 'label', outer_props, toggle, chips, icon, label, bar, input, color_circle, label2, overlay_icon, props.children);
+    if (this.props.hint) {
+      hint_label = h('div', {
+        className: css['hint-label']
+      }, this.props.hint);
+    }
+    return h(props.href && 'a' || 'label', outer_props, toggle, chips, icon, label, bar, input, color_circle, label2, overlay_icon, overlay_autofill_buttons, props.children, hint_label);
   }
 
 };
@@ -1982,7 +2081,8 @@ SquareLoader = class SquareLoader extends Component {
       className: cn(css['loader-wrapper'], this.props.center && css['absolute-center'])
     }, h('div', {
       style: {
-        background: this.props.background
+        background: this.props.background,
+        opacity: this.props.opacity != null ? this.props.opacity : void 0
       },
       className: cn(css['loader'], !this.props.is_loading && css['loader-stop'], this.props.className)
     }));
@@ -2196,7 +2296,7 @@ module.exports = {Style, StyleContext, generateStyle};
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"center":"lui-center","section":"lui-section","section-content":"lui-section-content","absolute-center":"lui-absolute-center","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","overlay-input":"lui-overlay-input","input-wrap":"lui-input-wrap","modal-shadow":"lui-modal-shadow","btn":"lui-btn","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","input":"lui-input","hidden":"lui-hidden","label-2":"lui-label-2","type-select":"lui-type-select","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-children-pointer-events":"lui-overlay-children-pointer-events","overlay-blocking":"lui-overlay-blocking","overlay-alert":"lui-overlay-alert","loader-wrapper":"lui-loader-wrapper","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
+module.exports = {"center":"lui-center","section":"lui-section","section-content":"lui-section-content","absolute-center":"lui-absolute-center","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","hint-label":"lui-hint-label","overlay-input":"lui-overlay-input","input-wrap":"lui-input-wrap","modal-shadow":"lui-modal-shadow","btn":"lui-btn","trans_fixed":"lui-trans_fixed","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","overlay-input-val":"lui-overlay-input-val","overlay-input-hint":"lui-overlay-input-hint","overlay-input-val-wrap":"lui-overlay-input-val-wrap","input":"lui-input","hidden":"lui-hidden","label-2":"lui-label-2","type-select":"lui-type-select","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-children-pointer-events":"lui-overlay-children-pointer-events","overlay-blocking":"lui-overlay-blocking","overlay-alert":"lui-overlay-alert","loader-wrapper":"lui-loader-wrapper","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
 
 /***/ }),
 
