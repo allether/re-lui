@@ -589,7 +589,7 @@ class Input extends Component
 				className: cn(css['input'],css['overlay-input'])
 				@props.overlay_input
 		
-		else if @props.autofill
+		if @props.autofill && (!@props.overlay_input || @props.force_autofill_buttons)
 			input_val_style =
 				background: @context.primary.color[1]
 				color: @context.primary.inv[1]
@@ -603,6 +603,7 @@ class Input extends Component
 						className: css['overlay-input-val']
 						style: 
 							background: @context.primary.inv[0]
+							color: @context.primary.color[0]
 						'...'
 					
 
@@ -614,24 +615,9 @@ class Input extends Component
 				if autofill_match_res?[0]
 					overlay_input_text = @props.value + @props.autofill[0].slice(@props.value.length)
 				
-				if @state.focus
-					enter_hint = h 'div',
-						style:
-							background: @context.primary.inv[0]
-						onMouseDown: @onEnter
-						className: cn(css['overlay-input-val'],css['overlay-input-hint'])
-						'enter ⏎'
+				if @props.force_autofill_buttons || @state.focus
 
-
-					overlay_input = h 'div',
-						style:
-							color: @context.primary.color[3]
-						className: cn(css['input'],css['overlay-input'])
-						overlay_input_text
-				
-				overlay_autofill_buttons = h 'div',
-					className: css['overlay-input-val-wrap']
-					@state.focus && (@props.autofill.slice(0,3).map (val,i)=>
+					autofill_buttons = @props.autofill.slice(0,@props.autofill_count || 3).map (val,i)=>
 						if i == 0 && overlay_input_text
 							val_style = 
 								background: @context.secondary.color[0]
@@ -645,16 +631,43 @@ class Input extends Component
 							style: val_style
 							key: val
 							val
-					) || null
+
+				
+				
+
+				if @state.focus
+					enter_hint = h 'div',
+						style:
+							background: @context.primary.inv[0]
+							color: @context.primary.color[0]
+						onMouseDown: @onEnter
+						className: cn(css['overlay-input-val'],css['overlay-input-hint'])
+						'enter ⏎'
+
+
+					overlay_input = h 'div',
+						style:
+							color: @context.primary.color[3]
+						className: cn(css['input'],css['overlay-input'])
+						overlay_input_text
+				
+				overlay_autofill_buttons = h 'div',
+					className: css['overlay-input-val-wrap']
+					autofill_buttons
 					enter_hint
 
-
+		if @props.width
+			style.width = @props.width
+			wrap_input_style = 
+				width: @props.width	
 
 		if input && props.type == 'text' || props.type == 'email' || props.type == 'phone'
 			input = h 'div',
 				className: css['input-wrap']
+				style:wrap_input_style
 				overlay_input
 				input
+		
 		
 
 
@@ -704,6 +717,7 @@ class Input extends Component
 
 Input.contextType = StyleContext
 Input.defaultProps = 
+	autofill_count: 3
 	name: 'input'
 	type: 'text'
 	btn_type: 'default'

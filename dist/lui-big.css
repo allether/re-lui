@@ -33,7 +33,7 @@ body {
   flex-shrink: 0;
 }
 .lui-section-content {
-  margin: 6px 0;
+  margin: 10.5px 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -65,10 +65,10 @@ body {
   font-weight: 700;
 }
 .lui-section-title-bar {
-  height: 6px;
+  height: 10.5px;
   width: 84px;
-  border-radius: 3px;
-  margin-left: 8.4px;
+  border-radius: 5.25px;
+  margin-left: 10.5px;
   margin-top: 3px;
 }
 .lui-alert-dot {
@@ -85,10 +85,10 @@ a {
 .lui-input-bar {
   transition: inherit;
   height: 28px;
-  width: 6px;
+  width: 10.5px;
   flex-shrink: 0;
-  margin: 0 8.4px;
-  border-radius: 3px;
+  margin: 0 10.5px;
+  border-radius: 5.25px;
 }
 .lui-hint-label {
   position: absolute;
@@ -120,12 +120,12 @@ a {
   padding: 0 14px;
   min-height: 42px;
   min-width: 42px;
-  margin: 4.2px;
+  margin: 5.25px;
   display: inline-flex;
   align-items: center;
   position: relative;
   justify-content: flex-start;
-  border-radius: 3px;
+  border-radius: 5.25px;
   font-weight: 400;
   transition: filter 0.3s ease, background 0.3s ease, color 0.3s ease;
   cursor: default;
@@ -137,7 +137,7 @@ a {
   border: none;
   color: inherit;
   background: none;
-  padding: 3px 4.2px;
+  padding: 3px 5.25px;
   min-width: 100%;
   width: 100%;
   min-height: 100px;
@@ -153,7 +153,7 @@ a {
   height: auto;
   vertical-align: middle;
   line-height: normal;
-  margin: 0 4.2px;
+  margin: 0 5.25px;
 }
 .lui-btn .lui-top-label {
   transition: opacity 0.3s ease;
@@ -174,7 +174,7 @@ a {
 .lui-btn i {
   font-size: 28px;
   transition: color 0.3s ease;
-  margin: 0 4.2px;
+  margin: 0 5.25px;
   margin-left: 0;
 }
 .lui-btn.lui-btn-textarea {
@@ -186,11 +186,11 @@ a {
 }
 .lui-btn.lui-btn-textarea .lui-input-bar {
   width: 30%;
-  height: 6px;
+  height: 10.5px;
   margin-right: 0;
   margin-left: 0;
-  margin-top: 8.4px;
-  margin-bottom: 4.2px;
+  margin-top: 10.5px;
+  margin-bottom: 5.25px;
 }
 .lui-btn.lui-btn-textarea .lui-label {
   width: 100%;
@@ -225,8 +225,8 @@ a {
   margin: 0 !important;
 }
 .lui-btn .lui-overlay-input-val {
-  border-radius: 3px;
-  margin-right: 4.2px;
+  border-radius: 5.25px;
+  margin-right: 5.25px;
   padding: 7px;
   font-size: 10px;
 }
@@ -254,7 +254,7 @@ a {
 }
 .lui-btn input,
 .lui-btn .lui-overlay-input {
-  margin: 0 4.2px !important;
+  margin: 0 5.25px !important;
 }
 .lui-btn input,
 .lui-btn select,
@@ -336,9 +336,9 @@ pre {
 }
 .lui-chip {
   height: 28px;
-  border-radius: 3px;
-  margin: 0 4.2px;
-  padding: 0 8.4px;
+  border-radius: 5.25px;
+  margin: 0 5.25px;
+  padding: 0 10.5px;
   display: inline-flex;
   flex-shrink: 0;
   font-size: 11px;
@@ -352,8 +352,8 @@ pre {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  margin: 0 4.2px;
-  margin-right: 8.4px;
+  margin: 0 5.25px;
+  margin-right: 10.5px;
   overflow: hidden;
   z-index: 1;
   transform: translate(0);
@@ -372,11 +372,11 @@ pre {
 .lui-toggle {
   flex-shrink: 0;
   transform: translate(0);
-  border-radius: 3px;
+  border-radius: 5.25px;
   height: 28px !important;
   width: 42px !important;
-  margin-right: 8.4px;
-  margin-left: 4.2px;
+  margin-right: 10.5px;
+  margin-left: 5.25px;
 }
 .lui-toggle i {
   font-size: 24px !important;
@@ -388,7 +388,7 @@ pre {
   background: green;
 }
 .lui-input-color-circle {
-  margin-left: 4.2px;
+  margin-left: 5.25px;
   min-width: 70px;
 }
 .lui-input-color-text {
@@ -401,9 +401,9 @@ pre {
   pointer-events: none;
 }
 .lui-toggle-bar {
-  width: 6px;
+  width: 10.5px;
   height: 60%;
-  border-radius: 3px;
+  border-radius: 5.25px;
 }
 .lui-sqaure-btn {
   margin: 0;
@@ -424,7 +424,7 @@ pre {
 .lui-square-btn-big input,
 .lui-square-btn-big .lui-input {
   height: 56px;
-  margin: 0 4.2px;
+  margin: 0 5.25px;
 }
 .lui-square-btn-big .lui-alert-dot {
   top: 4;
@@ -434,7 +434,7 @@ pre {
   padding-right: 42px;
 }
 .lui-square-btn-big .lui-label {
-  margin: 0 4.2px;
+  margin: 0 5.25px;
 }
 .lui-square-btn-big i {
   font-size: 35px;
@@ -449,14 +449,14 @@ pre {
 .lui-square-btn-small input,
 .lui-square-btn-small .lui-input {
   height: 42px;
-  margin: 0 4.2px;
+  margin: 0 5.25px;
 }
 .lui-square-btn-small .lui-alert-dot {
   top: 2;
   right: 2;
 }
 .lui-square-btn-small .lui-label {
-  margin: 0 4.2px;
+  margin: 0 5.25px;
 }
 .lui-square-btn-small i {
   font-size: 28px;
@@ -475,10 +475,10 @@ pre {
   max-width: 100%;
 }
 .lui-bar.lui-bar-btn {
-  border-radius: 3px;
+  border-radius: 5.25px;
   overflow: hidden;
   transform: translate(0);
-  margin: 4.2px;
+  margin: 5.25px;
 }
 .lui-bar.lui-bar-vert {
   height: auto;
@@ -510,7 +510,7 @@ pre {
 .lui-bar.lui-bar-big > .lui-btn .lui-input,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-input {
   height: 56px;
-  margin: 0 4.2px;
+  margin: 0 5.25px;
 }
 .lui-bar.lui-bar-big > .lui-btn .lui-alert-dot,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-alert-dot {
@@ -523,7 +523,7 @@ pre {
 }
 .lui-bar.lui-bar-big > .lui-btn .lui-label,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-label {
-  margin: 0 4.2px;
+  margin: 0 5.25px;
 }
 .lui-bar.lui-bar-big > .lui-btn i,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn i {
@@ -543,7 +543,7 @@ pre {
 .lui-bar.lui-bar-small > .lui-btn .lui-input,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-input {
   height: 42px;
-  margin: 0 4.2px;
+  margin: 0 5.25px;
 }
 .lui-bar.lui-bar-small > .lui-btn .lui-alert-dot,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-alert-dot {
@@ -552,7 +552,7 @@ pre {
 }
 .lui-bar.lui-bar-small > .lui-btn .lui-label,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-label {
-  margin: 0 4.2px;
+  margin: 0 5.25px;
 }
 .lui-bar.lui-bar-small > .lui-btn i,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn i {
@@ -620,9 +620,9 @@ pre {
   align-items: center;
   justify-content: center;
   margin: auto;
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
+  width: 15.75px;
+  height: 15.75px;
+  border-radius: 5.25px;
   background-color: #FFFFFF;
   animation: lui-_ii_rotate 1s infinite ease-in-out;
   transition: opacity 0.3s ease;

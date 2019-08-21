@@ -31,6 +31,17 @@ createPallet = (color,inv,factors)->
 		inv.mix(color,factors.inv[3]).hex()
 	]
 
+	c.inv['-0'] = inv.mix(color,-1 * factors.inv[0]*.5).hex()
+	c.inv['-1'] = inv.mix(color,-1 * factors.inv[1]*.5).hex()
+	c.inv['-2'] = inv.mix(color,-1 * factors.inv[2]*.5).hex()
+	# c.inv['-3'] = inv.mix(color,-1 * factors.inv[3]*.5).hex()
+
+	c.color['-0'] = color.mix(color,-1 * factors.color[0]*.5).hex()
+	c.color['-1'] = color.mix(color,-1 * factors.color[1]*.5).hex()
+	c.color['-2'] = color.mix(color,-1 * factors.color[2]*.5).hex()
+	# c.color['-3'] = inv.mix(color,-1 * factors.inv[3]*.5).hex()
+
+
 	return c
 
 

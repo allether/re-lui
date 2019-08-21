@@ -888,7 +888,7 @@ Input = class Input extends Component {
   }
 
   renderInput() {
-    var autofill_match_res, bar, bar_style, button_style, chips, color_circle, enter_hint, focus, hint_label, icon, icon_style, input, input_hidden, input_name, input_props, input_val_style, label, label2, outer_props, overlay_autofill_buttons, overlay_icon, overlay_input, overlay_input_text, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, toggle_circle_fill_color, value;
+    var autofill_buttons, autofill_match_res, bar, bar_style, button_style, chips, color_circle, enter_hint, focus, hint_label, icon, icon_style, input, input_hidden, input_name, input_props, input_val_style, label, label2, outer_props, overlay_autofill_buttons, overlay_icon, overlay_input, overlay_input_text, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, toggle_circle_fill_color, value, wrap_input_style;
     // log 'render input'
     input_name = this.props.name;
     props = this.props;
@@ -1105,7 +1105,8 @@ Input = class Input extends Component {
         },
         className: cn(css['input'], css['overlay-input'])
       }, this.props.overlay_input);
-    } else if (this.props.autofill) {
+    }
+    if (this.props.autofill && (!this.props.overlay_input || this.props.force_autofill_buttons)) {
       input_val_style = {
         background: this.context.primary.color[1],
         color: this.context.primary.inv[1]
@@ -1116,7 +1117,8 @@ Input = class Input extends Component {
         }, h('div', {
           className: css['overlay-input-val'],
           style: {
-            background: this.context.primary.inv[0]
+            background: this.context.primary.inv[0],
+            color: this.context.primary.color[0]
           }
         }, '...'));
       } else {
@@ -1125,10 +1127,30 @@ Input = class Input extends Component {
         if (autofill_match_res != null ? autofill_match_res[0] : void 0) {
           overlay_input_text = this.props.value + this.props.autofill[0].slice(this.props.value.length);
         }
+        if (this.props.force_autofill_buttons || this.state.focus) {
+          autofill_buttons = this.props.autofill.slice(0, this.props.autofill_count || 3).map((val, i) => {
+            var val_style;
+            if (i === 0 && overlay_input_text) {
+              val_style = {
+                background: this.context.secondary.color[0],
+                color: this.context.secondary.inv[0]
+              };
+            } else {
+              val_style = input_val_style;
+            }
+            return h('div', {
+              onMouseDown: this.inputValue.bind(this, val),
+              className: css['overlay-input-val'],
+              style: val_style,
+              key: val
+            }, val);
+          });
+        }
         if (this.state.focus) {
           enter_hint = h('div', {
             style: {
-              background: this.context.primary.inv[0]
+              background: this.context.primary.inv[0],
+              color: this.context.primary.color[0]
             },
             onMouseDown: this.onEnter,
             className: cn(css['overlay-input-val'], css['overlay-input-hint'])
@@ -1142,28 +1164,19 @@ Input = class Input extends Component {
         }
         overlay_autofill_buttons = h('div', {
           className: css['overlay-input-val-wrap']
-        }, this.state.focus && (this.props.autofill.slice(0, 3).map((val, i) => {
-          var val_style;
-          if (i === 0 && overlay_input_text) {
-            val_style = {
-              background: this.context.secondary.color[0],
-              color: this.context.secondary.inv[0]
-            };
-          } else {
-            val_style = input_val_style;
-          }
-          return h('div', {
-            onMouseDown: this.inputValue.bind(this, val),
-            className: css['overlay-input-val'],
-            style: val_style,
-            key: val
-          }, val);
-        })) || null, enter_hint);
+        }, autofill_buttons, enter_hint);
       }
+    }
+    if (this.props.width) {
+      style.width = this.props.width;
+      wrap_input_style = {
+        width: this.props.width
+      };
     }
     if (input && props.type === 'text' || props.type === 'email' || props.type === 'phone') {
       input = h('div', {
-        className: css['input-wrap']
+        className: css['input-wrap'],
+        style: wrap_input_style
       }, overlay_input, input);
     }
     outer_props = {
@@ -1195,6 +1208,7 @@ Input = class Input extends Component {
 Input.contextType = StyleContext;
 
 Input.defaultProps = {
+  autofill_count: 3,
   name: 'input',
   type: 'text',
   btn_type: 'default',
@@ -2127,6 +2141,14 @@ createPallet = function(color, inv, factors) {
   c = {};
   c.color = [color.hex(), color.mix(inv, factors.color[0]).hex(), color.mix(inv, factors.color[1]).hex(), color.mix(inv, factors.color[2]).hex(), color.mix(inv, factors.color[3]).hex()];
   c.inv = [inv.hex(), inv.mix(color, factors.inv[0]).hex(), inv.mix(color, factors.inv[1]).hex(), inv.mix(color, factors.inv[2]).hex(), inv.mix(color, factors.inv[3]).hex()];
+  c.inv['-0'] = inv.mix(color, -1 * factors.inv[0] * .5).hex();
+  c.inv['-1'] = inv.mix(color, -1 * factors.inv[1] * .5).hex();
+  c.inv['-2'] = inv.mix(color, -1 * factors.inv[2] * .5).hex();
+  // c.inv['-3'] = inv.mix(color,-1 * factors.inv[3]*.5).hex()
+  c.color['-0'] = color.mix(color, -1 * factors.color[0] * .5).hex();
+  c.color['-1'] = color.mix(color, -1 * factors.color[1] * .5).hex();
+  c.color['-2'] = color.mix(color, -1 * factors.color[2] * .5).hex();
+  // c.color['-3'] = inv.mix(color,-1 * factors.inv[3]*.5).hex()
   return c;
 };
 
