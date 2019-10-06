@@ -6,8 +6,9 @@ AlertDot = require './AlertDot.coffee'
 CircleToggle = require './CircleToggle.coffee'
 {StyleContext} = require './Style.coffee'
 
+isTouch = require './isTouch.js'
 
-
+IS_TOUCH  = isTouch()
 class Input extends Component
 	constructor: (props)->
 		super(props)
@@ -135,7 +136,7 @@ class Input extends Component
 	onTouchStart: (e)=>
 		if @props.onClick
 			e.stopPropagation()
-			e.preventDefault()
+			# e.preventDefault()
 		@state.hover = yes
 		@state.touch_started = yes
 		# log 'touch started'
@@ -578,8 +579,8 @@ class Input extends Component
 
 		# log @props.autofill
 		if @props.autofill
-			style.height = DIM2 * 1.6
-			style.paddingTop = DIM
+			style.height = DIM2 * 2
+			style.paddingTop = DIM2
 
 
 		if @props.overlay_input
@@ -679,7 +680,7 @@ class Input extends Component
 			ref: @outerRef
 			onMouseEnter: !IS_TOUCH && @onMouseEnter || undefined
 			onMouseLeave:  !IS_TOUCH && @onMouseLeave || undefined
-			className: cn(props.hint && css['trans_fixed'],props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],css['input'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.type == 'select' && css['type-select'],props.className)
+			className: cn(props.hint && css['trans_fixed'],props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.type == 'select' && css['type-select'],props.className)
 			href: props.href	
 			style: style
 

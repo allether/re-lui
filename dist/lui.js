@@ -175,6 +175,7 @@ AlertOverlay = class AlertOverlay extends Component {
   render() {
     var alert_bg, alert_color, slide_pos;
     // log @context
+    // log @context
     if (this.state.show_alert) {
       slide_pos = 1;
     } else {
@@ -422,7 +423,7 @@ module.exports = CircleToggle;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var AlertDot, CircleToggle, Color, Input, Slide, StyleContext, cn, css,
+var AlertDot, CircleToggle, Color, IS_TOUCH, Input, Slide, StyleContext, cn, css, isTouch,
   boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
 
 css = __webpack_require__(/*! ./Style.less */ "./components/Style.less");
@@ -438,6 +439,10 @@ AlertDot = __webpack_require__(/*! ./AlertDot.coffee */ "./components/AlertDot.c
 CircleToggle = __webpack_require__(/*! ./CircleToggle.coffee */ "./components/CircleToggle.coffee");
 
 ({StyleContext} = __webpack_require__(/*! ./Style.coffee */ "./components/Style.coffee"));
+
+isTouch = __webpack_require__(/*! ./isTouch.js */ "./components/isTouch.js");
+
+IS_TOUCH = isTouch();
 
 Input = class Input extends Component {
   constructor(props) {
@@ -635,8 +640,8 @@ Input = class Input extends Component {
     boundMethodCheck(this, Input);
     if (this.props.onClick) {
       e.stopPropagation();
-      e.preventDefault();
     }
+    // e.preventDefault()
     this.state.hover = true;
     this.state.touch_started = true;
     // log 'touch started'
@@ -1095,8 +1100,8 @@ Input = class Input extends Component {
     }
     // log @props.autofill
     if (this.props.autofill) {
-      style.height = DIM2 * 1.6;
-      style.paddingTop = DIM;
+      style.height = DIM2 * 2;
+      style.paddingTop = DIM2;
     }
     if (this.props.overlay_input) {
       overlay_input = h('div', {
@@ -1187,7 +1192,7 @@ Input = class Input extends Component {
       ref: this.outerRef,
       onMouseEnter: !IS_TOUCH && this.onMouseEnter || void 0,
       onMouseLeave: !IS_TOUCH && this.onMouseLeave || void 0,
-      className: cn(props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], css['input'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
+      className: cn(props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
       href: props.href,
       style: style
     };
@@ -1873,7 +1878,7 @@ module.exports = MenuTab;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Color, Overlay, StyleContext, cn, css,
+var Color, IS_TOUCH, Overlay, StyleContext, cn, css, isTouch,
   boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
 
 cn = __webpack_require__(/*! classnames */ "classnames");
@@ -1883,6 +1888,10 @@ Color = __webpack_require__(/*! color */ "color");
 css = __webpack_require__(/*! ./Style.less */ "./components/Style.less");
 
 ({StyleContext} = __webpack_require__(/*! ./Style.coffee */ "./components/Style.coffee"));
+
+isTouch = __webpack_require__(/*! ./isTouch.js */ "./components/isTouch.js");
+
+IS_TOUCH = isTouch();
 
 Overlay = class Overlay extends Component {
   constructor(props) {
@@ -2004,7 +2013,7 @@ Overlay = class Overlay extends Component {
       zIndex: this.props.z_index || 666,
       display: !this.state.render && 'none' || '',
       pointerEvents: !this.state.render && 'none',
-      background: this.props.transparent && 'none' || this.state.backdrop_opaque_color
+      background: this.props.background || this.state.backdrop_opaque_color || 'none'
     }, this.props.style);
     return h('div', {
       onClick: this.props.pointer_events && this.onClick || null,
@@ -2027,6 +2036,95 @@ Overlay.defaultProps = {
 };
 
 module.exports = Overlay;
+
+
+/***/ }),
+
+/***/ "./components/Palette.coffee":
+/*!***********************************!*\
+  !*** ./components/Palette.coffee ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Color, ease_in, ease_in_2, ease_linear, ease_out, ease_out_2, easings, generatePalette, generateStyle, step_mix;
+
+Color = __webpack_require__(/*! color */ "color");
+
+ease_linear = function(i, count) {
+  return 1 / count * i;
+};
+
+ease_in = function(i, count) {
+  var n;
+  n = 1 / count * i * (i / count);
+  return n;
+};
+
+ease_in_2 = function(i, count) {
+  return Math.pow(i, 3) / Math.pow(count, 3);
+};
+
+ease_out = function(i, count) {
+  return 1 / count * Math.sqrt(i * count);
+};
+
+ease_out_2 = function(i, count) {
+  return Math.pow(1 / count * Math.sqrt(Math.sqrt(i * count) * count), 1.2);
+};
+
+step_mix = function(a, b, count, step_fn) {
+  var c, c2, i, j, ref, steps;
+  // log Style.prototype.ease_linear
+  steps = [];
+  c = Color(a);
+  c2 = Color(b);
+  for (i = j = 0, ref = count; (0 <= ref ? j < ref : j > ref); i = 0 <= ref ? ++j : --j) {
+    steps.push(Color(c).mix(c2, step_fn(i, count)).hex());
+  }
+  return steps;
+};
+
+generateStyle = function(props) {
+  var default_ease, style;
+  default_ease = ease_linear;
+  style = {};
+  style.primary = generatePalette(props.primary, props.primary_inv, props.step_count || 10, props.primary_ease || default_ease, props.primary_inv_ease || default_ease);
+  style.secondary = generatePalette(props.secondary, props.secondary_inv, props.step_count || 10, props.secondary_ease || default_ease, props.secondary_inv_ease || default_ease);
+  return style;
+};
+
+generatePalette = function(color, inverse_color, step_count, step_fn, inverse_step_fn) {
+  var c, default_ease;
+  // log step_fn,inverse_step_fn
+  c = [];
+  color = Color(color);
+  inverse_color = Color(inverse_color);
+  c[0] = step_mix(color, inverse_color, step_count, step_fn);
+  c[1] = step_mix(inverse_color, color, step_count, inverse_step_fn);
+  c.color = c[0];
+  c.inv = c[1];
+  default_ease = ease_in_2;
+  c.inv.darker = step_mix(inverse_color, '#000', 5, default_ease);
+  c.inv.lighter = step_mix(inverse_color, '#fff', 5, default_ease);
+  c.color.darker = step_mix(color, '#000', 5, default_ease);
+  c.color.lighter = step_mix(color, '#fff', 5, default_ease);
+  c.false = Color('red').mix(color, 0.25).hex();
+  c.false_inv = Color(c.false).mix(Color('white'), 0.9).hex();
+  c.true = Color('lime').mix(color, 0.25).hex();
+  c.warn = Color('yellow').mix(color, 0.25).hex();
+  return c;
+};
+
+easings = {
+  ease_linear: ease_linear,
+  ease_in: ease_in,
+  ease_in_2: ease_in_2,
+  ease_out: ease_out,
+  ease_out_2: ease_out_2
+};
+
+module.exports = {generateStyle, generatePalette, easings};
 
 
 /***/ }),
@@ -2116,12 +2214,10 @@ module.exports = SquareLoader;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var Color, Component, Style, StyleContext, createContext, createElement, createPallet, css, darkenPallet, generateStyle, lightenPallet,
-  boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
+/* WEBPACK VAR INJECTION */(function(global) {var Color, Component, Style, StyleContext, createContext, createElement, css, generatePalette, generateStyle, step_mix;
 
 Color = __webpack_require__(/*! color */ "color");
 
-// require 'normalize.css'
 css = __webpack_require__(/*! ./Style.less */ "./components/Style.less");
 
 ({createElement, Component, createContext} = __webpack_require__(/*! react */ "react"));
@@ -2130,179 +2226,86 @@ global.h = createElement;
 
 global.Component = Component;
 
-global.IS_TOUCH = __webpack_require__(/*! ./is_touch */ "./components/is_touch.js")();
-
-StyleContext = createContext({});
-
-createPallet = function(color, inv, factors) {
-  var c, color_factor, inv_factor;
-  color_factor = color_factor || 1;
-  inv_factor = inv_factor || 1;
-  c = {};
-  c.color = [color.hex(), color.mix(inv, factors.color[0]).hex(), color.mix(inv, factors.color[1]).hex(), color.mix(inv, factors.color[2]).hex(), color.mix(inv, factors.color[3]).hex()];
-  c.inv = [inv.hex(), inv.mix(color, factors.inv[0]).hex(), inv.mix(color, factors.inv[1]).hex(), inv.mix(color, factors.inv[2]).hex(), inv.mix(color, factors.inv[3]).hex()];
-  c.inv['-0'] = inv.mix(color, -1 * factors.inv[0] * .5).hex();
-  c.inv['-1'] = inv.mix(color, -1 * factors.inv[1] * .5).hex();
-  c.inv['-2'] = inv.mix(color, -1 * factors.inv[2] * .5).hex();
-  // c.inv['-3'] = inv.mix(color,-1 * factors.inv[3]*.5).hex()
-  c.color['-0'] = color.mix(color, -1 * factors.color[0] * .5).hex();
-  c.color['-1'] = color.mix(color, -1 * factors.color[1] * .5).hex();
-  c.color['-2'] = color.mix(color, -1 * factors.color[2] * .5).hex();
-  // c.color['-3'] = inv.mix(color,-1 * factors.inv[3]*.5).hex()
-  return c;
-};
-
-lightenPallet = (props) => {
-  var c;
-  c = createPallet(props.color, props.color.lighten(props.lighten_factor), props.factors);
-  c.highlight = props.color.lighten(1).saturate(.85).hex();
-  c.true = props.color.lighten(1).mix(props.true, 0.7).hex();
-  c.false = props.color.lighten(1).mix(props.false, 0.7).hex();
-  c.warn = props.color.lighten(1).mix(props.warn, 0.7).hex();
-  return c;
-};
-
-darkenPallet = function(props) {
-  var c;
-  c = createPallet(props.color, props.color.darken(props.darken_factor), props.factors);
-  c.highlight = props.color.darken(0.5).saturate(.85).hex();
-  c.true = props.color.darken(0.5).mix(props.true, 0.7).hex();
-  c.false = props.color.darken(0.5).mix(props.false, 0.7).hex();
-  c.warn = props.color.darken(0.5).mix(props.warn, 0.7).hex();
-  return c;
-};
-
-generateStyle = function(props) {
-  var c_false, c_true, c_warn, primary, primary_c, secondary, secondary_c;
-  primary_c = Color(props.primary);
-  secondary_c = Color(props.secondary);
-  c_true = Color(props.true);
-  c_false = Color(props.false);
-  c_warn = Color(props.warn);
-  if (primary_c.isLight()) {
-    primary = darkenPallet({
-      color: primary_c,
-      lighten_factor: props.lighten_factor,
-      darken_factor: props.darken_factor,
-      factors: props.primary_factors,
-      true: c_true,
-      false: c_false,
-      warn: c_warn
-    });
-    primary.is_dark = false;
-  } else {
-    primary = lightenPallet({
-      color: primary_c,
-      lighten_factor: props.lighten_factor,
-      darken_factor: props.darken_factor,
-      factors: props.primary_factors,
-      true: c_true,
-      false: c_false,
-      warn: c_warn
-    });
-    primary.is_dark = true;
-  }
-  if (secondary_c.isLight()) {
-    secondary = darkenPallet({
-      color: secondary_c,
-      lighten_factor: props.lighten_factor,
-      darken_factor: props.darken_factor,
-      factors: props.secondary_factors,
-      true: c_true,
-      false: c_false,
-      warn: c_warn
-    });
-    secondary.is_dark = false;
-  } else {
-    secondary = lightenPallet({
-      color: secondary_c,
-      lighten_factor: props.lighten_factor,
-      darken_factor: props.darken_factor,
-      factors: props.secondary_factors,
-      true: c_true,
-      false: c_false,
-      warn: c_warn
-    });
-    secondary.is_dark = true;
-  }
-  return {
-    primary: primary,
-    secondary: secondary
-  };
-};
+({generateStyle, generatePalette} = __webpack_require__(/*! ./Palette */ "./components/Palette.coffee"));
 
 Style = class Style extends Component {
   constructor() {
     super();
-    this.renderStyle = this.renderStyle.bind(this);
-    this.state = {
-      rendered_style: true
-    };
+    this.state = {};
   }
 
-  componentWillMount() {
-    return this.renderStyle(this.props, this.state);
+  ease_linear(i, count) {
+    return 1 / count * i;
   }
 
-  renderStyle(props, state) {
-    boundMethodCheck(this, Style);
-    if (props.style) {
-      this._theme = props.style;
-    } else {
-      this._theme = generateStyle({
-        lighten_factor: props.lighten_factor,
-        darken_factor: props.darken_factor,
-        primary_factors: props.primary_factors,
-        secondary_factors: props.secondary_factors,
-        false: props.false,
-        true: props.true,
-        warn: props.warn,
-        primary: props.primary,
-        secondary: props.secondary
-      });
-    }
-    this.primary = this._theme.primary;
-    return this.secondary = this._theme.secondary;
+  ease_in(i, count) {
+    var n;
+    n = 1 / count * i * (i / count);
+    return n;
+  }
+
+  ease_in_2(i, count) {
+    return Math.pow(i, 3) / Math.pow(count, 3);
+  }
+
+  ease_out(i, count) {
+    return 1 / count * Math.sqrt(i * count);
+  }
+
+  ease_out_2(i, count) {
+    return Math.pow(1 / count * Math.sqrt(Math.sqrt(i * count) * count), 1.2);
   }
 
   componentWillUpdate(props, state) {
-    if (this.props.style !== props.style || this.props.primary !== props.primary || this.props.secondary !== props.secondary || this.props.tertiary !== props.tertiary) {
-      this.renderStyle(props, state);
-      return state.rendered_style = true;
+    var default_ease;
+    default_ease = Style.prototype.ease_linear;
+    if (this.props.style !== props.style || this.props.primary !== props.primary || this.props.secondary !== props.secondary) {
+      if (props.style) {
+        this.primary = props.style.primary;
+        return this.secondary = props.style.secondary;
+      } else {
+        this.primary = generatePalette(props.primary, props.primary_inv, props.step_count || 10, props.primary_ease || default_ease, props.primary_inv_ease || default_ease);
+        return this.secondary = generatePalette(props.secondary, props.secondary_inv, props.step_count || 10, props.secondary_ease || default_ease, props.secondary_inv_ease || default_ease);
+      }
     }
   }
 
-  componentDidUpdate() {
-    if (this.state.rendered_style) {
-      return this.state.rendered_style = false;
+  componentWillMount() {
+    var default_ease;
+    default_ease = Style.prototype.ease_linear;
+    if (this.props.style) {
+      this.primary = this.props.style.primary;
+      return this.secondary = this.props.style.secondary;
+    } else {
+      this.primary = generatePalette(this.props.primary, this.props.primary_inv, this.props.step_count || 10, this.props.primary_ease || default_ease, this.props.primary_inv_ease || default_ease);
+      return this.secondary = generatePalette(this.props.secondary, this.props.secondary_inv, this.props.step_count || 10, this.props.secondary_ease || default_ease, this.props.secondary_inv_ease || default_ease);
     }
   }
 
   render() {
     return h(StyleContext.Provider, {
-      value: this._theme
+      value: {
+        primary: this.primary,
+        secondary: this.secondary
+      }
     }, this.props.children);
   }
 
 };
 
-Style.defaultProps = {
-  primary: '#18262a',
-  secondary: 'whitesmoke',
-  true: '#21FF48',
-  false: '#FC0020',
-  warn: '#E7BC08',
-  darken_factor: .75,
-  lighten_factor: 9.0,
-  primary_factors: {
-    color: [.1, .3, .6, .9],
-    inv: [.05, .1, .15, .25]
-  },
-  secondary_factors: {
-    color: [.1, .3, .6, .9],
-    inv: [.05, .1, .15, .25]
+step_mix = function(a, b, count, step_fn) {
+  var c, c2, i, j, ref, steps;
+  // log Style.prototype.ease_linear
+  steps = [];
+  c = Color(a);
+  c2 = Color(b);
+  for (i = j = 0, ref = count; (0 <= ref ? j < ref : j > ref); i = 0 <= ref ? ++j : --j) {
+    steps.push(Color(c).mix(c2, step_fn(i, count)).rgb().string());
   }
+  return steps;
 };
+
+StyleContext = createContext({});
 
 module.exports = {Style, StyleContext, generateStyle};
 
@@ -2382,10 +2385,10 @@ module.exports.Chip = Chip;
 
 /***/ }),
 
-/***/ "./components/is_touch.js":
-/*!********************************!*\
-  !*** ./components/is_touch.js ***!
-  \********************************/
+/***/ "./components/isTouch.js":
+/*!*******************************!*\
+  !*** ./components/isTouch.js ***!
+  \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 

@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "file": "AlertDot.js",
+  "sourceRoot": "..",
+  "sources": [
+    "components/AlertDot.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA,QAAA,EAAA,YAAA,EAAA,EAAA,EAAA;;EAAA,GAAA,GAAM,OAAA,CAAQ,cAAR;;EACN,EAAA,GAAK,OAAA,CAAQ,YAAR;;EACL,CAAA,CAAC,YAAD,CAAA,GAAiB,OAAA,CAAQ,gBAAR,CAAjB;;EAGM,WAAN,MAAA,SAAA,QAAuB,UAAvB;IACC,MAAQ,CAAA,CAAA;AACP,UAAA;MAAA,WAAA,GAAc,CAAA;MACd,IAAG,IAAC,CAAA,KAAK,CAAC,KAAV;QACC,WAAW,CAAC,UAAZ,GAAyB,IAAC,CAAA,KAAK,CAAC,MADjC;OAAA,MAEK,IAAG,IAAC,CAAA,KAAK,CAAC,KAAV;QACJ,WAAW,CAAC,UAAZ,GAAyB,IAAC,CAAA,OAAO,CAAC,SAAS,CAAC,MADxC;OAAA,MAAA;QAGJ,WAAW,CAAC,UAAZ,GAAyB,IAAC,CAAA,OAAO,CAAC,SAAS,CAAC,UAHxC;;aAKL,CAAA,CAAE,KAAF,EACC;QAAA,SAAA,EAAW,GAAI,CAAA,WAAA,CAAf;QACA,KAAA,EAAO;MADP,CADD;IATO;;EADT;;EAcA,QAAQ,CAAC,WAAT,GAAuB;;EACvB,MAAM,CAAC,OAAP,GAAiB;AApBjB",
+  "sourcesContent": [
+    "css = require './Style.less'\ncn = require 'classnames'\n{StyleContext} = require './Style.coffee'\n\n\nclass AlertDot extends Component\n\trender: ->\n\t\talert_style = {}\n\t\tif @props.color\n\t\t\talert_style.background = @props.color\n\t\telse if @props.error\n\t\t\talert_style.background = @context.secondary.error\n\t\telse\n\t\t\talert_style.background = @context.secondary.highlight\n\n\t\th 'div',\n\t\t\tclassName: css['alert-dot']\n\t\t\tstyle: alert_style\n\nAlertDot.contextType = StyleContext\nmodule.exports = AlertDot"
+  ]
+}

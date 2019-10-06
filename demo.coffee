@@ -22,10 +22,9 @@ lerp_logo = require './lerp-logo-40.svg'
 
 
 
-style = generateStyle Object.assign {},Style.defaultProps,
-	primary: '#a0ff02'
+# style = generateStyle Object.assign {},Style.defaultProps,
 
-# log style
+# # log style
 
 class SvgIcon extends Component
 	componentDidMount: ->
@@ -298,9 +297,14 @@ class Demo extends Component
 			test:true
 			btn_select: false
 			bar_big: yes
-			primary:'#1B1C1D'
-			secondary:'#4D6977'
+			primary: '#202020'
+			primary_inv: '#eeeeee'
+			
+			secondary: '#376978'
+			secondary_inv: '#fff'
+
 			test_color: '#00f3dd'
+	
 	setTestColor: (e)=>
 		@setState
 			test_color: e.target.value
@@ -358,6 +362,7 @@ class Demo extends Component
 	
 	refStyle: (e)=>
 		@_style = e
+		@forceUpdate()
 
 	componentDidUpdate: (props,state)=>
 		if state.primary != @state.primary || @state.secondary != state.secondary
@@ -367,9 +372,15 @@ class Demo extends Component
 		# log 'render'
 		state = @state
 		props = @props
+		# log @_style?.primary
 		h Style,
 			primary: state.primary #these should be accessed in child context (bad example)
 			secondary: state.secondary #these should be accessed in child context (bad example)
+			primary_inv: state.primary_inv #these should be accessed in child context (bad example)
+			secondary_inv: state.secondary_inv #these should be accessed in child context (bad example)
+			step_count: 12
+			primary_inv_ease: Style.prototype.ease_linear
+			secondary_ease: Style.prototype.ease_linear
 			ref:@refStyle
 			h 'div',
 				style:

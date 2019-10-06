@@ -3,7 +3,8 @@ Color = require 'color'
 css = require './Style.less'
 {StyleContext} = require './Style.coffee'
 
-
+isTouch = require('./isTouch.js')
+IS_TOUCH = isTouch()
 class Overlay extends Component
 	constructor: (props)->
 		super(props)
@@ -95,7 +96,7 @@ class Overlay extends Component
 			zIndex: @props.z_index || 666
 			display: !@state.render && 'none' || ''
 			pointerEvents: !@state.render && 'none'
-			background: @props.transparent && 'none' || @state.backdrop_opaque_color
+			background: @props.background || @state.backdrop_opaque_color || 'none'
 		,@props.style
 
 		

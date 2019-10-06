@@ -1,194 +1,77 @@
 Color = require 'color'
-# require 'normalize.css'
 css = require './Style.less'
 {createElement,Component,createContext} = require 'react'
 global.h = createElement
 global.Component = Component
-global.IS_TOUCH = require('./is_touch')()
 
-StyleContext = createContext({})
-
-
-
-createPallet = (color,inv,factors)->
-	color_factor = color_factor || 1
-	inv_factor = inv_factor || 1
-
-	c = {}
-	c.color = [
-		color.hex()
-		color.mix(inv,factors.color[0]).hex()
-		color.mix(inv,factors.color[1]).hex()
-		color.mix(inv,factors.color[2]).hex()
-		color.mix(inv,factors.color[3]).hex()
-	]
-
-	c.inv = [
-		inv.hex()
-		inv.mix(color,factors.inv[0]).hex()
-		inv.mix(color,factors.inv[1]).hex()
-		inv.mix(color,factors.inv[2]).hex()
-		inv.mix(color,factors.inv[3]).hex()
-	]
-
-	c.inv['-0'] = inv.mix(color,-1 * factors.inv[0]*.5).hex()
-	c.inv['-1'] = inv.mix(color,-1 * factors.inv[1]*.5).hex()
-	c.inv['-2'] = inv.mix(color,-1 * factors.inv[2]*.5).hex()
-	# c.inv['-3'] = inv.mix(color,-1 * factors.inv[3]*.5).hex()
-
-	c.color['-0'] = color.mix(color,-1 * factors.color[0]*.5).hex()
-	c.color['-1'] = color.mix(color,-1 * factors.color[1]*.5).hex()
-	c.color['-2'] = color.mix(color,-1 * factors.color[2]*.5).hex()
-	# c.color['-3'] = inv.mix(color,-1 * factors.inv[3]*.5).hex()
-
-
-	return c
-
-
-lightenPallet = (props)=>
-	c = createPallet(props.color,props.color.lighten(props.lighten_factor),props.factors)
-	c.highlight = props.color.lighten(1).saturate(.85).hex()
-	c.true = props.color.lighten(1).mix(props.true,0.7).hex();
-	c.false = props.color.lighten(1).mix(props.false,0.7).hex();
-	c.warn = props.color.lighten(1).mix(props.warn,0.7).hex();
-	return c
-
-
-darkenPallet = (props)->
-	c = createPallet(props.color,props.color.darken(props.darken_factor),props.factors)
-	c.highlight = props.color.darken(0.5).saturate(.85).hex()
-	c.true = props.color.darken(0.5).mix(props.true,0.7).hex();
-	c.false = props.color.darken(0.5).mix(props.false,0.7).hex();
-	c.warn = props.color.darken(0.5).mix(props.warn,0.7).hex();
-	return c
-
-
-
-generateStyle = (props)->
-	primary_c = Color(props.primary)
-	secondary_c = Color(props.secondary)
-
-	c_true = Color(props.true)
-	c_false = Color(props.false)
-	c_warn = Color(props.warn)
-
-
-
-	if primary_c.isLight()
-		primary = darkenPallet
-			color: primary_c
-			lighten_factor: props.lighten_factor
-			darken_factor: props.darken_factor
-			factors: props.primary_factors
-			true: c_true
-			false: c_false
-			warn: c_warn
-		primary.is_dark = false
-		
-	else
-		primary = lightenPallet
-			color: primary_c
-			lighten_factor: props.lighten_factor
-			darken_factor: props.darken_factor
-			factors: props.primary_factors
-			true: c_true
-			false: c_false
-			warn: c_warn
-		primary.is_dark = true
-
-
-	if secondary_c.isLight()
-		secondary = darkenPallet
-			color: secondary_c
-			lighten_factor: props.lighten_factor
-			darken_factor: props.darken_factor
-			factors: props.secondary_factors
-			true: c_true
-			false: c_false
-			warn: c_warn
-		secondary.is_dark = false
-	else
-		secondary = lightenPallet
-			color: secondary_c
-			lighten_factor: props.lighten_factor
-			darken_factor: props.darken_factor
-			factors: props.secondary_factors
-			true: c_true
-			false: c_false
-			warn: c_warn
-		secondary.is_dark = true
-
-
-	return	
-		primary: primary
-		secondary: secondary
-
+{generateStyle,generatePalette} = require './Palette'
 
 class Style extends Component
 	constructor: ->
 		super()
-		@state = 
-			rendered_style: yes
+		@state = {}
 
-	componentWillMount: ->
-		@renderStyle(@props,@state)
+	ease_linear: (i,count)->
+		1/count*i
 
+	ease_in: (i,count)->
+		n = 1/count*i*(i/count)
+		
+		return n
+	ease_in_2: (i,count)->
+		Math.pow(i,3)/Math.pow(count,3)
 
+	ease_out: (i,count)->
+		1/count*Math.sqrt(i*count)
 
-	renderStyle: (props,state)=>
-		if props.style
-			@_theme = props.style
-		else
-			@_theme = generateStyle
-				lighten_factor: props.lighten_factor
-				darken_factor: props.darken_factor
-				primary_factors: props.primary_factors
-				secondary_factors: props.secondary_factors
-				false: props.false
-				true:  props.true
-				warn: props.warn
-				primary: props.primary
-				secondary: props.secondary
-
-
-		@primary = @_theme.primary
-		@secondary = @_theme.secondary
-
+	ease_out_2: (i,count)->
+		Math.pow(1/count*Math.sqrt(Math.sqrt(i*count)*count),1.2)
 
 
 	componentWillUpdate: (props,state)->
-		if @props.style != props.style || @props.primary != props.primary || @props.secondary != props.secondary || @props.tertiary != props.tertiary
-			@renderStyle(props,state)
-			state.rendered_style = true
+		default_ease = Style.prototype.ease_linear
+		if @props.style != props.style || @props.primary != props.primary || @props.secondary != props.secondary
+			if props.style
+				@primary = props.style.primary
+				@secondary = props.style.secondary
+			else
+				@primary = generatePalette(props.primary,props.primary_inv,props.step_count || 10,props.primary_ease || default_ease,props.primary_inv_ease || default_ease)
+				@secondary = generatePalette(props.secondary,props.secondary_inv,props.step_count || 10,props.secondary_ease || default_ease,props.secondary_inv_ease || default_ease)	
+		
 
-
-
-	componentDidUpdate: ->
-		if @state.rendered_style
-			@state.rendered_style = false
-
-
-
+	componentWillMount: ->
+		default_ease = Style.prototype.ease_linear
+		if @props.style
+			@primary = @props.style.primary
+			@secondary = @props.style.secondary
+		else
+			@primary = generatePalette(@props.primary,@props.primary_inv,@props.step_count || 10,@props.primary_ease || default_ease,@props.primary_inv_ease || default_ease)
+			@secondary = generatePalette(@props.secondary,@props.secondary_inv,@props.step_count || 10,@props.secondary_ease || default_ease,@props.secondary_inv_ease || default_ease)	
+		
 	render: ->
 		h StyleContext.Provider,
-			value: @_theme
+			value: 
+				primary: @primary
+				secondary: @secondary
 			@props.children
 
 
-Style.defaultProps = 
-	primary: '#18262a'
-	secondary: 'whitesmoke'
-	true: '#21FF48'
-	false: '#FC0020'
-	warn: '#E7BC08'
-	darken_factor: .75
-	lighten_factor: 9.0
-	primary_factors: 
-		color: [.1,.3,.6,.9]
-		inv: [.05,.1,.15,.25]
-	secondary_factors: 
-		color: [.1,.3,.6,.9]
-		inv: [.05,.1,.15,.25]
+
+step_mix = (a,b,count,step_fn)->
+	# log Style.prototype.ease_linear
+	steps = []
+	c = Color(a)
+	c2 = Color(b)
+	for i in [0...count]
+		steps.push Color(c).mix(c2,step_fn(i,count)).rgb().string()
+	return steps
+
+
+
+
+
+
+StyleContext = createContext({})
 
 
 

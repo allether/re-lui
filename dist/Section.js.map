@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "file": "Section.js",
+  "sourceRoot": "..",
+  "sources": [
+    "components/Section.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA,OAAA,EAAA,YAAA,EAAA,EAAA,EAAA;;EAAA,GAAA,GAAM,OAAA,CAAQ,cAAR;;EACN,EAAA,GAAK,OAAA,CAAQ,YAAR;;EACL,CAAA,CAAC,YAAD,CAAA,GAAiB,OAAA,CAAQ,gBAAR,CAAjB;;EAEM,UAAN,MAAA,QAAA,QAAsB,UAAtB;IACC,MAAQ,CAAA,CAAA;aACP,CAAA,CAAE,KAAF,EACC;QAAA,SAAA,EAAW,EAAA,CAAG,GAAI,CAAA,SAAA,CAAP,EAAkB,IAAC,CAAA,KAAK,CAAC,SAAzB,CAAX;QACA,KAAA,EAAO,IAAC,CAAA,KAAK,CAAC;MADd,CADD,EAGC,CAAA,CAAE,IAAF,EACC;QAAA,SAAA,EAAW,GAAI,CAAA,eAAA,CAAf;QACA,KAAA,EACC;UAAA,OAAA,EAAS,GAAT;UACA,KAAA,EAAO,IAAC,CAAA,OAAO,CAAC,OAAO,CAAC,KAAM,CAAA,CAAA;QAD9B;MAFD,CADD,EAKC,IAAC,CAAA,KAAK,CAAC,KALR,EAMC,CAAA,CAAE,KAAF,EACC;QAAA,SAAA,EAAW,GAAI,CAAA,mBAAA,CAAf;QACA,KAAA,EACC;UAAA,UAAA,EAAY,IAAC,CAAA,OAAO,CAAC,OAAO,CAAC,GAAI,CAAA,CAAA;QAAjC;MAFD,CADD,CAND,CAHD,EAcC,IAAC,CAAA,KAAK,CAAC,QAAP,IAAmB,CAAA,CAAE,KAAF,EAClB;QAAA,SAAA,EAAW,EAAA,CAAG,GAAI,CAAA,iBAAA,CAAP,EAA0B,IAAC,CAAA,KAAK,CAAC,gBAAjC;MAAX,CADkB,EAElB,IAAC,CAAA,KAAK,CAAC,QAFW,CAdpB;IADO;;EADT;;EAmBA,OAAO,CAAC,WAAR,GAAsB;;EACtB,MAAM,CAAC,OAAP,GAAiB;AAxBjB",
+  "sourcesContent": [
+    "css = require './Style.less'\ncn = require 'classnames'\n{StyleContext} = require './Style.coffee'\n\nclass Section extends Component\n\trender: ->\n\t\th 'div',\n\t\t\tclassName: cn(css['section'],@props.className)\n\t\t\tstyle: @props.style\n\t\t\th 'h2',\n\t\t\t\tclassName: css['section-title']\n\t\t\t\tstyle:\n\t\t\t\t\topacity: 0.7\n\t\t\t\t\tcolor: @context.primary.color[2]\n\t\t\t\t@props.title\n\t\t\t\th 'div',\n\t\t\t\t\tclassName: css['section-title-bar']\n\t\t\t\t\tstyle:\n\t\t\t\t\t\tbackground: @context.primary.inv[1]\n\t\t\t\t\t\t\n\t\t\t@props.children && h 'div',\n\t\t\t\tclassName: cn(css['section-content'],@props.contentClassName)\n\t\t\t\t@props.children\nSection.contextType = StyleContext\nmodule.exports = Section"
+  ]
+}

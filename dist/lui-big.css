@@ -14,7 +14,7 @@
 }
 body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  font-size: 18px;
+  font-size: 22px;
   font-family: "Open Sans", sans-serif;
   font-weight: 300;
   box-sizing: border-box;
@@ -29,11 +29,11 @@ body {
 }
 .lui-section {
   position: relative;
-  padding: 14px;
+  padding: 16.66666667px;
   flex-shrink: 0;
 }
 .lui-section-content {
-  margin: 10.5px 0;
+  margin: 12.5px 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -60,35 +60,35 @@ body {
   text-transform: capitalize;
   display: inline-flex;
   align-items: center;
-  font-size: 18px;
+  font-size: 22px;
   flex-wrap: wrap;
   font-weight: 700;
 }
 .lui-section-title-bar {
-  height: 10.5px;
-  width: 84px;
-  border-radius: 5.25px;
-  margin-left: 10.5px;
-  margin-top: 3px;
+  height: 12.5px;
+  width: 100px;
+  border-radius: 6.25px;
+  margin-left: 12.5px;
+  margin-top: 3.66666667px;
 }
 .lui-alert-dot {
   border-radius: 50%;
-  width: 14px;
-  height: 14px;
+  width: 17px;
+  height: 17px;
   position: absolute;
-  top: -4.66666667px;
-  right: -4.66666667px;
+  top: -5.55555556px;
+  right: -5.55555556px;
 }
 a {
   text-decoration: none;
 }
 .lui-input-bar {
   transition: inherit;
-  height: 28px;
-  width: 10.5px;
+  height: 33.33333333px;
+  width: 12.5px;
   flex-shrink: 0;
-  margin: 0 10.5px;
-  border-radius: 5.25px;
+  margin: 0 12.5px;
+  border-radius: 6.25px;
 }
 .lui-hint-label {
   position: absolute;
@@ -117,15 +117,15 @@ a {
   max-width: 100%;
   outline: none;
   border: none;
-  padding: 0 14px;
-  min-height: 42px;
-  min-width: 42px;
-  margin: 5.25px;
+  padding: 0 16.66666667px;
+  min-height: 50px;
+  min-width: 50px;
+  margin: 6.25px;
   display: inline-flex;
   align-items: center;
   position: relative;
   justify-content: flex-start;
-  border-radius: 5.25px;
+  border-radius: 6.25px;
   font-weight: 400;
   transition: filter 0.3s ease, background 0.3s ease, color 0.3s ease;
   cursor: default;
@@ -137,7 +137,7 @@ a {
   border: none;
   color: inherit;
   background: none;
-  padding: 3px 5.25px;
+  padding: 3px 6.25px;
   min-width: 100%;
   width: 100%;
   min-height: 100px;
@@ -153,7 +153,7 @@ a {
   height: auto;
   vertical-align: middle;
   line-height: normal;
-  margin: 0 5.25px;
+  margin: 0 6.25px;
 }
 .lui-btn .lui-top-label {
   transition: opacity 0.3s ease;
@@ -162,8 +162,8 @@ a {
   margin: 0;
   position: absolute;
   left: 0;
-  top: -21px;
-  font-size: 18px;
+  top: -25px;
+  font-size: 22px;
 }
 .lui-btn .lui-label-opaque {
   opacity: 0.5;
@@ -172,13 +172,13 @@ a {
   opacity: 0.8;
 }
 .lui-btn i {
-  font-size: 28px;
+  font-size: 33.33333333px;
   transition: color 0.3s ease;
-  margin: 0 5.25px;
+  margin: 0 6.25px;
   margin-left: 0;
 }
 .lui-btn.lui-btn-textarea {
-  padding: 14px !important;
+  padding: 16.66666667px !important;
   flex-wrap: wrap;
   height: auto;
   min-height: 100px;
@@ -186,37 +186,37 @@ a {
 }
 .lui-btn.lui-btn-textarea .lui-input-bar {
   width: 30%;
-  height: 10.5px;
+  height: 12.5px;
   margin-right: 0;
   margin-left: 0;
-  margin-top: 10.5px;
-  margin-bottom: 5.25px;
+  margin-top: 12.5px;
+  margin-bottom: 6.25px;
 }
 .lui-btn.lui-btn-textarea .lui-label {
   width: 100%;
 }
 .lui-btn.lui-btn-big {
-  min-height: 56px !important;
-  padding: 0 28px;
+  min-height: 66.66666667px !important;
+  padding: 0 33.33333333px;
 }
 .lui-btn.lui-btn-big.lui-btn-icon-square {
-  width: 56px;
+  width: 66.66666667px;
 }
 .lui-btn.lui-btn-big i {
-  font-size: 35px;
+  font-size: 41.66666667px;
   margin-left: 0;
 }
 .lui-btn.lui-btn-big .lui-overlay-icon {
   padding: 13px;
 }
 .lui-btn.lui-btn-big select {
-  height: 56px;
-  min-width: 56px;
-  padding: 0 28px !important;
+  height: 66.66666667px;
+  min-width: 66.66666667px;
+  padding: 0 33.33333333px !important;
 }
 .lui-btn.lui-btn-icon-square {
   padding: 0 !important;
-  width: 42px;
+  width: 50px;
   flex-grow: 0 !important;
   align-items: center;
   justify-content: center;
@@ -225,16 +225,16 @@ a {
   margin: 0 !important;
 }
 .lui-btn .lui-overlay-input-val {
-  border-radius: 5.25px;
-  margin-right: 5.25px;
-  padding: 7px;
+  border-radius: 6.25px;
+  margin-right: 6.25px;
+  padding: 8.33333333px;
   font-size: 10px;
 }
 .lui-btn .lui-overlay-input-hint {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 14px;
+  margin: 16.66666667px;
 }
 .lui-btn .lui-overlay-input-val-wrap {
   pointer-events: none;
@@ -244,7 +244,7 @@ a {
   top: 0;
   height: 100%;
   width: 100%;
-  padding: 14px;
+  padding: 16.66666667px;
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
@@ -254,7 +254,7 @@ a {
 }
 .lui-btn input,
 .lui-btn .lui-overlay-input {
-  margin: 0 5.25px !important;
+  margin: 0 6.25px !important;
 }
 .lui-btn input,
 .lui-btn select,
@@ -266,7 +266,6 @@ a {
   background: none;
   border: none;
   color: inherit;
-  padding: 0;
   vertical-align: middle;
   line-height: normal;
   position: relative;
@@ -302,11 +301,11 @@ a {
 .lui-btn select {
   min-width: auto;
   cursor: pointer;
-  height: 42px;
-  padding: 0 14px;
+  height: 50px;
+  padding: 0 16.66666667px;
 }
 .lui-btn .lui-label-2 {
-  padding-right: 28px;
+  padding-right: 33.33333333px;
   opacity: 0.5;
 }
 .lui-btn .lui-overlay-icon {
@@ -315,7 +314,7 @@ a {
   right: 0;
   top: 0;
   opacity: 0.5;
-  font-size: 21px;
+  font-size: 25px;
   padding: 8px;
 }
 .lui-btn ::placeholder {
@@ -335,10 +334,10 @@ pre {
   margin: 0 !important;
 }
 .lui-chip {
-  height: 28px;
-  border-radius: 5.25px;
-  margin: 0 5.25px;
-  padding: 0 10.5px;
+  height: 33.33333333px;
+  border-radius: 6.25px;
+  margin: 0 6.25px;
+  padding: 0 12.5px;
   display: inline-flex;
   flex-shrink: 0;
   font-size: 11px;
@@ -346,22 +345,22 @@ pre {
   justify-content: center;
 }
 .lui-checkbox-circle {
-  height: 28px;
-  width: 28px;
+  height: 33.33333333px;
+  width: 33.33333333px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  margin: 0 5.25px;
-  margin-right: 10.5px;
+  margin: 0 6.25px;
+  margin-right: 12.5px;
   overflow: hidden;
   z-index: 1;
   transform: translate(0);
   transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 .lui-checkbox-circle-inner {
-  height: 28px;
-  width: 28px;
+  height: 33.33333333px;
+  width: 33.33333333px;
   border-radius: 50%;
   transform: scale(0.6);
   transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
@@ -372,14 +371,14 @@ pre {
 .lui-toggle {
   flex-shrink: 0;
   transform: translate(0);
-  border-radius: 5.25px;
-  height: 28px !important;
-  width: 42px !important;
-  margin-right: 10.5px;
-  margin-left: 5.25px;
+  border-radius: 6.25px;
+  height: 33.33333333px !important;
+  width: 50px !important;
+  margin-right: 12.5px;
+  margin-left: 6.25px;
 }
 .lui-toggle i {
-  font-size: 24px !important;
+  font-size: 29.33333333px !important;
 }
 .lui-toggle .lui-toggle-on {
   background: red;
@@ -388,11 +387,11 @@ pre {
   background: green;
 }
 .lui-input-color-circle {
-  margin-left: 5.25px;
+  margin-left: 6.25px;
   min-width: 70px;
 }
 .lui-input-color-text {
-  font-size: 14px;
+  font-size: 16.66666667px;
   opacity: 0.6;
 }
 .lui-disabled {
@@ -401,9 +400,9 @@ pre {
   pointer-events: none;
 }
 .lui-toggle-bar {
-  width: 10.5px;
+  width: 12.5px;
   height: 60%;
-  border-radius: 5.25px;
+  border-radius: 6.25px;
 }
 .lui-sqaure-btn {
   margin: 0;
@@ -412,60 +411,60 @@ pre {
   flex-shrink: 0;
 }
 .lui-square-btn-big {
-  padding: 0 14px;
-  height: 56px;
+  padding: 0 16.66666667px;
+  height: 66.66666667px;
 }
 .lui-square-btn-big.lui-btn-icon-square {
-  width: 56px;
+  width: 66.66666667px;
 }
 .lui-square-btn-big.lui-btn-icon-square i {
   margin-left: 0;
 }
 .lui-square-btn-big input,
 .lui-square-btn-big .lui-input {
-  height: 56px;
-  margin: 0 5.25px;
+  height: 66.66666667px;
+  margin: 0 6.25px;
 }
 .lui-square-btn-big .lui-alert-dot {
   top: 4;
   right: 4;
 }
 .lui-square-btn-big .lui-label-2 {
-  padding-right: 42px;
+  padding-right: 50px;
 }
 .lui-square-btn-big .lui-label {
-  margin: 0 5.25px;
+  margin: 0 6.25px;
 }
 .lui-square-btn-big i {
-  font-size: 35px;
+  font-size: 41.66666667px;
 }
 .lui-square-btn-small {
-  padding: 0 14px;
-  height: 42px;
+  padding: 0 16.66666667px;
+  height: 50px;
 }
 .lui-square-btn-small.lui-btn-icon-square {
-  width: 42px;
+  width: 50px;
 }
 .lui-square-btn-small input,
 .lui-square-btn-small .lui-input {
-  height: 42px;
-  margin: 0 5.25px;
+  height: 50px;
+  margin: 0 6.25px;
 }
 .lui-square-btn-small .lui-alert-dot {
   top: 2;
   right: 2;
 }
 .lui-square-btn-small .lui-label {
-  margin: 0 5.25px;
+  margin: 0 6.25px;
 }
 .lui-square-btn-small i {
-  font-size: 28px;
+  font-size: 33.33333333px;
 }
 .lui-square-btn-small .lui-label-2 {
-  padding-right: 28px;
+  padding-right: 33.33333333px;
 }
 .lui-square-btn-small .lui-overlay-icon {
-  padding: 14px;
+  padding: 16.66666667px;
 }
 .lui-bar {
   display: flex;
@@ -475,10 +474,10 @@ pre {
   max-width: 100%;
 }
 .lui-bar.lui-bar-btn {
-  border-radius: 5.25px;
+  border-radius: 6.25px;
   overflow: hidden;
   transform: translate(0);
-  margin: 5.25px;
+  margin: 6.25px;
 }
 .lui-bar.lui-bar-vert {
   height: auto;
@@ -494,12 +493,12 @@ pre {
 }
 .lui-bar.lui-bar-big > .lui-btn,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn {
-  padding: 0 14px;
-  height: 56px;
+  padding: 0 16.66666667px;
+  height: 66.66666667px;
 }
 .lui-bar.lui-bar-big > .lui-btn.lui-btn-icon-square,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square {
-  width: 56px;
+  width: 66.66666667px;
 }
 .lui-bar.lui-bar-big > .lui-btn.lui-btn-icon-square i,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square i {
@@ -509,8 +508,8 @@ pre {
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn input,
 .lui-bar.lui-bar-big > .lui-btn .lui-input,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-input {
-  height: 56px;
-  margin: 0 5.25px;
+  height: 66.66666667px;
+  margin: 0 6.25px;
 }
 .lui-bar.lui-bar-big > .lui-btn .lui-alert-dot,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-alert-dot {
@@ -519,31 +518,31 @@ pre {
 }
 .lui-bar.lui-bar-big > .lui-btn .lui-label-2,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-label-2 {
-  padding-right: 42px;
+  padding-right: 50px;
 }
 .lui-bar.lui-bar-big > .lui-btn .lui-label,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn .lui-label {
-  margin: 0 5.25px;
+  margin: 0 6.25px;
 }
 .lui-bar.lui-bar-big > .lui-btn i,
 .lui-bar.lui-bar-big > .lui-tab-wrapper > .lui-btn i {
-  font-size: 35px;
+  font-size: 41.66666667px;
 }
 .lui-bar.lui-bar-small > .lui-btn,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn {
-  padding: 0 14px;
-  height: 42px;
+  padding: 0 16.66666667px;
+  height: 50px;
 }
 .lui-bar.lui-bar-small > .lui-btn.lui-btn-icon-square,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square {
-  width: 42px;
+  width: 50px;
 }
 .lui-bar.lui-bar-small > .lui-btn input,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn input,
 .lui-bar.lui-bar-small > .lui-btn .lui-input,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-input {
-  height: 42px;
-  margin: 0 5.25px;
+  height: 50px;
+  margin: 0 6.25px;
 }
 .lui-bar.lui-bar-small > .lui-btn .lui-alert-dot,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-alert-dot {
@@ -552,19 +551,19 @@ pre {
 }
 .lui-bar.lui-bar-small > .lui-btn .lui-label,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-label {
-  margin: 0 5.25px;
+  margin: 0 6.25px;
 }
 .lui-bar.lui-bar-small > .lui-btn i,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn i {
-  font-size: 28px;
+  font-size: 33.33333333px;
 }
 .lui-bar.lui-bar-small > .lui-btn .lui-label-2,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-label-2 {
-  padding-right: 28px;
+  padding-right: 33.33333333px;
 }
 .lui-bar.lui-bar-small > .lui-btn .lui-overlay-icon,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-overlay-icon {
-  padding: 14px;
+  padding: 16.66666667px;
 }
 .lui-bar.lui-bar-vert.lui-btn {
   width: -webkit-fit-content;
@@ -606,7 +605,7 @@ pre {
   pointer-events: all;
 }
 .lui-overlay-alert {
-  padding: 14px;
+  padding: 16.66666667px;
   font-size: 11px;
   font-family: "monor", monospace;
 }
@@ -620,9 +619,9 @@ pre {
   align-items: center;
   justify-content: center;
   margin: auto;
-  width: 15.75px;
-  height: 15.75px;
-  border-radius: 5.25px;
+  width: 18.75px;
+  height: 18.75px;
+  border-radius: 6.25px;
   background-color: #FFFFFF;
   animation: lui-_ii_rotate 1s infinite ease-in-out;
   transition: opacity 0.3s ease;

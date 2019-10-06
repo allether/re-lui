@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "file": "SquareLoader.js",
+  "sourceRoot": "..",
+  "sources": [
+    "components/SquareLoader.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA,YAAA,EAAA,EAAA,EAAA;;EAAA,GAAA,GAAM,OAAA,CAAQ,cAAR;;EACN,EAAA,GAAK,OAAA,CAAQ,YAAR;;EACC,eAAN,MAAA,aAAA,QAA2B,UAA3B;IACC,MAAQ,CAAA,CAAA;aACP,CAAA,CAAE,KAAF,EACC;QAAA,SAAA,EAAW,EAAA,CAAG,GAAI,CAAA,gBAAA,CAAP,EAAyB,IAAC,CAAA,KAAK,CAAC,MAAP,IAAiB,GAAI,CAAA,iBAAA,CAA9C;MAAX,CADD,EAEC,CAAA,CAAE,KAAF,EACC;QAAA,KAAA,EACC;UAAA,UAAA,EAAY,IAAC,CAAA,KAAK,CAAC,UAAnB;UACA,OAAA,EAAY,0BAAH,GAAwB,IAAC,CAAA,KAAK,CAAC,OAA/B,GAA4C;QADrD,CADD;QAGA,SAAA,EAAW,EAAA,CAAG,GAAI,CAAA,QAAA,CAAP,EAAiB,CAAC,IAAC,CAAA,KAAK,CAAC,UAAR,IAAsB,GAAI,CAAA,aAAA,CAA3C,EAA0D,IAAC,CAAA,KAAK,CAAC,SAAjE;MAHX,CADD,CAFD;IADO;;EADT;;EAUA,MAAM,CAAC,OAAP,GAAiB;AAZjB",
+  "sourcesContent": [
+    "css = require './Style.less'\ncn = require 'classnames'\nclass SquareLoader extends Component\n\trender: ->\n\t\th 'div',\n\t\t\tclassName: cn css['loader-wrapper'],@props.center && css['absolute-center']\n\t\t\th 'div',\n\t\t\t\tstyle:\n\t\t\t\t\tbackground: @props.background\n\t\t\t\t\topacity: if @props.opacity? then @props.opacity else undefined\n\t\t\t\tclassName: cn css['loader'],!@props.is_loading && css['loader-stop'],@props.className\n\nmodule.exports = SquareLoader"
+  ]
+}

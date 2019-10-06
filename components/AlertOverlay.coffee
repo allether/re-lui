@@ -27,6 +27,7 @@ class AlertOverlay extends Component
 
 	render: ->
 		# log @context
+		# log @context
 		if @state.show_alert
 			slide_pos = 1
 		else
