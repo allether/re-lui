@@ -63,6 +63,7 @@
     c.color.darker = step_mix(color, '#000', 5, default_ease);
     c.color.lighter = step_mix(color, '#fff', 5, default_ease);
     c.false = Color('red').mix(color, 0.25).hex();
+    c.false_inv = Color(c.false).mix(Color('white'), 0.9).hex();
     c.true = Color('lime').mix(color, 0.25).hex();
     c.warn = Color('yellow').mix(color, 0.25).hex();
     return c;

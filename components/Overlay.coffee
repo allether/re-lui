@@ -63,13 +63,17 @@ class Overlay extends Component
 		@_timeout = null
 	
 	onClick: (e)=>
+
+		
+
+		if e.target != @_overlay
+			return
+
 		try
 			e.stopPropagation()
 			e.preventDefault()
 		catch e
-
-		if e.target != @_overlay
-			return
+			
 		if IS_TOUCH || !@props.visible
 			return false
 		
@@ -87,13 +91,15 @@ class Overlay extends Component
 		return false
 
 	onTouchEnd: (e)=>
+
+		if e.target != @_overlay
+			return
+
 		try
 			e.stopPropagation()
 			e.preventDefault()
 		catch e
-			
-		if e.target != @_overlay
-			return
+
 
 		if !@touch_started
 			return false

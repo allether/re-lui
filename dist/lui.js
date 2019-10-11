@@ -1974,10 +1974,19 @@ Overlay = class Overlay extends Component {
     if (e.target !== this._overlay) {
       return;
     }
+    try {
+      e.stopPropagation();
+      e.preventDefault();
+    } catch (error) {
+      e = error;
+    }
     if (IS_TOUCH || !this.props.visible) {
       return false;
     }
-    return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
+    if (typeof (base = this.props).onClick === "function") {
+      base.onClick(e);
+    }
+    return false;
   }
 
   onTouchStart(e) {
@@ -1995,11 +2004,20 @@ Overlay = class Overlay extends Component {
     if (e.target !== this._overlay) {
       return;
     }
+    try {
+      e.stopPropagation();
+      e.preventDefault();
+    } catch (error) {
+      e = error;
+    }
     if (!this.touch_started) {
       return false;
     }
     this.touch_started = false;
-    return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
+    if (typeof (base = this.props).onClick === "function") {
+      base.onClick(e);
+    }
+    return false;
   }
 
   overlayRef(el) {
