@@ -49,7 +49,8 @@ class Overlay extends Component
 					@setState
 						render: @props.visible
 				,350
-	
+
+
 	componentDidMount: (p_props,p_state)->
 		if @state.visible != @props.visible
 			setTimeout =>
@@ -62,12 +63,20 @@ class Overlay extends Component
 		@_timeout = null
 	
 	onClick: (e)=>
+		try
+			e.stopPropagation()
+			e.preventDefault()
+		catch e
+
 		if e.target != @_overlay
 			return
 		if IS_TOUCH || !@props.visible
 			return false
 		
+
 		@props.onClick?(e)
+
+		return false
 	
 	onTouchStart: (e)=>
 		if e.target != @_overlay
@@ -78,14 +87,23 @@ class Overlay extends Component
 		return false
 
 	onTouchEnd: (e)=>
+		try
+			e.stopPropagation()
+			e.preventDefault()
+		catch e
+			
 		if e.target != @_overlay
 			return
 
 		if !@touch_started
 			return false
+
+		
 		
 		@touch_started = false
 		@props.onClick?(e)
+
+		return false
 
 	overlayRef: (el)=>
 		@_overlay = el
