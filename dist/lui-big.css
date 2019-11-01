@@ -32,6 +32,21 @@ body {
   padding: 16.66666667px;
   flex-shrink: 0;
 }
+.lui-noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
 .lui-section-content {
   margin: 12.5px 0;
   display: flex;
@@ -256,6 +271,9 @@ a {
 .lui-btn .lui-overlay-input {
   margin: 0 6.25px !important;
 }
+.lui-btn input {
+  padding: 0;
+}
 .lui-btn input,
 .lui-btn select,
 .lui-btn .lui-input {
@@ -476,7 +494,7 @@ pre {
 .lui-bar.lui-bar-btn {
   border-radius: 6.25px;
   overflow: hidden;
-  transform: translate(0);
+  transform: none;
   margin: 6.25px;
 }
 .lui-bar.lui-bar-vert {

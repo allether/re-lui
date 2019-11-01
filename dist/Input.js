@@ -36,9 +36,6 @@
       this.onInputClick = this.onInputClick.bind(this);
       this.setValue = this.setValue.bind(this);
       this.inputRef = this.inputRef.bind(this);
-      this.onTouchStart = this.onTouchStart.bind(this);
-      // @props.onTouchStart?(e)
-      this.onTouchEnd = this.onTouchEnd.bind(this);
       this.onDragEnter = this.onDragEnter.bind(this);
       this.onDragLeave = this.onDragLeave.bind(this);
       this.outerRef = this.outerRef.bind(this);
@@ -171,18 +168,13 @@
         e.preventDefault();
         e.stopPropagation();
       }
-      if (IS_TOUCH) {
-        return false;
-      }
       if ((ref = this._input) != null) {
         ref.focus();
       }
-      if (!IS_TOUCH) {
-        if ((ref1 = this._input) != null) {
-          ref1.click();
-        }
-        return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
+      if ((ref1 = this._input) != null) {
+        ref1.click();
       }
+      return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
     }
 
     onInputClick(e) {
@@ -202,54 +194,48 @@
       return this._input = el;
     }
 
-    componentWillUpdate(props) {
-      if (props.type === 'color' && props.value !== this.props.value) {
-        this.state.is_dark = Color(props.value).isDark();
+    componentDidUpdate(props) {
+      var is_dark;
+      if (this.props.type === 'color' && props.value !== this.props.value) {
+        is_dark = Color(props.value).isDark();
+        if (is_dark !== this.state.is_dark) {
+          this.setState({
+            is_dark: is_dark
+          });
+        }
       }
-      if (props.type === 'file' && this.state.input_files && !props.value) {
+      if (this.props.type === 'file' && this.state.input_files && !this.props.value) {
         return this.setState({
           input_files: null
         });
       }
     }
 
-    onTouchStart(e) {
-      boundMethodCheck(this, Input);
-      if (this.props.onClick) {
-        e.stopPropagation();
-      }
-      // e.preventDefault()
-      this.state.hover = true;
-      this.state.touch_started = true;
-      // log 'touch started'
-      return this.forceUpdate();
-    }
+    // onTouchStart: (e)=>
+    // 	if @props.onClick
+    // 		e.stopPropagation()
+    // 		# e.preventDefault()
+    // 	@state.hover = yes
+    // 	@state.touch_started = yes
+    // 	# log 'touch started'
+    // 	@forceUpdate()
+    // 	# @props.onTouchStart?(e)
 
-    onTouchEnd(e) {
-      var base, ref, ref1;
-      boundMethodCheck(this, Input);
-      if (this.props.onClick) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-      if (!this.state.touch_started) {
-        return false;
-      }
-      this.setState({
-        hover: false,
-        touch_started: false
-      });
-      if (typeof (base = this.props).onClick === "function") {
-        base.onClick(e);
-      }
-      if (this.props.type !== 'file') {
-        if ((ref = this._input) != null) {
-          ref.focus();
-        }
-        return (ref1 = this._input) != null ? ref1.click() : void 0;
-      }
-    }
+    // onTouchEnd: (e)=>
+    // 	if @props.onClick
+    // 		e.stopPropagation()
+    // 		e.preventDefault()
 
+    // 	if !@state.touch_started
+    // 		return false
+    // 	@setState
+    // 		hover: no
+    // 		touch_started: no
+    // 	# log 'touch end'
+    // 	@props.onClick?(e)
+    // 	if @props.type != 'file'
+    // 		@_input?.focus()
+    // 		@_input?.click()
     getButtonStyle(props, state) {
       var btn_style, focus, offset, select, value;
       offset = offset || 0;
@@ -267,7 +253,29 @@
 
       // if props.type == 'button' || props.type == 'file'
       // btn_style.cursor = 'pointer'
-      if (props.btn_type === 'primary') {
+      if (props.btn_type === 'true') {
+        if (select) {
+          btn_style.color = this.context.primary.true_inv_hover;
+          btn_style.background = this.context.primary.true_hover;
+        } else if (focus) {
+          btn_style.color = this.context.primary.true_inv_hover;
+          btn_style.background = this.context.primary.true_hover;
+        } else {
+          btn_style.color = this.context.primary.true_inv;
+          btn_style.background = this.context.primary.true;
+        }
+      } else if (props.btn_type === 'false') {
+        if (select) {
+          btn_style.color = this.context.primary.false_inv_hover;
+          btn_style.background = this.context.primary.false_hover;
+        } else if (focus) {
+          btn_style.color = this.context.primary.false_inv_hover;
+          btn_style.background = this.context.primary.false_hover;
+        } else {
+          btn_style.color = this.context.primary.false_inv;
+          btn_style.background = this.context.primary.false;
+        }
+      } else if (props.btn_type === 'primary') {
         if (select) {
           btn_style.color = this.context.secondary.inv[0];
           btn_style.background = this.context.secondary.color[0];
@@ -337,7 +345,23 @@
       } else if (props.i_type === 'highlight') {
         i_style.color = this.context.secondary.highlight;
       } else {
-        if (props.btn_type === 'primary') {
+        if (props.btn_type === 'true') {
+          if (select) {
+            i_style.color = this.context.primary.true_inv_hover;
+          } else if (focus) {
+            i_style.color = this.context.primary.true_inv_hover;
+          } else {
+            i_style.color = this.context.primary.true_inv;
+          }
+        } else if (props.btn_type === 'false') {
+          if (select) {
+            i_style.color = this.context.primary.false_inv_hover;
+          } else if (focus) {
+            i_style.color = this.context.primary.false_inv_hover;
+          } else {
+            i_style.color = this.context.primary.false_inv;
+          }
+        } else if (props.btn_type === 'primary') {
           if (focus || select) {
             i_style.color = this.context.secondary.inv[0];
           } else {
@@ -404,6 +428,13 @@
     // removeChip: (i)->
 
     // 	@forceUpdate()
+
+    // componentDidUpdate: ->
+
+    // 	if @props.type == 'date'
+    // 		if @_input.hasAttribute('data-has-picker') && !@_input.hasAttribute('data-has-listener')
+    // 			@_input.addEventListener 'change',@onInput
+    // 			@_input.setAttribute('data-has-listener','true')
     renderChips(props, state) {
       var chip_style, chips, items, value;
       value = props.value != null ? props.value : state.value;
@@ -655,6 +686,9 @@
           onBlur: this.onBlur,
           value: value || ''
         };
+        if (props.type === 'date' && !props.placeholder) {
+          input_props.placeholder = 'mm/dd/yyyy';
+        }
         if (this.props.input_props) {
           Object.assign(input_props, this.props.input_props);
         }
@@ -764,12 +798,12 @@
       outer_props = {
         onClick: this.onClick,
         htmlFor: input_name,
-        onTouchStart: this.onTouchStart,
-        onTouchEnd: this.onTouchEnd,
         ref: this.outerRef,
+        onTouchStart: this.onMouseEnter,
+        onTouchEnd: this.onMouseLeave,
         onMouseEnter: !IS_TOUCH && this.onMouseEnter || void 0,
         onMouseLeave: !IS_TOUCH && this.onMouseLeave || void 0,
-        className: cn(props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
+        className: cn(IS_TOUCH && (props.type === 'button' || props.type === 'label') && css['noselect'], props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
         href: props.href,
         style: style
       };

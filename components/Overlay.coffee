@@ -20,7 +20,7 @@ class Overlay extends Component
 			return 'none'
 		return Color(bg).alpha(alpha).string()
 	
-	componentWillMount: ->
+	UNSAFE_componentWillMount: ->
 
 		if !@props.transparent
 			@state.backdrop_color = @props.backdrop_color || @context.primary.inv[0]
@@ -29,7 +29,7 @@ class Overlay extends Component
 		@state.visible = if @props.initial_visible? then @props.initial_visible else @props.visible
 		@state.render = @props.visible
 
-	componentWillUpdate: (props,state)->
+	UNSAFE_componentWillUpdate: (props,state)->
 		if props.backdrop_color != @props.backdrop_color || (@context.primary.inv[0] != @state.backdrop_color) || props.alpha != @props.alpha
 			if !props.transparent
 				state.backdrop_color = props.backdrop_color || @context.primary.inv[0]

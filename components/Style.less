@@ -26,6 +26,16 @@ body{
 	flex-shrink: 0;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+
 .section-content{
 	margin: @border-radius*2 0;
 	display: flex;
@@ -276,8 +286,13 @@ a{
 	input,.overlay-input{
 		margin: 0 @margin-size !important;
 	}
+
+	input{
+		padding: 0;
+	}
 	
 	input,select,.input{
+
 		-webkit-appearance: none;
 		width: 100%;
 		user-select: all;
@@ -540,7 +555,7 @@ pre{
 	&.bar-btn{
 		border-radius: @border-radius;
 		overflow: hidden;
-		transform: translate(0);
+		transform: none;
 		margin: @margin-size;
 		// margin-left: 0;
 		// margin-right: @margin-size*2;

@@ -59,8 +59,30 @@ generatePalette = (color,inverse_color,step_count,step_fn,inverse_step_fn)->
 	c.color.lighter = step_mix(color,'#fff',5,default_ease)
 
 	c.false = Color('red').mix(color,0.25).hex()
-	c.false_inv = Color(c.false).mix(Color('white'),0.9).hex()
+	c.false_hover = Color('red').mix(color,0.15).hex()
+	
+	if Color(c.false).isDark()
+		c.false_inv = Color(c.false).mix(Color('white'),0.9).hex()
+		c.false_inv_hover = Color(c.false).mix(Color('white'),0.95).hex()
+	else
+		c.false_inv = Color(c.false).mix(Color('black'),0.9).hex()
+		c.false_inv_hover = Color(c.false).mix(Color('black'),0.95).hex()
+
+	
+	
+
+
+
 	c.true = Color('lime').mix(color,0.25).hex()
+	c.true_hover = Color('lime').mix(color,0.15).hex()
+
+	if Color(c.true).isDark()
+		c.true_inv = Color(c.true).mix(Color('white'),0.9).hex()
+		c.true_inv_hover = Color(c.true).mix(Color('white'),0.95).hex()
+	else
+		c.true_inv = Color(c.true).mix(Color('black'),0.9).hex()
+		c.true_inv_hover = Color(c.true).mix(Color('black'),0.95).hex()
+
 	c.warn = Color('yellow').mix(color,0.25).hex()
 	return c
 

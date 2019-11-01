@@ -12,7 +12,7 @@ class AlertOverlay extends Component
 			error: props.message
 			show_alert: false
 	
-	componentWillUpdate: (props,state)->
+	UNSAFE_componentWillUpdate: (props,state)->
 		if props.visible
 			@state.message = props.message
 			@state.alert_type = props.alert_type

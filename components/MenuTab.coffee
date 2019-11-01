@@ -59,7 +59,7 @@ class MenuTab extends Component
 		clearTimeout @_hide_backdrop_timeout
 
 
-	componentWillMount: ->
+	UNSAFE_componentWillMount: ->
 		@state.hide_rendered_children = true
 		@calculateRevealState(@props,@state)
 		if @calculateSplitDirections(@props,@state)
@@ -292,7 +292,7 @@ class MenuTab extends Component
 		return force_update
 
 
-	componentWillUpdate: (props,state)->
+	UNSAFE_componentWillUpdate: (props,state)->
 
 		if props.show_backdrop
 			@state.backdrop_visible = true

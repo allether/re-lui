@@ -157,7 +157,7 @@ AlertOverlay = class AlertOverlay extends Component {
     };
   }
 
-  componentWillUpdate(props, state) {
+  UNSAFE_componentWillUpdate(props, state) {
     if (props.visible) {
       this.state.message = props.message;
       return this.state.alert_type = props.alert_type;
@@ -459,9 +459,6 @@ Input = class Input extends Component {
     this.onInputClick = this.onInputClick.bind(this);
     this.setValue = this.setValue.bind(this);
     this.inputRef = this.inputRef.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
-    // @props.onTouchStart?(e)
-    this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onDragEnter = this.onDragEnter.bind(this);
     this.onDragLeave = this.onDragLeave.bind(this);
     this.outerRef = this.outerRef.bind(this);
@@ -594,18 +591,13 @@ Input = class Input extends Component {
       e.preventDefault();
       e.stopPropagation();
     }
-    if (IS_TOUCH) {
-      return false;
-    }
     if ((ref = this._input) != null) {
       ref.focus();
     }
-    if (!IS_TOUCH) {
-      if ((ref1 = this._input) != null) {
-        ref1.click();
-      }
-      return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
+    if ((ref1 = this._input) != null) {
+      ref1.click();
     }
+    return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
   }
 
   onInputClick(e) {
@@ -625,54 +617,48 @@ Input = class Input extends Component {
     return this._input = el;
   }
 
-  componentWillUpdate(props) {
-    if (props.type === 'color' && props.value !== this.props.value) {
-      this.state.is_dark = Color(props.value).isDark();
+  componentDidUpdate(props) {
+    var is_dark;
+    if (this.props.type === 'color' && props.value !== this.props.value) {
+      is_dark = Color(props.value).isDark();
+      if (is_dark !== this.state.is_dark) {
+        this.setState({
+          is_dark: is_dark
+        });
+      }
     }
-    if (props.type === 'file' && this.state.input_files && !props.value) {
+    if (this.props.type === 'file' && this.state.input_files && !this.props.value) {
       return this.setState({
         input_files: null
       });
     }
   }
 
-  onTouchStart(e) {
-    boundMethodCheck(this, Input);
-    if (this.props.onClick) {
-      e.stopPropagation();
-    }
-    // e.preventDefault()
-    this.state.hover = true;
-    this.state.touch_started = true;
-    // log 'touch started'
-    return this.forceUpdate();
-  }
+  // onTouchStart: (e)=>
+  // 	if @props.onClick
+  // 		e.stopPropagation()
+  // 		# e.preventDefault()
+  // 	@state.hover = yes
+  // 	@state.touch_started = yes
+  // 	# log 'touch started'
+  // 	@forceUpdate()
+  // 	# @props.onTouchStart?(e)
 
-  onTouchEnd(e) {
-    var base, ref, ref1;
-    boundMethodCheck(this, Input);
-    if (this.props.onClick) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
-    if (!this.state.touch_started) {
-      return false;
-    }
-    this.setState({
-      hover: false,
-      touch_started: false
-    });
-    if (typeof (base = this.props).onClick === "function") {
-      base.onClick(e);
-    }
-    if (this.props.type !== 'file') {
-      if ((ref = this._input) != null) {
-        ref.focus();
-      }
-      return (ref1 = this._input) != null ? ref1.click() : void 0;
-    }
-  }
+  // onTouchEnd: (e)=>
+  // 	if @props.onClick
+  // 		e.stopPropagation()
+  // 		e.preventDefault()
 
+  // 	if !@state.touch_started
+  // 		return false
+  // 	@setState
+  // 		hover: no
+  // 		touch_started: no
+  // 	# log 'touch end'
+  // 	@props.onClick?(e)
+  // 	if @props.type != 'file'
+  // 		@_input?.focus()
+  // 		@_input?.click()
   getButtonStyle(props, state) {
     var btn_style, focus, offset, select, value;
     offset = offset || 0;
@@ -690,7 +676,29 @@ Input = class Input extends Component {
 
     // if props.type == 'button' || props.type == 'file'
     // btn_style.cursor = 'pointer'
-    if (props.btn_type === 'primary') {
+    if (props.btn_type === 'true') {
+      if (select) {
+        btn_style.color = this.context.primary.true_inv_hover;
+        btn_style.background = this.context.primary.true_hover;
+      } else if (focus) {
+        btn_style.color = this.context.primary.true_inv_hover;
+        btn_style.background = this.context.primary.true_hover;
+      } else {
+        btn_style.color = this.context.primary.true_inv;
+        btn_style.background = this.context.primary.true;
+      }
+    } else if (props.btn_type === 'false') {
+      if (select) {
+        btn_style.color = this.context.primary.false_inv_hover;
+        btn_style.background = this.context.primary.false_hover;
+      } else if (focus) {
+        btn_style.color = this.context.primary.false_inv_hover;
+        btn_style.background = this.context.primary.false_hover;
+      } else {
+        btn_style.color = this.context.primary.false_inv;
+        btn_style.background = this.context.primary.false;
+      }
+    } else if (props.btn_type === 'primary') {
       if (select) {
         btn_style.color = this.context.secondary.inv[0];
         btn_style.background = this.context.secondary.color[0];
@@ -760,7 +768,23 @@ Input = class Input extends Component {
     } else if (props.i_type === 'highlight') {
       i_style.color = this.context.secondary.highlight;
     } else {
-      if (props.btn_type === 'primary') {
+      if (props.btn_type === 'true') {
+        if (select) {
+          i_style.color = this.context.primary.true_inv_hover;
+        } else if (focus) {
+          i_style.color = this.context.primary.true_inv_hover;
+        } else {
+          i_style.color = this.context.primary.true_inv;
+        }
+      } else if (props.btn_type === 'false') {
+        if (select) {
+          i_style.color = this.context.primary.false_inv_hover;
+        } else if (focus) {
+          i_style.color = this.context.primary.false_inv_hover;
+        } else {
+          i_style.color = this.context.primary.false_inv;
+        }
+      } else if (props.btn_type === 'primary') {
         if (focus || select) {
           i_style.color = this.context.secondary.inv[0];
         } else {
@@ -827,6 +851,13 @@ Input = class Input extends Component {
   // removeChip: (i)->
 
   // 	@forceUpdate()
+
+  // componentDidUpdate: ->
+
+  // 	if @props.type == 'date'
+  // 		if @_input.hasAttribute('data-has-picker') && !@_input.hasAttribute('data-has-listener')
+  // 			@_input.addEventListener 'change',@onInput
+  // 			@_input.setAttribute('data-has-listener','true')
   renderChips(props, state) {
     var chip_style, chips, items, value;
     value = props.value != null ? props.value : state.value;
@@ -1078,6 +1109,9 @@ Input = class Input extends Component {
         onBlur: this.onBlur,
         value: value || ''
       };
+      if (props.type === 'date' && !props.placeholder) {
+        input_props.placeholder = 'mm/dd/yyyy';
+      }
       if (this.props.input_props) {
         Object.assign(input_props, this.props.input_props);
       }
@@ -1187,12 +1221,12 @@ Input = class Input extends Component {
     outer_props = {
       onClick: this.onClick,
       htmlFor: input_name,
-      onTouchStart: this.onTouchStart,
-      onTouchEnd: this.onTouchEnd,
       ref: this.outerRef,
+      onTouchStart: this.onMouseEnter,
+      onTouchEnd: this.onMouseLeave,
       onMouseEnter: !IS_TOUCH && this.onMouseEnter || void 0,
       onMouseLeave: !IS_TOUCH && this.onMouseLeave || void 0,
-      className: cn(props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
+      className: cn(IS_TOUCH && (props.type === 'button' || props.type === 'label') && css['noselect'], props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
       href: props.href,
       style: style
     };
@@ -1472,7 +1506,7 @@ MenuTab = class MenuTab extends Component {
     return clearTimeout(this._hide_backdrop_timeout);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.state.hide_rendered_children = true;
     this.calculateRevealState(this.props, this.state);
     if (this.calculateSplitDirections(this.props, this.state)) {
@@ -1712,7 +1746,7 @@ MenuTab = class MenuTab extends Component {
     return force_update;
   }
 
-  componentWillUpdate(props, state) {
+  UNSAFE_componentWillUpdate(props, state) {
     var force_update;
     if (props.show_backdrop) {
       this.state.backdrop_visible = true;
@@ -1915,7 +1949,7 @@ Overlay = class Overlay extends Component {
     return Color(bg).alpha(alpha).string();
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (!this.props.transparent) {
       this.state.backdrop_color = this.props.backdrop_color || this.context.primary.inv[0];
       this.state.backdrop_opaque_color = this.setBackdropColor(this.state.backdrop_color, this.props.alpha);
@@ -1924,7 +1958,7 @@ Overlay = class Overlay extends Component {
     return this.state.render = this.props.visible;
   }
 
-  componentWillUpdate(props, state) {
+  UNSAFE_componentWillUpdate(props, state) {
     if (props.backdrop_color !== this.props.backdrop_color || (this.context.primary.inv[0] !== this.state.backdrop_color) || props.alpha !== this.props.alpha) {
       if (!props.transparent) {
         state.backdrop_color = props.backdrop_color || this.context.primary.inv[0];
@@ -2128,8 +2162,23 @@ generatePalette = function(color, inverse_color, step_count, step_fn, inverse_st
   c.color.darker = step_mix(color, '#000', 5, default_ease);
   c.color.lighter = step_mix(color, '#fff', 5, default_ease);
   c.false = Color('red').mix(color, 0.25).hex();
-  c.false_inv = Color(c.false).mix(Color('white'), 0.9).hex();
+  c.false_hover = Color('red').mix(color, 0.15).hex();
+  if (Color(c.false).isDark()) {
+    c.false_inv = Color(c.false).mix(Color('white'), 0.9).hex();
+    c.false_inv_hover = Color(c.false).mix(Color('white'), 0.95).hex();
+  } else {
+    c.false_inv = Color(c.false).mix(Color('black'), 0.9).hex();
+    c.false_inv_hover = Color(c.false).mix(Color('black'), 0.95).hex();
+  }
   c.true = Color('lime').mix(color, 0.25).hex();
+  c.true_hover = Color('lime').mix(color, 0.15).hex();
+  if (Color(c.true).isDark()) {
+    c.true_inv = Color(c.true).mix(Color('white'), 0.9).hex();
+    c.true_inv_hover = Color(c.true).mix(Color('white'), 0.95).hex();
+  } else {
+    c.true_inv = Color(c.true).mix(Color('black'), 0.9).hex();
+    c.true_inv_hover = Color(c.true).mix(Color('black'), 0.95).hex();
+  }
   c.warn = Color('yellow').mix(color, 0.25).hex();
   return c;
 };
@@ -2247,9 +2296,18 @@ global.Component = Component;
 ({generateStyle, generatePalette} = __webpack_require__(/*! ./Palette */ "./components/Palette.coffee"));
 
 Style = class Style extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    var default_ease;
+    super(props);
     this.state = {};
+    default_ease = Style.prototype.ease_linear;
+    if (this.props.style) {
+      this.primary = this.props.style.primary;
+      this.secondary = this.props.style.secondary;
+    } else {
+      this.primary = generatePalette(this.props.primary, this.props.primary_inv, this.props.step_count || 10, this.props.primary_ease || default_ease, this.props.primary_inv_ease || default_ease);
+      this.secondary = generatePalette(this.props.secondary, this.props.secondary_inv, this.props.step_count || 10, this.props.secondary_ease || default_ease, this.props.secondary_inv_ease || default_ease);
+    }
   }
 
   ease_linear(i, count) {
@@ -2274,29 +2332,18 @@ Style = class Style extends Component {
     return Math.pow(1 / count * Math.sqrt(Math.sqrt(i * count) * count), 1.2);
   }
 
-  componentWillUpdate(props, state) {
+  componentDidUpdate(props, state) {
     var default_ease;
-    default_ease = Style.prototype.ease_linear;
     if (this.props.style !== props.style || this.props.primary !== props.primary || this.props.secondary !== props.secondary) {
+      default_ease = Style.prototype.ease_linear;
       if (props.style) {
         this.primary = props.style.primary;
-        return this.secondary = props.style.secondary;
+        this.secondary = props.style.secondary;
       } else {
         this.primary = generatePalette(props.primary, props.primary_inv, props.step_count || 10, props.primary_ease || default_ease, props.primary_inv_ease || default_ease);
-        return this.secondary = generatePalette(props.secondary, props.secondary_inv, props.step_count || 10, props.secondary_ease || default_ease, props.secondary_inv_ease || default_ease);
+        this.secondary = generatePalette(props.secondary, props.secondary_inv, props.step_count || 10, props.secondary_ease || default_ease, props.secondary_inv_ease || default_ease);
       }
-    }
-  }
-
-  componentWillMount() {
-    var default_ease;
-    default_ease = Style.prototype.ease_linear;
-    if (this.props.style) {
-      this.primary = this.props.style.primary;
-      return this.secondary = this.props.style.secondary;
-    } else {
-      this.primary = generatePalette(this.props.primary, this.props.primary_inv, this.props.step_count || 10, this.props.primary_ease || default_ease, this.props.primary_inv_ease || default_ease);
-      return this.secondary = generatePalette(this.props.secondary, this.props.secondary_inv, this.props.step_count || 10, this.props.secondary_ease || default_ease, this.props.secondary_inv_ease || default_ease);
+      return this.setState({});
     }
   }
 
@@ -2339,7 +2386,7 @@ module.exports = {Style, StyleContext, generateStyle};
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"center":"lui-center","section":"lui-section","section-content":"lui-section-content","absolute-center":"lui-absolute-center","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","hint-label":"lui-hint-label","overlay-input":"lui-overlay-input","input-wrap":"lui-input-wrap","modal-shadow":"lui-modal-shadow","btn":"lui-btn","trans_fixed":"lui-trans_fixed","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","overlay-input-val":"lui-overlay-input-val","overlay-input-hint":"lui-overlay-input-hint","overlay-input-val-wrap":"lui-overlay-input-val-wrap","input":"lui-input","hidden":"lui-hidden","label-2":"lui-label-2","type-select":"lui-type-select","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-children-pointer-events":"lui-overlay-children-pointer-events","overlay-blocking":"lui-overlay-blocking","overlay-alert":"lui-overlay-alert","loader-wrapper":"lui-loader-wrapper","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
+module.exports = {"center":"lui-center","section":"lui-section","noselect":"lui-noselect","section-content":"lui-section-content","absolute-center":"lui-absolute-center","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","hint-label":"lui-hint-label","overlay-input":"lui-overlay-input","input-wrap":"lui-input-wrap","modal-shadow":"lui-modal-shadow","btn":"lui-btn","trans_fixed":"lui-trans_fixed","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","overlay-input-val":"lui-overlay-input-val","overlay-input-hint":"lui-overlay-input-hint","overlay-input-val-wrap":"lui-overlay-input-val-wrap","input":"lui-input","hidden":"lui-hidden","label-2":"lui-label-2","type-select":"lui-type-select","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-children-pointer-events":"lui-overlay-children-pointer-events","overlay-blocking":"lui-overlay-blocking","overlay-alert":"lui-overlay-alert","loader-wrapper":"lui-loader-wrapper","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
 
 /***/ }),
 
