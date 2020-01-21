@@ -54,11 +54,29 @@ class Input extends Component
 		@setState
 			focus: no
 		@props.onBlur?(e)
+
+	onTouchStart: (e)=>
+		@_rect = @_outer.getBoundingClientRect()
+		@setState
+			hover: yes
+		@props.onMouseEnter?(e)
+
+	onTouchEnd: (e)=>
+		rect = @_outer.getBoundingClientRect()
+		@setState
+			focus: if @props.type == 'color' || @props.type == 'button' || @props.type == 'checkbox' then no else @state.focus
+			hover: no
+			drag: no
+		if rect.x == @_rect.x && rect.y == @_rect.y
+			@props.onClick?(e)
+
+
 	
 	onMouseEnter: (e)=>
 		@setState
 			hover: yes
 		@props.onMouseEnter?(e)
+
 	
 	onMouseLeave: (e)=>
 		@setState
@@ -69,8 +87,9 @@ class Input extends Component
 
 
 	
-	onKeyDown: (e)=> 
-		if e.key == 'Enter'
+	onKeyDown: (e)=>
+		# log e.key
+		if e.key == 'Enter' || (e.key == 'Tab' && @props.autofill?)
 			@onEnter(e)
 	
 	onEnter: (e)=>
@@ -94,16 +113,9 @@ class Input extends Component
 
 
 	onClick: (e)=>
-		# log 'on click'
-		if @props.onClick
-			e.preventDefault()
-			e.stopPropagation()
-
-
-		@_input?.focus()
-		@_input?.click()
+		e.preventDefault()
+		e.stopPropagation()
 		@props.onClick?(e)
-
 	
 
 	onInputClick: (e)=>
@@ -208,19 +220,19 @@ class Input extends Component
 		
 		else if props.btn_type == 'primary'
 			if select
-				btn_style.color = @context.secondary.inv[0]
-				btn_style.background = @context.secondary.color[0]
+				btn_style.color = @context.secondary.color[0]
+				btn_style.background = @context.secondary.inv[2]
 			else if focus
-				btn_style.color = @context.secondary.inv[0]
-				btn_style.background = @context.secondary.color[0]
+				btn_style.color = @context.secondary.color[0]
+				btn_style.background = @context.secondary.inv[1]
 			else
-				btn_style.color = @context.secondary.inv[2]
-				btn_style.background = @context.secondary.color[1]
+				btn_style.color = @context.secondary.color[1]
+				btn_style.background = @context.secondary.inv[0]
 		
 		else if props.btn_type == 'flat'
 			if select
 				btn_style.color = @context.primary.color[0]
-				btn_style.background = @context.primary.inv[1]
+				btn_style.background = @context.primary.inv[2]
 			else if focus
 				btn_style.color = @context.primary.color[0]
 				btn_style.background = @context.primary.inv[1]
@@ -243,7 +255,8 @@ class Input extends Component
 			btn_style.justifyContent = 'center'
 
 		return btn_style
-	
+
+
 	getChipStyle: (props,state,offset)->
 		offset = offset || 0
 		value = if props.value? then props.value else state.value
@@ -253,8 +266,8 @@ class Input extends Component
 		btn_style = {}
 
 		if props.btn_type == 'primary'
-			btn_style.color = @context.secondary.inv[0]
-			btn_style.background = @context.secondary.color[2]
+			btn_style.color = @context.secondary.color[0]
+			btn_style.background = @context.secondary.inv[2]
 		
 	
 		else if props.btn_type == 'flat'
@@ -271,6 +284,7 @@ class Input extends Component
 
 		return btn_style
 
+
 	getIconStyle: (props,state)->
 		i_style = {}
 		select = props.select
@@ -282,11 +296,12 @@ class Input extends Component
 		else
 			if props.btn_type == 'true'
 				if select
-						i_style.color = @context.primary.true_inv_hover
-					else if focus
-						i_style.color = @context.primary.true_inv_hover
-					else
-						i_style.color = @context.primary.true_inv
+					i_style.color = @context.primary.true_inv_hover
+				else if focus
+					i_style.color = @context.primary.true_inv_hover
+				else
+					i_style.color = @context.primary.true_inv
+		
 			else if props.btn_type == 'false'
 				if select
 					i_style.color = @context.primary.false_inv_hover
@@ -297,9 +312,9 @@ class Input extends Component
 					
 			else if props.btn_type == 'primary'
 				if focus || select
-					i_style.color = @context.secondary.inv[0]
+					i_style.color = @context.secondary.color[0]
 				else
-					i_style.color = @context.secondary.inv[2]
+					i_style.color = @context.secondary.color[1]
 				
 			else if props.btn_type == 'flat'
 				if focus || select
@@ -314,17 +329,22 @@ class Input extends Component
 		
 		return i_style
 
+
 	getBarStyle: (props,state)->
+		if props.bar_style
+			return props.bar_style
+			
 		value = if props.value? then props.value else state.value
 		select = props.select
 		focus = state.focus
 		bar_style = {}
+		
 		if !value
 			if props.required && !props.value
 				bar_style.background = @context.secondary.warn
 			else if props.btn_type == 'primary'
-				bar_style.background = @context.secondary.color[2]
-				bar_style.color = @context.secondary.color[3]
+				bar_style.background = @context.secondary.inv[1]
+				bar_style.color = @context.secondary.inv[3]
 			else if props.btn_type == 'flat'
 				bar_style.background = @context.primary.inv[1]
 				bar_style.color = @context.primary.inv[2]
@@ -336,11 +356,9 @@ class Input extends Component
 			bar_style.background = @context.secondary.false
 		else if props.invalid == false || props.is_valid == true
 			bar_style.background = @context.secondary.true
-		else if props.color == 'color'
-			bar_style.background = props.value
 		else
 			if props.btn_type == 'primary'
-				bar_style.background = @context.secondary.inv[0]
+				bar_style.background = @context.secondary.color[0]
 			else if props.btn_type == 'flat'
 				bar_style.background = @context.primary.color[1]
 			else
@@ -485,8 +503,8 @@ class Input extends Component
 					background: @context.secondary.false
 				if props.btn_type == 'primary'
 					toggle_bar_style = 
-						background: @context.secondary.color[0]
-						color: @context.secondary.color[1]
+						background: @context.secondary.inv[0]
+						color: @context.secondary.inv[1]
 				else if props.btn_type == 'flat'
 					toggle_bar_style = 
 						background: @context.primary.inv[1]
@@ -540,7 +558,7 @@ class Input extends Component
 		if props.bar
 			bar = h 'div',
 				className: css['input-bar']
-				style: Object.assign bar_style,props.bar_style
+				style: bar_style
 
 
 		if props.type == 'color'
@@ -659,40 +677,37 @@ class Input extends Component
 
 			else
 
-
-				# log @props.autofill
 				autofill_match_res = @props.autofill[0].match(new RegExp('^'+@props.value,'i'))
 				if autofill_match_res?[0]
 					overlay_input_text = @props.value + @props.autofill[0].slice(@props.value.length)
-				
-				if @props.force_autofill_buttons || @state.focus
 
+	
+				if @props.force_autofill_buttons || @state.focus
 					autofill_buttons = @props.autofill.slice(0,@props.autofill_count || 3).map (val,i)=>
 						if i == 0 && overlay_input_text
 							val_style = 
-								background: @context.secondary.color[0]
-								color: @context.secondary.inv[0]
+								background: @context.secondary.inv[0]
+								color: @context.secondary.color[0]
 						else
 							val_style = input_val_style
 
 						h 'div',
-							onMouseDown: @inputValue.bind(@,val)
+							onClick: @inputValue.bind(@,val)
 							className: css['overlay-input-val']
 							style: val_style
 							key: val
 							val
 
-				
-				
+
 
 				if @state.focus
 					enter_hint = h 'div',
 						style:
 							background: @context.primary.inv[0]
 							color: @context.primary.color[0]
-						onMouseDown: @onEnter
+						onClick: @onEnter
 						className: cn(css['overlay-input-val'],css['overlay-input-hint'])
-						'enter ⏎'
+						"tab"
 
 
 					overlay_input = h 'div',
@@ -722,14 +737,14 @@ class Input extends Component
 
 
 		outer_props = 
-			onClick: @onClick
+			onClick: !IS_TOUCH && @onClick || undefined
 			htmlFor: input_name
 			ref: @outerRef
-			onTouchStart: @onMouseEnter
-			onTouchEnd: @onMouseLeave
+			onTouchStart: IS_TOUCH && @onTouchStart || undefined
+			onTouchEnd: IS_TOUCH && @onTouchEnd || undefined
 			onMouseEnter: !IS_TOUCH && @onMouseEnter || undefined
 			onMouseLeave:  !IS_TOUCH && @onMouseLeave || undefined
-			className: cn(IS_TOUCH && (props.type == 'button' || props.type == 'label') && css['noselect'],props.hint && css['trans_fixed'],props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],!label && icon && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.type == 'select' && css['type-select'],props.className)
+			className: cn(IS_TOUCH && (props.type == 'button' || props.type == 'label') && css['noselect'],props.hint && css['trans_fixed'],props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],!label && icon && !@props.children && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.type == 'select' && css['type-select'],props.className)
 			href: props.href	
 			style: style
 

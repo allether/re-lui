@@ -39,6 +39,7 @@ class Overlay extends Component
 			if props.visible
 				state.render = true
 
+
 	componentDidUpdate: (p_props,p_state)->
 		if @state.visible != @props.visible
 			@setState
@@ -58,10 +59,12 @@ class Overlay extends Component
 					visible: @props.visible
 			,0
 
+
 	componentWillUnmount: ->
 		clearTimeout @_timeout
 		@_timeout = null
-	
+
+
 	onClick: (e)=>
 
 		

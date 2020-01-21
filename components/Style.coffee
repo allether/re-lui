@@ -11,14 +11,20 @@ class Style extends Component
 		super(props)
 		@state = {}
 
-		default_ease = Style.prototype.ease_linear
+		@generate(Style.prototype.ease_linear)
+
+
+
+	generate: (default_ease)->
+		# log 'GENERATE'
 		if @props.style
 			@primary = @props.style.primary
 			@secondary = @props.style.secondary
 		else
 			@primary = generatePalette(@props.primary,@props.primary_inv,@props.step_count || 10,@props.primary_ease || default_ease,@props.primary_inv_ease || default_ease)
 			@secondary = generatePalette(@props.secondary,@props.secondary_inv,@props.step_count || 10,@props.secondary_ease || default_ease,@props.secondary_inv_ease || default_ease)	
-		
+	
+
 
 	ease_linear: (i,count)->
 		1/count*i
@@ -39,16 +45,7 @@ class Style extends Component
 
 	componentDidUpdate: (props,state)->
 		if @props.style != props.style || @props.primary != props.primary || @props.secondary != props.secondary
-			default_ease = Style.prototype.ease_linear
-
-			if props.style
-				@primary = props.style.primary
-				@secondary = props.style.secondary
-			
-			else
-				@primary = generatePalette(props.primary,props.primary_inv,props.step_count || 10,props.primary_ease || default_ease,props.primary_inv_ease || default_ease)
-				@secondary = generatePalette(props.secondary,props.secondary_inv,props.step_count || 10,props.secondary_ease || default_ease,props.secondary_inv_ease || default_ease)	
-			
+			@generate(Style.prototype.ease_linear)
 			@setState({})
 
 	

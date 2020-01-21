@@ -5,7 +5,7 @@ cn = require 'classnames'
 
 class AlertDot extends Component
 	render: ->
-		alert_style = {}
+		alert_style = Object.assign {},@props.style
 		if @props.color
 			alert_style.background = @props.color
 		else if @props.error
@@ -15,6 +15,8 @@ class AlertDot extends Component
 
 		h 'div',
 			className: css['alert-dot']
+			ref: (dot)=>
+				@base = dot
 			style: alert_style
 
 AlertDot.contextType = StyleContext

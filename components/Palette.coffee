@@ -50,6 +50,13 @@ generatePalette = (color,inverse_color,step_count,step_fn,inverse_step_fn)->
 	c.color = c[0]
 	c.inv = c[1]
 
+	if Color(c.inv[0]).isDark()
+		c.inv.is_dark = true
+		c.color.is_dark = false
+	else
+		c.inv.is_dark = false
+		c.color.is_dark = true
+
 	default_ease = ease_in_2
 
 	c.inv.darker = step_mix(inverse_color,'#000',5,default_ease)

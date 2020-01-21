@@ -105,7 +105,7 @@ cn = __webpack_require__(/*! classnames */ "classnames");
 AlertDot = class AlertDot extends Component {
   render() {
     var alert_style;
-    alert_style = {};
+    alert_style = Object.assign({}, this.props.style);
     if (this.props.color) {
       alert_style.background = this.props.color;
     } else if (this.props.error) {
@@ -115,6 +115,9 @@ AlertDot = class AlertDot extends Component {
     }
     return h('div', {
       className: css['alert-dot'],
+      ref: (dot) => {
+        return this.base = dot;
+      },
       style: alert_style
     });
   }
@@ -451,6 +454,8 @@ Input = class Input extends Component {
     this.inputValue = this.inputValue.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -529,6 +534,30 @@ Input = class Input extends Component {
     return typeof (base = this.props).onBlur === "function" ? base.onBlur(e) : void 0;
   }
 
+  onTouchStart(e) {
+    var base;
+    boundMethodCheck(this, Input);
+    this._rect = this._outer.getBoundingClientRect();
+    this.setState({
+      hover: true
+    });
+    return typeof (base = this.props).onMouseEnter === "function" ? base.onMouseEnter(e) : void 0;
+  }
+
+  onTouchEnd(e) {
+    var base, rect;
+    boundMethodCheck(this, Input);
+    rect = this._outer.getBoundingClientRect();
+    this.setState({
+      focus: this.props.type === 'color' || this.props.type === 'button' || this.props.type === 'checkbox' ? false : this.state.focus,
+      hover: false,
+      drag: false
+    });
+    if (rect.x === this._rect.x && rect.y === this._rect.y) {
+      return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
+    }
+  }
+
   onMouseEnter(e) {
     var base;
     boundMethodCheck(this, Input);
@@ -551,7 +580,8 @@ Input = class Input extends Component {
 
   onKeyDown(e) {
     boundMethodCheck(this, Input);
-    if (e.key === 'Enter') {
+    // log e.key
+    if (e.key === 'Enter' || (e.key === 'Tab' && (this.props.autofill != null))) {
       return this.onEnter(e);
     }
   }
@@ -584,19 +614,10 @@ Input = class Input extends Component {
   }
 
   onClick(e) {
-    var base, ref, ref1;
+    var base;
     boundMethodCheck(this, Input);
-    // log 'on click'
-    if (this.props.onClick) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    if ((ref = this._input) != null) {
-      ref.focus();
-    }
-    if ((ref1 = this._input) != null) {
-      ref1.click();
-    }
+    e.preventDefault();
+    e.stopPropagation();
     return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
   }
 
@@ -644,12 +665,12 @@ Input = class Input extends Component {
   // 	@forceUpdate()
   // 	# @props.onTouchStart?(e)
 
-  // onTouchEnd: (e)=>
+    // onTouchEnd: (e)=>
   // 	if @props.onClick
   // 		e.stopPropagation()
   // 		e.preventDefault()
 
-  // 	if !@state.touch_started
+    // 	if !@state.touch_started
   // 		return false
   // 	@setState
   // 		hover: no
@@ -700,19 +721,19 @@ Input = class Input extends Component {
       }
     } else if (props.btn_type === 'primary') {
       if (select) {
-        btn_style.color = this.context.secondary.inv[0];
-        btn_style.background = this.context.secondary.color[0];
+        btn_style.color = this.context.secondary.color[0];
+        btn_style.background = this.context.secondary.inv[2];
       } else if (focus) {
-        btn_style.color = this.context.secondary.inv[0];
-        btn_style.background = this.context.secondary.color[0];
+        btn_style.color = this.context.secondary.color[0];
+        btn_style.background = this.context.secondary.inv[1];
       } else {
-        btn_style.color = this.context.secondary.inv[2];
-        btn_style.background = this.context.secondary.color[1];
+        btn_style.color = this.context.secondary.color[1];
+        btn_style.background = this.context.secondary.inv[0];
       }
     } else if (props.btn_type === 'flat') {
       if (select) {
         btn_style.color = this.context.primary.color[0];
-        btn_style.background = this.context.primary.inv[1];
+        btn_style.background = this.context.primary.inv[2];
       } else if (focus) {
         btn_style.color = this.context.primary.color[0];
         btn_style.background = this.context.primary.inv[1];
@@ -746,8 +767,8 @@ Input = class Input extends Component {
     focus = state.focus;
     btn_style = {};
     if (props.btn_type === 'primary') {
-      btn_style.color = this.context.secondary.inv[0];
-      btn_style.background = this.context.secondary.color[2];
+      btn_style.color = this.context.secondary.color[0];
+      btn_style.background = this.context.secondary.inv[2];
     } else if (props.btn_type === 'flat') {
       btn_style.color = this.context.primary.color[0];
       btn_style.background = this.context.primary.inv[2];
@@ -786,9 +807,9 @@ Input = class Input extends Component {
         }
       } else if (props.btn_type === 'primary') {
         if (focus || select) {
-          i_style.color = this.context.secondary.inv[0];
+          i_style.color = this.context.secondary.color[0];
         } else {
-          i_style.color = this.context.secondary.inv[2];
+          i_style.color = this.context.secondary.color[1];
         }
       } else if (props.btn_type === 'flat') {
         if (focus || select) {
@@ -809,6 +830,9 @@ Input = class Input extends Component {
 
   getBarStyle(props, state) {
     var bar_style, focus, select, value;
+    if (props.bar_style) {
+      return props.bar_style;
+    }
     value = props.value != null ? props.value : state.value;
     select = props.select;
     focus = state.focus;
@@ -817,8 +841,8 @@ Input = class Input extends Component {
       if (props.required && !props.value) {
         bar_style.background = this.context.secondary.warn;
       } else if (props.btn_type === 'primary') {
-        bar_style.background = this.context.secondary.color[2];
-        bar_style.color = this.context.secondary.color[3];
+        bar_style.background = this.context.secondary.inv[1];
+        bar_style.color = this.context.secondary.inv[3];
       } else if (props.btn_type === 'flat') {
         bar_style.background = this.context.primary.inv[1];
         bar_style.color = this.context.primary.inv[2];
@@ -830,11 +854,9 @@ Input = class Input extends Component {
       bar_style.background = this.context.secondary.false;
     } else if (props.invalid === false || props.is_valid === true) {
       bar_style.background = this.context.secondary.true;
-    } else if (props.color === 'color') {
-      bar_style.background = props.value;
     } else {
       if (props.btn_type === 'primary') {
-        bar_style.background = this.context.secondary.inv[0];
+        bar_style.background = this.context.secondary.color[0];
       } else if (props.btn_type === 'flat') {
         bar_style.background = this.context.primary.color[1];
       } else {
@@ -848,13 +870,13 @@ Input = class Input extends Component {
   }
 
   
-  // removeChip: (i)->
+    // removeChip: (i)->
 
-  // 	@forceUpdate()
+    // 	@forceUpdate()
 
-  // componentDidUpdate: ->
+    // componentDidUpdate: ->
 
-  // 	if @props.type == 'date'
+    // 	if @props.type == 'date'
   // 		if @_input.hasAttribute('data-has-picker') && !@_input.hasAttribute('data-has-listener')
   // 			@_input.addEventListener 'change',@onInput
   // 			@_input.setAttribute('data-has-listener','true')
@@ -989,8 +1011,8 @@ Input = class Input extends Component {
         };
         if (props.btn_type === 'primary') {
           toggle_bar_style = {
-            background: this.context.secondary.color[0],
-            color: this.context.secondary.color[1]
+            background: this.context.secondary.inv[0],
+            color: this.context.secondary.inv[1]
           };
         } else if (props.btn_type === 'flat') {
           toggle_bar_style = {
@@ -1048,7 +1070,7 @@ Input = class Input extends Component {
     if (props.bar) {
       bar = h('div', {
         className: css['input-bar'],
-        style: Object.assign(bar_style, props.bar_style)
+        style: bar_style
       });
     }
     if (props.type === 'color') {
@@ -1161,7 +1183,6 @@ Input = class Input extends Component {
           }
         }, '...'));
       } else {
-        // log @props.autofill
         autofill_match_res = this.props.autofill[0].match(new RegExp('^' + this.props.value, 'i'));
         if (autofill_match_res != null ? autofill_match_res[0] : void 0) {
           overlay_input_text = this.props.value + this.props.autofill[0].slice(this.props.value.length);
@@ -1171,14 +1192,14 @@ Input = class Input extends Component {
             var val_style;
             if (i === 0 && overlay_input_text) {
               val_style = {
-                background: this.context.secondary.color[0],
-                color: this.context.secondary.inv[0]
+                background: this.context.secondary.inv[0],
+                color: this.context.secondary.color[0]
               };
             } else {
               val_style = input_val_style;
             }
             return h('div', {
-              onMouseDown: this.inputValue.bind(this, val),
+              onClick: this.inputValue.bind(this, val),
               className: css['overlay-input-val'],
               style: val_style,
               key: val
@@ -1191,9 +1212,9 @@ Input = class Input extends Component {
               background: this.context.primary.inv[0],
               color: this.context.primary.color[0]
             },
-            onMouseDown: this.onEnter,
+            onClick: this.onEnter,
             className: cn(css['overlay-input-val'], css['overlay-input-hint'])
-          }, 'enter ⏎');
+          }, "tab");
           overlay_input = h('div', {
             style: {
               color: this.context.primary.color[3]
@@ -1219,14 +1240,14 @@ Input = class Input extends Component {
       }, overlay_input, input);
     }
     outer_props = {
-      onClick: this.onClick,
+      onClick: !IS_TOUCH && this.onClick || void 0,
       htmlFor: input_name,
       ref: this.outerRef,
-      onTouchStart: this.onMouseEnter,
-      onTouchEnd: this.onMouseLeave,
+      onTouchStart: IS_TOUCH && this.onTouchStart || void 0,
+      onTouchEnd: IS_TOUCH && this.onTouchEnd || void 0,
       onMouseEnter: !IS_TOUCH && this.onMouseEnter || void 0,
       onMouseLeave: !IS_TOUCH && this.onMouseLeave || void 0,
-      className: cn(IS_TOUCH && (props.type === 'button' || props.type === 'label') && css['noselect'], props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
+      className: cn(IS_TOUCH && (props.type === 'button' || props.type === 'label') && css['noselect'], props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && !this.props.children && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
       href: props.href,
       style: style
     };
@@ -2156,6 +2177,13 @@ generatePalette = function(color, inverse_color, step_count, step_fn, inverse_st
   c[1] = step_mix(inverse_color, color, step_count, inverse_step_fn);
   c.color = c[0];
   c.inv = c[1];
+  if (Color(c.inv[0]).isDark()) {
+    c.inv.is_dark = true;
+    c.color.is_dark = false;
+  } else {
+    c.inv.is_dark = false;
+    c.color.is_dark = true;
+  }
   default_ease = ease_in_2;
   c.inv.darker = step_mix(inverse_color, '#000', 5, default_ease);
   c.inv.lighter = step_mix(inverse_color, '#fff', 5, default_ease);
@@ -2297,16 +2325,19 @@ global.Component = Component;
 
 Style = class Style extends Component {
   constructor(props) {
-    var default_ease;
     super(props);
     this.state = {};
-    default_ease = Style.prototype.ease_linear;
+    this.generate(Style.prototype.ease_linear);
+  }
+
+  generate(default_ease) {
+    // log 'GENERATE'
     if (this.props.style) {
       this.primary = this.props.style.primary;
-      this.secondary = this.props.style.secondary;
+      return this.secondary = this.props.style.secondary;
     } else {
       this.primary = generatePalette(this.props.primary, this.props.primary_inv, this.props.step_count || 10, this.props.primary_ease || default_ease, this.props.primary_inv_ease || default_ease);
-      this.secondary = generatePalette(this.props.secondary, this.props.secondary_inv, this.props.step_count || 10, this.props.secondary_ease || default_ease, this.props.secondary_inv_ease || default_ease);
+      return this.secondary = generatePalette(this.props.secondary, this.props.secondary_inv, this.props.step_count || 10, this.props.secondary_ease || default_ease, this.props.secondary_inv_ease || default_ease);
     }
   }
 
@@ -2333,16 +2364,8 @@ Style = class Style extends Component {
   }
 
   componentDidUpdate(props, state) {
-    var default_ease;
     if (this.props.style !== props.style || this.props.primary !== props.primary || this.props.secondary !== props.secondary) {
-      default_ease = Style.prototype.ease_linear;
-      if (props.style) {
-        this.primary = props.style.primary;
-        this.secondary = props.style.secondary;
-      } else {
-        this.primary = generatePalette(props.primary, props.primary_inv, props.step_count || 10, props.primary_ease || default_ease, props.primary_inv_ease || default_ease);
-        this.secondary = generatePalette(props.secondary, props.secondary_inv, props.step_count || 10, props.secondary_ease || default_ease, props.secondary_inv_ease || default_ease);
-      }
+      this.generate(Style.prototype.ease_linear);
       return this.setState({});
     }
   }
