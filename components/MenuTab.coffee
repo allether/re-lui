@@ -408,6 +408,8 @@ class MenuTab extends Component
 		else
 			bar_style.visible = 'visible'
 
+		# bar_style.transform = 'translate(0,0)'
+
 	
 		bar = h MenuContext.Provider,
 			value: @getContext()

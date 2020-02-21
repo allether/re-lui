@@ -122,11 +122,14 @@ a {
 }
 .lui-input-wrap {
   position: relative;
+  width: inherit;
 }
 .lui-modal-shadow {
   box-shadow: 0px 0px 10px #00000014;
 }
 .lui-btn {
+  -moz-appearance: none;
+  -webkit-appearance: none;
   white-space: pre;
   font-family: "monor", monospace;
   max-width: 100%;
@@ -338,9 +341,6 @@ a {
 .lui-btn ::placeholder {
   color: inherit;
   opacity: 0.5;
-}
-.lui-type-select {
-  padding: 0 !important;
 }
 pre {
   font-family: "monor", monospace;
@@ -601,6 +601,7 @@ pre {
   position: absolute;
   width: fit-content;
   min-width: max-content;
+  transform: translate(0, 0);
   display: flex;
 }
 .lui-overlay {

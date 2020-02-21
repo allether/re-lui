@@ -9,6 +9,17 @@ CircleToggle = require './CircleToggle.coffee'
 isTouch = require './isTouch.js'
 
 IS_TOUCH  = isTouch()
+
+
+# TOUCH_X = 0
+TOUCH_V = 0
+window.addEventListener 'touchmove', (e)->
+	TOUCH_V = Date.now()
+	# log TOUCH_X,TOUCH_Y
+
+window.addEventListener 'scroll', (e)->
+	TOUCH_V = Date.now()
+
 class Input extends Component
 	constructor: (props)->
 		super(props)
@@ -56,18 +67,18 @@ class Input extends Component
 		@props.onBlur?(e)
 
 	onTouchStart: (e)=>
-		@_rect = @_outer.getBoundingClientRect()
+		@_rect = TOUCH_V
 		@setState
 			hover: yes
 		@props.onMouseEnter?(e)
 
 	onTouchEnd: (e)=>
-		rect = @_outer.getBoundingClientRect()
+		rect = TOUCH_V
 		@setState
 			focus: if @props.type == 'color' || @props.type == 'button' || @props.type == 'checkbox' then no else @state.focus
 			hover: no
 			drag: no
-		if rect.x == @_rect.x && rect.y == @_rect.y
+		if rect == @_rect
 			@props.onClick?(e)
 
 
@@ -113,9 +124,16 @@ class Input extends Component
 
 
 	onClick: (e)=>
+		# log 'ON CLICK'
 		e.preventDefault()
 		e.stopPropagation()
-		@props.onClick?(e)
+		if @props.type == 'checkbox'
+			if @props.onInput
+				@props.onInput(e)
+			else
+				@props.onClick?(e)
+		else
+			@props.onClick?(e)
 	
 
 	onInputClick: (e)=>
@@ -331,13 +349,20 @@ class Input extends Component
 
 
 	getBarStyle: (props,state)->
+		bar_style = {}
+		
+
+		# if (!props.label || props.top_label) && !props.i 
+		# 	bar_style.marginLeft = 0
+
 		if props.bar_style
+			# Object.assign bar_style,props.bar_style
 			return props.bar_style
 			
 		value = if props.value? then props.value else state.value
 		select = props.select
 		focus = state.focus
-		bar_style = {}
+		
 		
 		if !value
 			if props.required && !props.value
@@ -365,8 +390,7 @@ class Input extends Component
 				
 				bar_style.background = @context.primary.color[2]
 
-		if (!props.label || props.top_label) && !props.i 
-			bar_style.marginLeft = 0
+		
 		return bar_style
 
 	
@@ -476,7 +500,7 @@ class Input extends Component
 		if props.type == 'color' || props.type == 'checkbox' || props.type == 'button'
 			input_hidden = true
 
-
+		# input_hidden = false
 		
 
 
@@ -611,6 +635,7 @@ class Input extends Component
 				onKeyDown: @onKeyDown
 				type: @props.type
 				onChange: @onInput
+				# onSelect: @props.onSelect
 				name: input_name
 				onDragEnter: @onDragEnter
 				ref: @inputRef
@@ -618,6 +643,12 @@ class Input extends Component
 				onFocus: @onFocus
 				onBlur: @onBlur
 				value: value || ''
+
+			if @props.autoheight
+				input_props.style =
+					height: 'auto'
+					whiteSpace: 'normal'
+					maxHeight: 'auto'
 
 			if props.type == 'date' && !props.placeholder
 				input_props.placeholder = 'mm/dd/yyyy'
@@ -634,12 +665,7 @@ class Input extends Component
 			if props.type == 'textarea'
 				input = h 'textarea',input_props
 			else if props.type == 'select'
-				input = h 'select',input_props,
-					props.options?.map (opt,i)->
-						h 'option',
-							key: i
-							value: opt
-							opt
+				input = h 'select',input_props,props.options
 			else
 				input = h 'input',input_props
 
@@ -733,6 +759,12 @@ class Input extends Component
 				overlay_input
 				input
 		
+		if @props.autoheight
+			style.height = 'auto'
+			style.whiteSpace = 'normal'
+			style.maxHeight = 'auto'
+
+
 		
 
 

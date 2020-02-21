@@ -66,9 +66,6 @@ class Overlay extends Component
 
 
 	onClick: (e)=>
-
-		
-
 		if e.target != @_overlay
 			return
 

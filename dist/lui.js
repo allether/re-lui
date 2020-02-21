@@ -426,7 +426,7 @@ module.exports = CircleToggle;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var AlertDot, CircleToggle, Color, IS_TOUCH, Input, Slide, StyleContext, cn, css, isTouch,
+var AlertDot, CircleToggle, Color, IS_TOUCH, Input, Slide, StyleContext, TOUCH_V, cn, css, isTouch,
   boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
 
 css = __webpack_require__(/*! ./Style.less */ "./components/Style.less");
@@ -446,6 +446,18 @@ CircleToggle = __webpack_require__(/*! ./CircleToggle.coffee */ "./components/Ci
 isTouch = __webpack_require__(/*! ./isTouch.js */ "./components/isTouch.js");
 
 IS_TOUCH = isTouch();
+
+// TOUCH_X = 0
+TOUCH_V = 0;
+
+window.addEventListener('touchmove', function(e) {
+  return TOUCH_V = Date.now();
+});
+
+// log TOUCH_X,TOUCH_Y
+window.addEventListener('scroll', function(e) {
+  return TOUCH_V = Date.now();
+});
 
 Input = class Input extends Component {
   constructor(props) {
@@ -537,7 +549,7 @@ Input = class Input extends Component {
   onTouchStart(e) {
     var base;
     boundMethodCheck(this, Input);
-    this._rect = this._outer.getBoundingClientRect();
+    this._rect = TOUCH_V;
     this.setState({
       hover: true
     });
@@ -547,13 +559,13 @@ Input = class Input extends Component {
   onTouchEnd(e) {
     var base, rect;
     boundMethodCheck(this, Input);
-    rect = this._outer.getBoundingClientRect();
+    rect = TOUCH_V;
     this.setState({
       focus: this.props.type === 'color' || this.props.type === 'button' || this.props.type === 'checkbox' ? false : this.state.focus,
       hover: false,
       drag: false
     });
-    if (rect.x === this._rect.x && rect.y === this._rect.y) {
+    if (rect === this._rect) {
       return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
     }
   }
@@ -614,11 +626,20 @@ Input = class Input extends Component {
   }
 
   onClick(e) {
-    var base;
+    var base, base1;
     boundMethodCheck(this, Input);
+    // log 'ON CLICK'
     e.preventDefault();
     e.stopPropagation();
-    return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
+    if (this.props.type === 'checkbox') {
+      if (this.props.onInput) {
+        return this.props.onInput(e);
+      } else {
+        return typeof (base = this.props).onClick === "function" ? base.onClick(e) : void 0;
+      }
+    } else {
+      return typeof (base1 = this.props).onClick === "function" ? base1.onClick(e) : void 0;
+    }
   }
 
   onInputClick(e) {
@@ -830,13 +851,17 @@ Input = class Input extends Component {
 
   getBarStyle(props, state) {
     var bar_style, focus, select, value;
+    bar_style = {};
+    
+    // if (!props.label || props.top_label) && !props.i 
+    // 	bar_style.marginLeft = 0
     if (props.bar_style) {
+      // Object.assign bar_style,props.bar_style
       return props.bar_style;
     }
     value = props.value != null ? props.value : state.value;
     select = props.select;
     focus = state.focus;
-    bar_style = {};
     if (!value) {
       if (props.required && !props.value) {
         bar_style.background = this.context.secondary.warn;
@@ -862,9 +887,6 @@ Input = class Input extends Component {
       } else {
         bar_style.background = this.context.primary.color[2];
       }
-    }
-    if ((!props.label || props.top_label) && !props.i) {
-      bar_style.marginLeft = 0;
     }
     return bar_style;
   }
@@ -946,7 +968,7 @@ Input = class Input extends Component {
   }
 
   renderInput() {
-    var autofill_buttons, autofill_match_res, bar, bar_style, button_style, chips, color_circle, enter_hint, focus, hint_label, icon, icon_style, input, input_hidden, input_name, input_props, input_val_style, label, label2, outer_props, overlay_autofill_buttons, overlay_icon, overlay_input, overlay_input_text, props, ref, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, toggle_circle_fill_color, value, wrap_input_style;
+    var autofill_buttons, autofill_match_res, bar, bar_style, button_style, chips, color_circle, enter_hint, focus, hint_label, icon, icon_style, input, input_hidden, input_name, input_props, input_val_style, label, label2, outer_props, overlay_autofill_buttons, overlay_icon, overlay_input, overlay_input_text, props, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, toggle_circle_fill_color, value, wrap_input_style;
     // log 'render input'
     input_name = this.props.name;
     props = this.props;
@@ -984,6 +1006,7 @@ Input = class Input extends Component {
     if (props.type === 'color' || props.type === 'checkbox' || props.type === 'button') {
       input_hidden = true;
     }
+    // input_hidden = false
     if (props.type === 'checkbox') {
       if (props.checkbox_type === 'circle') {
         if (this.props.checked) {
@@ -1123,6 +1146,7 @@ Input = class Input extends Component {
         onKeyDown: this.onKeyDown,
         type: this.props.type,
         onChange: this.onInput,
+        // onSelect: @props.onSelect
         name: input_name,
         onDragEnter: this.onDragEnter,
         ref: this.inputRef,
@@ -1131,6 +1155,13 @@ Input = class Input extends Component {
         onBlur: this.onBlur,
         value: value || ''
       };
+      if (this.props.autoheight) {
+        input_props.style = {
+          height: 'auto',
+          whiteSpace: 'normal',
+          maxHeight: 'auto'
+        };
+      }
       if (props.type === 'date' && !props.placeholder) {
         input_props.placeholder = 'mm/dd/yyyy';
       }
@@ -1144,12 +1175,7 @@ Input = class Input extends Component {
       if (props.type === 'textarea') {
         input = h('textarea', input_props);
       } else if (props.type === 'select') {
-        input = h('select', input_props, (ref = props.options) != null ? ref.map(function(opt, i) {
-          return h('option', {
-            key: i,
-            value: opt
-          }, opt);
-        }) : void 0);
+        input = h('select', input_props, props.options);
       } else {
         input = h('input', input_props);
       }
@@ -1238,6 +1264,11 @@ Input = class Input extends Component {
         className: css['input-wrap'],
         style: wrap_input_style
       }, overlay_input, input);
+    }
+    if (this.props.autoheight) {
+      style.height = 'auto';
+      style.whiteSpace = 'normal';
+      style.maxHeight = 'auto';
     }
     outer_props = {
       onClick: !IS_TOUCH && this.onClick || void 0,
@@ -1887,6 +1918,7 @@ MenuTab = class MenuTab extends Component {
     } else {
       bar_style.visible = 'visible';
     }
+    // bar_style.transform = 'translate(0,0)'
     bar = h(MenuContext.Provider, {
       value: this.getContext()
     }, h(Bar, {
@@ -2409,7 +2441,7 @@ module.exports = {Style, StyleContext, generateStyle};
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"center":"lui-center","section":"lui-section","noselect":"lui-noselect","section-content":"lui-section-content","absolute-center":"lui-absolute-center","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","hint-label":"lui-hint-label","overlay-input":"lui-overlay-input","input-wrap":"lui-input-wrap","modal-shadow":"lui-modal-shadow","btn":"lui-btn","trans_fixed":"lui-trans_fixed","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","overlay-input-val":"lui-overlay-input-val","overlay-input-hint":"lui-overlay-input-hint","overlay-input-val-wrap":"lui-overlay-input-val-wrap","input":"lui-input","hidden":"lui-hidden","label-2":"lui-label-2","type-select":"lui-type-select","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-children-pointer-events":"lui-overlay-children-pointer-events","overlay-blocking":"lui-overlay-blocking","overlay-alert":"lui-overlay-alert","loader-wrapper":"lui-loader-wrapper","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
+module.exports = {"center":"lui-center","section":"lui-section","noselect":"lui-noselect","section-content":"lui-section-content","absolute-center":"lui-absolute-center","section-title":"lui-section-title","section-title-bar":"lui-section-title-bar","alert-dot":"lui-alert-dot","input-bar":"lui-input-bar","hint-label":"lui-hint-label","overlay-input":"lui-overlay-input","input-wrap":"lui-input-wrap","modal-shadow":"lui-modal-shadow","btn":"lui-btn","trans_fixed":"lui-trans_fixed","chip":"lui-chip","label":"lui-label","top-label":"lui-top-label","label-opaque":"lui-label-opaque","btn-textarea":"lui-btn-textarea","btn-big":"lui-btn-big","btn-icon-square":"lui-btn-icon-square","overlay-icon":"lui-overlay-icon","overlay-input-val":"lui-overlay-input-val","overlay-input-hint":"lui-overlay-input-hint","overlay-input-val-wrap":"lui-overlay-input-val-wrap","input":"lui-input","hidden":"lui-hidden","label-2":"lui-label-2","checkbox-circle":"lui-checkbox-circle","checkbox-circle-inner":"lui-checkbox-circle-inner","active":"lui-active","toggle":"lui-toggle","toggle-on":"lui-toggle-on","toggle-off":"lui-toggle-off","input-color-circle":"lui-input-color-circle","input-color-text":"lui-input-color-text","disabled":"lui-disabled","toggle-bar":"lui-toggle-bar","sqaure-btn":"lui-sqaure-btn","square-btn-big":"lui-square-btn-big","square-btn-small":"lui-square-btn-small","bar":"lui-bar","bar-btn":"lui-bar-btn","bar-vert":"lui-bar-vert","tab-wrapper":"lui-tab-wrapper","bar-big":"lui-bar-big","bar-small":"lui-bar-small","tab-content":"lui-tab-content","menu-bar":"lui-menu-bar","overlay":"lui-overlay","overlay-hidden":"lui-overlay-hidden","overlay-slide":"lui-overlay-slide","overlay-children-pointer-events":"lui-overlay-children-pointer-events","overlay-blocking":"lui-overlay-blocking","overlay-alert":"lui-overlay-alert","loader-wrapper":"lui-loader-wrapper","loader":"lui-loader","_ii_rotate":"lui-_ii_rotate","loader-stop":"lui-loader-stop"};
 
 /***/ }),
 
