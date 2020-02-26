@@ -171,7 +171,7 @@ a {
   height: auto;
   vertical-align: middle;
   line-height: normal;
-  margin: 0 3.75px;
+  margin: 3.75px;
 }
 .lui-btn .lui-top-label {
   transition: opacity 0.3s ease;
@@ -230,7 +230,7 @@ a {
 .lui-btn.lui-btn-big select {
   height: 40px;
   min-width: 40px;
-  padding: 0 20px !important;
+  padding: 10px 20px !important;
 }
 .lui-btn.lui-btn-icon-square {
   padding: 0 !important;

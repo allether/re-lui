@@ -273,6 +273,41 @@ module.exports = Bar;
 
 /***/ }),
 
+/***/ "./components/BarSeperator.coffee":
+/*!****************************************!*\
+  !*** ./components/BarSeperator.coffee ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var BarSeparator, StyleContext, cn;
+
+({StyleContext} = __webpack_require__(/*! ./Style.coffee */ "./components/Style.coffee"));
+
+cn = __webpack_require__(/*! classnames */ "classnames");
+
+BarSeparator = class BarSeparator extends Component {
+  render() {
+    return h('div', {
+      className: cn('pad', this.props.center && 'full-w center')
+    }, h('div', {
+      className: 'list-seperator',
+      style: {
+        width: this.props.width || void 0,
+        background: this.props.background || this.context.primary.inv[3]
+      }
+    }));
+  }
+
+};
+
+BarSeparator.contextType = StyleContext;
+
+module.exports = BarSeparator;
+
+
+/***/ }),
+
 /***/ "./components/Chip.coffee":
 /*!********************************!*\
   !*** ./components/Chip.coffee ***!
@@ -2452,7 +2487,7 @@ module.exports = {"center":"lui-center","section":"lui-section","noselect":"lui-
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var AlertDot, AlertOverlay, Bar, Chip, Input, Menu, MenuTab, Overlay, Section, SquareLoader, Style, StyleContext, generateStyle;
+var AlertDot, AlertOverlay, Bar, BarSeperator, Chip, Input, Menu, MenuTab, Overlay, Section, SquareLoader, Style, StyleContext, generateStyle;
 
 ({Style, StyleContext, generateStyle} = __webpack_require__(/*! ./Style */ "./components/Style.coffee"));
 
@@ -2475,6 +2510,8 @@ AlertOverlay = __webpack_require__(/*! ./AlertOverlay */ "./components/AlertOver
 SquareLoader = __webpack_require__(/*! ./SquareLoader */ "./components/SquareLoader.coffee");
 
 Chip = __webpack_require__(/*! ./Chip */ "./components/Chip.coffee");
+
+BarSeperator = __webpack_require__(/*! ./BarSeperator */ "./components/BarSeperator.coffee");
 
 module.exports.Bar = Bar;
 
@@ -2501,6 +2538,8 @@ module.exports.AlertOverlay = AlertOverlay;
 module.exports.SquareLoader = SquareLoader;
 
 module.exports.Chip = Chip;
+
+module.exports.BarSeperator = BarSeperator;
 
 
 /***/ }),

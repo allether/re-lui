@@ -9,6 +9,7 @@ Overlay = require './Overlay'
 AlertOverlay = require './AlertOverlay'
 SquareLoader = require './SquareLoader'
 Chip = require './Chip'
+BarSeperator = require './BarSeperator'
 
 
 module.exports.Bar = Bar
@@ -24,3 +25,4 @@ module.exports.Overlay = Overlay
 module.exports.AlertOverlay = AlertOverlay
 module.exports.SquareLoader = SquareLoader
 module.exports.Chip = Chip
+module.exports.BarSeperator = BarSeperator

@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "file": "BarSeperator.js",
+  "sourceRoot": "..",
+  "sources": [
+    "components/BarSeperator.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA,YAAA,EAAA,YAAA,EAAA;;EAAA,CAAA,CAAC,YAAD,CAAA,GAAiB,OAAA,CAAQ,gBAAR,CAAjB;;EACA,EAAA,GAAK,OAAA,CAAQ,YAAR;;EACC,eAAN,MAAA,aAAA,QAA2B,UAA3B;IACC,MAAQ,CAAA,CAAA;aACP,CAAA,CAAE,KAAF,EACC;QAAA,SAAA,EAAW,EAAA,CAAG,KAAH,EAAS,IAAC,CAAA,KAAK,CAAC,MAAP,IAAiB,eAA1B;MAAX,CADD,EAEC,CAAA,CAAE,KAAF,EACC;QAAA,SAAA,EAAW,gBAAX;QACA,KAAA,EACC;UAAA,KAAA,EAAO,IAAC,CAAA,KAAK,CAAC,KAAP,IAAgB,MAAvB;UACA,UAAA,EAAY,IAAC,CAAA,KAAK,CAAC,UAAP,IAAqB,IAAC,CAAA,OAAO,CAAC,OAAO,CAAC,GAAG,CAAC,CAAD;QADrD;MAFD,CADD,CAFD;IADO;;EADT;;EAUA,YAAY,CAAC,WAAb,GAA2B;;EAC3B,MAAM,CAAC,OAAP,GAAiB;AAbjB",
+  "sourcesContent": [
+    "{StyleContext} = require './Style.coffee'\ncn = require 'classnames'\nclass BarSeparator extends Component\n\trender: ->\n\t\th 'div',\n\t\t\tclassName: cn 'pad',@props.center && 'full-w center'\n\t\t\th 'div',\n\t\t\t\tclassName: 'list-seperator'\n\t\t\t\tstyle:\n\t\t\t\t\twidth: @props.width || undefined\n\t\t\t\t\tbackground: @props.background || @context.primary.inv[3]\n\nBarSeparator.contextType = StyleContext\nmodule.exports = BarSeparator"
+  ]
+}
