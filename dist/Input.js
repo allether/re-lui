@@ -759,6 +759,9 @@
         style.height = DIM2 * 2;
         style.paddingTop = DIM2;
       }
+      if (this.props.pad) {
+        style.padding = DIM * (1 / 3);
+      }
       if (this.props.overlay_input) {
         overlay_input = h('div', {
           style: {

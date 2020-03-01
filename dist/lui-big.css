@@ -80,7 +80,7 @@ body {
   font-weight: 700;
 }
 .lui-section-title-bar {
-  height: 12.5px;
+  min-height: 12.5px;
   width: 100px;
   border-radius: 6.25px;
   margin-left: 12.5px;
@@ -125,7 +125,7 @@ a {
   width: inherit;
 }
 .lui-modal-shadow {
-  box-shadow: 0px 0px 10px #00000014;
+  box-shadow: 0px 0px 16.66666667px #00000014;
 }
 .lui-btn {
   -moz-appearance: none;
@@ -179,8 +179,8 @@ a {
   padding: 0;
   margin: 0;
   position: absolute;
-  left: 0;
-  top: -25px;
+  left: 18.75px;
+  top: 9.375px;
   font-size: 22px;
 }
 .lui-btn .lui-label-opaque {
@@ -246,7 +246,7 @@ a {
   border-radius: 6.25px;
   margin-right: 6.25px;
   padding: 8.33333333px;
-  font-size: 10px;
+  font-size: 16.66666667px;
 }
 .lui-btn .lui-overlay-input-hint {
   position: absolute;
@@ -341,6 +341,10 @@ a {
 .lui-btn ::placeholder {
   color: inherit;
   opacity: 0.5;
+}
+.lui-btn.lui-top-label-btn {
+  padding-top: 50px;
+  padding-bottom: 16.66666667px;
 }
 pre {
   font-family: "monor", monospace;
@@ -462,14 +466,14 @@ pre {
 }
 .lui-square-btn-small {
   padding: 0 16.66666667px;
-  height: 50px;
+  min-height: 50px;
 }
 .lui-square-btn-small.lui-btn-icon-square {
   width: 50px;
 }
 .lui-square-btn-small input,
 .lui-square-btn-small .lui-input {
-  height: 50px;
+  min-height: 50px;
   margin: 0 6.25px;
 }
 .lui-square-btn-small .lui-alert-dot {
@@ -553,7 +557,7 @@ pre {
 .lui-bar.lui-bar-small > .lui-btn,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn {
   padding: 0 16.66666667px;
-  height: 50px;
+  min-height: 50px;
 }
 .lui-bar.lui-bar-small > .lui-btn.lui-btn-icon-square,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square {
@@ -563,7 +567,7 @@ pre {
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn input,
 .lui-bar.lui-bar-small > .lui-btn .lui-input,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-input {
-  height: 50px;
+  min-height: 50px;
   margin: 0 6.25px;
 }
 .lui-bar.lui-bar-small > .lui-btn .lui-alert-dot,

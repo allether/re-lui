@@ -72,7 +72,7 @@ body{
 	font-weight: 700;
 }
 .section-title-bar{
-	height: @border-radius*2;
+	min-height: @border-radius*2;
 	width: @dim*2;
 	border-radius: @border-radius;
 	margin-left: @margin-size*2;
@@ -127,7 +127,7 @@ a{
 
 
 .modal-shadow{
-	box-shadow: 0px 0px 10px #00000014;
+	box-shadow: 0px 0px @padding-size #00000014;
 }
 
 
@@ -188,8 +188,8 @@ a{
 		padding: 0;
 		margin: 0;
 		position: absolute;
-		left: 0;
-		top: -@dim/2;
+		left: @margin-size*3;
+		top: @margin-size*1.5;
 		font-size: @fontsize;
 	}
 
@@ -260,7 +260,7 @@ a{
 		border-radius: @border-radius;
 		margin-right: @margin-size;
 		padding: @padding-size/2;
-		font-size: 10px;
+		font-size: @padding-size;
 	}
 	.overlay-input-hint{
 		position: absolute;
@@ -361,6 +361,11 @@ a{
 	::placeholder{
 		color: inherit;
 		opacity: 0.5;
+	}
+
+	&.top-label-btn{
+		padding-top: @dim;
+		padding-bottom: @padding-size;
 	}
 }
 
@@ -524,13 +529,13 @@ pre{
 }
 
 .square-btn-small{
-	padding: 0 @padding-size;
-	height: @dim;
+	padding: 0 @padding-size*1;
+	min-height: @dim;
 	&.btn-icon-square{
 		width: @dim;
 	}
 	input,.input{
-		height: @dim;
+		min-height: @dim;
 		margin: 0 @margin-size;
 	}
 	.alert-dot{

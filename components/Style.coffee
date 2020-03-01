@@ -44,7 +44,7 @@ class Style extends Component
 
 
 	componentDidUpdate: (props,state)->
-		if @props.style != props.style || @props.primary != props.primary || @props.secondary != props.secondary
+		if @props.style != props.style || @props.primary != props.primary || @props.secondary != props.secondary || @props.secondary_inv != props.secondary_inv || @props.primary_inv != props.primary_inv
 			@generate(Style.prototype.ease_linear)
 			@setState({})
 

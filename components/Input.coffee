@@ -104,7 +104,9 @@ class Input extends Component
 			@onEnter(e)
 	
 	onEnter: (e)=>
-		if @props.type == 'checkbox'
+		if @props.type == 'color'
+			return @_input.click()
+		else if @props.type == 'checkbox'
 			return @_input.click()
 		else
 			@_input.blur()
@@ -127,6 +129,9 @@ class Input extends Component
 		# log 'ON CLICK'
 		e.preventDefault()
 		e.stopPropagation()
+		if @props.type == 'color'
+			return @_input.click()
+
 		if @props.type == 'checkbox'
 			if @props.onInput
 				@props.onInput(e)
@@ -573,7 +578,7 @@ class Input extends Component
 		if props.label
 			label = h 'div',
 				style:
-					color: props.top_label && @context.primary.color[0] || undefined
+					# color: props.top_label && @context.primary.color[0] || undefined
 					width: @props.label_width
 				className: cn(value && css['label-opaque'],css['label'],props.top_label && css['top-label'])
 				props.label
@@ -674,6 +679,9 @@ class Input extends Component
 		if @props.autofill
 			style.height = DIM2 * 2
 			style.paddingTop = DIM2
+
+		if @props.pad
+			style.padding = DIM*(1/3)
 
 
 		if @props.overlay_input
@@ -776,7 +784,7 @@ class Input extends Component
 			onTouchEnd: IS_TOUCH && @onTouchEnd || undefined
 			onMouseEnter: !IS_TOUCH && @onMouseEnter || undefined
 			onMouseLeave:  !IS_TOUCH && @onMouseLeave || undefined
-			className: cn(IS_TOUCH && (props.type == 'button' || props.type == 'label') && css['noselect'],props.hint && css['trans_fixed'],props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],!label && icon && !@props.children && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.type == 'select' && css['type-select'],props.className)
+			className: cn(IS_TOUCH && (props.type == 'button' || props.type == 'label') && css['noselect'],props.hint && css['trans_fixed'],props.type == 'textarea' && css['btn-textarea'],props.big && css['btn-big'],css['btn'],!label && icon && !@props.children && props.type == 'button' && css['btn-icon-square'],props.disabled && css['disabled'],props.type == 'select' && css['type-select'],props.className,props.top_label && css['top-label-btn'])
 			href: props.href	
 			style: style
 

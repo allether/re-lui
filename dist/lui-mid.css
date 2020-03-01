@@ -80,7 +80,7 @@ body {
   font-weight: 700;
 }
 .lui-section-title-bar {
-  height: 7.5px;
+  min-height: 7.5px;
   width: 60px;
   border-radius: 3.75px;
   margin-left: 7.5px;
@@ -179,8 +179,8 @@ a {
   padding: 0;
   margin: 0;
   position: absolute;
-  left: 0;
-  top: -15px;
+  left: 11.25px;
+  top: 5.625px;
   font-size: 13px;
 }
 .lui-btn .lui-label-opaque {
@@ -342,6 +342,10 @@ a {
   color: inherit;
   opacity: 0.5;
 }
+.lui-btn.lui-top-label-btn {
+  padding-top: 30px;
+  padding-bottom: 10px;
+}
 pre {
   font-family: "monor", monospace;
   font-size: inherit;
@@ -462,14 +466,14 @@ pre {
 }
 .lui-square-btn-small {
   padding: 0 10px;
-  height: 30px;
+  min-height: 30px;
 }
 .lui-square-btn-small.lui-btn-icon-square {
   width: 30px;
 }
 .lui-square-btn-small input,
 .lui-square-btn-small .lui-input {
-  height: 30px;
+  min-height: 30px;
   margin: 0 3.75px;
 }
 .lui-square-btn-small .lui-alert-dot {
@@ -553,7 +557,7 @@ pre {
 .lui-bar.lui-bar-small > .lui-btn,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn {
   padding: 0 10px;
-  height: 30px;
+  min-height: 30px;
 }
 .lui-bar.lui-bar-small > .lui-btn.lui-btn-icon-square,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn.lui-btn-icon-square {
@@ -563,7 +567,7 @@ pre {
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn input,
 .lui-bar.lui-bar-small > .lui-btn .lui-input,
 .lui-bar.lui-bar-small > .lui-tab-wrapper > .lui-btn .lui-input {
-  height: 30px;
+  min-height: 30px;
   margin: 0 3.75px;
 }
 .lui-bar.lui-bar-small > .lui-btn .lui-alert-dot,

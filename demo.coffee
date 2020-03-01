@@ -277,17 +277,20 @@ class SelectPresetButton extends Component
 				type: 'button'
 				select: @props.select
 				onClick: =>
-					@props.onPresetSelect(@props.primary,@props.secondary) 
+					@props.onPresetSelect(@props.primary,@props.secondary,@props.primary_inv,@props.secondary_inv) 
 				label: 'select'
 			h 'div',
 				className: css['color-preset-button']
 				h 'div',
 					style: 
-						background: @props.primary
+						background: @props.primary_inv
+						color: @props.primary
+					"A"
 				h 'div',
 					style: 
-						background: @props.secondary
-
+						background: @props.secondary_inv
+						color: @props.secondary
+					"B"
 
 
 class Demo extends Component
@@ -300,8 +303,8 @@ class Demo extends Component
 			primary: '#202020'
 			primary_inv: '#eeeeee'
 			
-			secondary: '#376978'
-			secondary_inv: '#fff'
+			secondary: '#fff'
+			secondary_inv: '#376978'
 
 			test_color: '#00f3dd'
 	
@@ -334,26 +337,45 @@ class Demo extends Component
 			secondary: e.target.value
 		@setState()
 
-
-	onPresetSelect: (primary,secondary)=>
+	setPrimaryColorInv: (e)=>
 		@setState
-			primary:primary
-			secondary: secondary
+			primary_inv: e.target.value
+		# setTimeout @,0
+
+	setSecondaryColorInv: (e)=>
+		@setState
+			secondary_inv: e.target.value
 		@setState()
-	
+
+
+
+
+	onPresetSelect: (primary,secondary,primary_inv,secondary_inv)=>
+		@setState
+			primary: primary
+			secondary: secondary
+			primary_inv: primary_inv
+			secondary_inv: secondary_inv
+		@setState()
+
+
 	onListInput: (value)=>
 		@setState
 			list_value: value
+
 
 	showOverlay: =>
 		@setState
 			show_overlay: yes
 			show_overlay_error: no
 
+
 	showOverlayError: =>
 		@setState
 			show_overlay: yes
 			show_overlay_error: yes
+
+
 	hideOverlay: =>
 		@setState
 			show_overlay: no
@@ -364,15 +386,19 @@ class Demo extends Component
 		@_style = e
 		@forceUpdate()
 
-	componentDidUpdate: (props,state)=>
-		if state.primary != @state.primary || @state.secondary != state.secondary
-			@forceUpdate()
+	# componentDidUpdate: (props,state)=>
+	# 	document.body.style.background = @state.primary_inv
+	# 	document.body.style.color = @state.primary
+		# log pro.primary_inv,@state.primary_inv
+		# if state.primary != @state.primary || @state.secondary != state.secondary || @state.secondary_inv != state.secondary_inv || @state.primary_inv != state.primary_inv
+		# 	@forceUpdate()
 	
 	render: ()->
 		# log 'render'
 		state = @state
 		props = @props
 		# log @_style?.primary
+		# log state.primary_inv
 		h Style,
 			primary: state.primary #these should be accessed in child context (bad example)
 			secondary: state.secondary #these should be accessed in child context (bad example)
@@ -384,8 +410,8 @@ class Demo extends Component
 			ref:@refStyle
 			h 'div',
 				style:
-					background: @_style?.primary.inv[0]
-					color: @_style?.primary.color[0]
+					background: @state.primary_inv
+					color: @state.primary
 				className: 'app'
 				h AlertOverlay,
 					onClick: @hideOverlay
@@ -763,31 +789,48 @@ class Demo extends Component
 					h Input,
 						btn_type: 'default'
 						type: 'color'
+						label: 'primary inverse'
+						bar: yes
+						big: state.bar_big
+						value: state.primary_inv
+						onInput: @setPrimaryColorInv
+					h Input,
+						btn_type: 'default'
+						type: 'color'
+						label: 'secondary inverse'
+						bar: yes
+						big: state.bar_big
+						value: state.secondary_inv
+						onInput: @setSecondaryColorInv
+					h Input,
+						btn_type: 'default'
+						type: 'color'
 						big: state.bar_big
 						label: 'secondary'
 						value: state.secondary
 						onInput: @setSecondaryColor
 					h 'p',{},'check out some of these presets...'
 					h SelectPresetButton,
-						primary: '#1B1C1D'
-						secondary: '#414277'
-						select: state.primary == '#1B1C1D'
+						primary: '#fff'
+						secondary: '#fff'
+						primary_inv: '#1B1C1D'
+						secondary_inv: '#414277'
 						onPresetSelect: @onPresetSelect
+						select: state.primary_inv == '#1B1C1D'
 					h SelectPresetButton,
-						primary: '#F8EED3'
-						secondary: '#FD5F55'
-						select: state.primary == '#F8EED3'
+						primary: '#141312'
+						primary_inv: '#F8EED3'
+						secondary: '#fff'
+						secondary_inv: '#FD5F55'
 						onPresetSelect: @onPresetSelect
+						select: state.primary_inv == '#F8EED3'
 					h SelectPresetButton,
-						primary: '#D5CBDD'
-						select: state.primary == '#D5CBDD'
-						secondary: '#9559A6'
+						primary: '#0e0d0e'
+						primary_inv: '#D5CBDD'
+						secondary: '#fff'
+						secondary_inv: '#9559A6'
 						onPresetSelect: @onPresetSelect
-					h SelectPresetButton,
-						primary: '#FFFFFF'
-						select: state.primary == '#FFFFFF'
-						secondary: '#5F9B9D'
-						onPresetSelect: @onPresetSelect
+						select: state.primary_inv == '#D5CBDD'
 
 				h Section,
 					title: 'overlay'
