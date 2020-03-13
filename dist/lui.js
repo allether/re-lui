@@ -257,11 +257,18 @@ Bar = class Bar extends Component {
   }
 
   render() {
-    var bar_props;
+    var bar_props, style;
+    style = Object.assign({}, this.props.style);
+    if (this.props.margin_left || this.props.margin_top || this.props.margin_bottom || this.props.margin_right) {
+      style.marginLeft = this.props.margin_left && DIM * 1 / 8 || '0px';
+      style.marginRight = this.props.margin_right && DIM * 1 / 8 || '0px';
+      style.marginBottom = this.props.margin_bottom && DIM * 1 / 8 || '0px';
+      style.marginTop = this.props.margin_top && DIM * 1 / 8 || '0px';
+    }
     bar_props = {
       ref: this.baseRef,
       className: cn(this.props.className, this.props.btn && css['bar-btn'], this.props.vert && css['bar-vert'], css['bar'], this.props.big && css['bar-big'] || css['bar-small']),
-      style: this.props.style
+      style: style
     };
     return h('div', bar_props, this.props.children);
   }
@@ -451,6 +458,322 @@ CircleToggle = class CircleToggle extends Component {
 
 module.exports = CircleToggle;
 
+
+/***/ }),
+
+/***/ "./components/HoverBox.coffee":
+/*!************************************!*\
+  !*** ./components/HoverBox.coffee ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Color, HoverBox, StyleContext, cn, css,
+  boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
+
+css = __webpack_require__(/*! ./HoverBox.less */ "./components/HoverBox.less");
+
+cn = __webpack_require__(/*! classnames */ "classnames");
+
+Color = __webpack_require__(/*! color */ "color");
+
+({StyleContext} = __webpack_require__(/*! ./Style.coffee */ "./components/Style.coffee"));
+
+HoverBox = class HoverBox extends Component {
+  constructor() {
+    super();
+    this.overlayRef = this.overlayRef.bind(this);
+    this.resetHideTimer = this.resetHideTimer.bind(this);
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.onClickOverlay = this.onClickOverlay.bind(this);
+    this.setBackdropColor = this.setBackdropColor.bind(this);
+    this.state = {};
+  }
+
+  onComponentDidMount() {}
+
+  // @_overlay
+  getBoxPosition() {
+    var align_x, align_y, bar_h, bar_w, bar_x, bar_y, bounding_rect, dim, el, get_rect, height, max_x, max_y, off_x, off_y, pad, pos_x, pos_y, snap_x, snap_y, width;
+    el = this.props.getBindElement();
+    dim = this.props.getSize();
+    get_rect = el.getBoundingClientRect();
+    off_x = this.props.offset_x || 0;
+    off_y = this.props.offset_y || 0;
+    bounding_rect = {
+      top: get_rect.top + off_y,
+      bottom: get_rect.bottom + off_y,
+      left: get_rect.left + off_x,
+      right: get_rect.right + off_x,
+      width: get_rect.width,
+      height: get_rect.height
+    };
+    snap_y = this.props.snap_y;
+    snap_x = this.props.snap_x;
+    if (snap_x && snap_y) {
+      snap_y = 0;
+    }
+    if (!snap_x && !snap_y) {
+      snap_y = 1;
+    }
+    align_x = this.props.align_x;
+    align_y = this.props.align_y;
+    pos_x = 0;
+    pos_y = 0;
+    max_y = this.props.max_y || window.innerHeight;
+    max_x = this.props.max_x || window.innerWidth;
+    pad = 4;
+    bar_x = 0;
+    bar_y = 0;
+    bar_w = 6;
+    bar_h = 6;
+    if (snap_y > 0) {
+      pos_y = bounding_rect.bottom + pad;
+      if (pos_y + dim.height > max_y) {
+        pos_y = bounding_rect.top - dim.height - pad;
+      }
+    } else if (snap_y < 0) {
+      pos_y = bounding_rect.top - dim.height - pad;
+      if (pos_y < 0) {
+        pos_y = bounding_rect.bottom + pad;
+      }
+    } else {
+      if (align_y > 0) {
+        pos_y = bounding_rect.top;
+        if (pos_y + dim.height > max_y) {
+          pos_y = bounding_rect.bottom - dim.height;
+        }
+      } else {
+        pos_y = bounding_rect.bottom - dim.height;
+        if (pos_y < 0) {
+          pos_y = bounding_rect.top;
+        }
+      }
+    }
+    if (snap_x > 0) {
+      pos_x = bounding_rect.right + pad;
+      if (pos_x + dim.width > max_x) {
+        pos_x = bounding_rect.left - dim.width - pad;
+      }
+    } else if (snap_x < 0) {
+      pos_x = bounding_rect.left - dim.width - pad;
+      if (pos_x < 0) {
+        pos_x = bounding_rect.right + pad;
+      }
+    } else {
+      if (align_x > 0) {
+        pos_x = bounding_rect.left;
+        if (pos_x + dim.width > max_x) {
+          pos_x = bounding_rect.right - dim.width;
+        }
+      } else {
+        pos_x = bounding_rect.right - dim.width;
+        if (pos_x < 0) {
+          pos_x = bounding_rect.left;
+        }
+      }
+    }
+    if (pos_x >= bounding_rect.right) {
+      bar_x = bounding_rect.right + pad;
+      bar_y = bounding_rect.top + (bounding_rect.height / 2);
+      bar_h = 12;
+      bar_w = 6;
+    } else if (pos_x + dim.width <= bounding_rect.left) {
+      bar_x = bounding_rect.left - pad;
+      bar_y = bounding_rect.top + (bounding_rect.height / 2);
+      bar_h = 12;
+      bar_w = 6;
+    } else if (pos_y >= bounding_rect.bottom) {
+      bar_x = bounding_rect.left + (bounding_rect.width / 2);
+      bar_y = bounding_rect.bottom + pad;
+      bar_h = 6;
+      bar_w = 12;
+    } else {
+      bar_x = bounding_rect.left + (bounding_rect.width / 2);
+      bar_y = bounding_rect.top - pad;
+      bar_h = 6;
+      bar_w = 12;
+    }
+    pad = 7.5;
+    height = Math.min(window.innerHeight - pad * 2, dim.height);
+    width = Math.min(window.innerWidth - pad * 2, dim.width);
+    pos_y = Math.max(pos_y, pad);
+    pos_y = Math.min(pos_y, window.innerHeight - pad - height);
+    pos_x = Math.max(pos_x, pad);
+    pos_x = Math.min(pos_x, window.innerWidth - pad - width);
+    return {
+      x: pos_x,
+      y: pos_y,
+      bar_x: bar_x,
+      bar_y: bar_y,
+      bar_w: bar_w,
+      bar_h: bar_h,
+      width: width,
+      height: height
+    };
+  }
+
+  overlayRef(el) {
+    boundMethodCheck(this, HoverBox);
+    return this._overlay = el;
+  }
+
+  componentDidUpdate(prev_props, prev_state) {
+    // log @props.show_delay
+    // if
+    // log @props.visible,@state.render_box
+    if (this.props.visible && this._hide_box_timer) {
+      this.resetHideTimer();
+    }
+    if (this.props.visible !== prev_props.visible || this.props.visible !== this.state.visible) {
+      if (this.props.visible) {
+        // log 'RENDER'
+        this.resetHideTimer();
+        if (this.props.visible_delay) {
+          return this._render_box_timer = setTimeout(() => {
+            this._render_box_timer = null;
+            return this.setState({
+              visible: true
+            });
+          }, this.props.show_delay != null ? this.props.show_delay : 600);
+        } else {
+          return this.setState({
+            visible: true
+          });
+        }
+      } else {
+        this.resetHideTimer();
+        return this._hide_box_timer = setTimeout(() => {
+          this._hide_box_timer = null;
+          return this.setState({
+            visible: false
+          });
+        }, this.props.hide_delay != null ? this.props.hide_delay : 200);
+      }
+    }
+  }
+
+  resetHideTimer() {
+    boundMethodCheck(this, HoverBox);
+    clearTimeout(this._hide_box_timer);
+    clearTimeout(this._render_box_timer);
+    this._render_box_timer = null;
+    return this._hide_box_timer = null;
+  }
+
+  onMouseEnter() {
+    boundMethodCheck(this, HoverBox);
+    this.setState({
+      hover: true
+    });
+    return this.resetHideTimer();
+  }
+
+  onMouseLeave() {
+    boundMethodCheck(this, HoverBox);
+    this.setState({
+      hover: false
+    });
+    this.resetHideTimer();
+    return this.forceUpdate();
+  }
+
+  onClickOverlay(e) {
+    boundMethodCheck(this, HoverBox);
+    if (e.target === this._overlay) {
+      return this.props.onClickOverlay(e);
+    }
+  }
+
+  setBackdropColor(bg, alpha) {
+    boundMethodCheck(this, HoverBox);
+    if (bg === 'none') {
+      return 'none';
+    }
+    return Color(bg).alpha(alpha).string();
+  }
+
+  render() {
+    var base, base1, box, box_bar, overlay_background, pos;
+    if (this.state.visible || this.props.visible) {
+      pos = this.getBoxPosition();
+    }
+    if (this.props.onClickOverlay && this.state.visible) {
+      overlay_background = this.setBackdropColor(this.props.background, 0.7);
+    } else {
+      overlay_background = this.setBackdropColor(this.props.background, 0.0);
+    }
+    if (this.props.flat && this.state.visible) {
+      box = h('div', {
+        className: css['hover-box-flat'],
+        onMouseEnter: this.props.box_pointer_events && this.onMouseEnter || null,
+        onMouseLeave: this.props.box_pointer_events && this.onMouseLeave || null,
+        style: {
+          pointerEvents: this.props.box_pointer_events && 'all' || 'none',
+          top: pos.y,
+          left: pos.x,
+          width: pos.width,
+          height: pos.height,
+          color: this.context.primary.color[0]
+        }
+      }, typeof (base = this.props).renderContent === "function" ? base.renderContent() : void 0);
+    } else if (this.state.visible) {
+      box = h('div', {
+        className: cn(css['hover-box'], css['modal-shadow'], this.props.scroll && css['hover-box-scroll']),
+        onMouseEnter: this.props.box_pointer_events && this.onMouseEnter || null,
+        onMouseLeave: this.props.box_pointer_events && this.onMouseLeave || null,
+        style: {
+          pointerEvents: this.props.box_pointer_events && 'all' || 'none',
+          top: pos.y,
+          left: pos.x,
+          width: pos.width,
+          height: pos.height,
+          color: this.context.primary.color[0],
+          background: this.context.primary.inv[0]
+        }
+      }, typeof (base1 = this.props).renderContent === "function" ? base1.renderContent() : void 0);
+    }
+    if (this.props.visible || this.state.visible) {
+      box_bar = h('div', {
+        className: css['hover-box-bar'],
+        style: {
+          top: pos.bar_y,
+          left: pos.bar_x,
+          width: pos.bar_w,
+          height: pos.bar_h,
+          background: this.context.secondary.inv[0]
+        }
+      });
+    }
+    return h('div', {
+      ref: this.overlayRef,
+      onClick: this.props.onClickOverlay && this.onClickOverlay,
+      className: cn(css['hover-box-overlay'], this.state.visible && this.props.onClickOverlay && css['visible']),
+      style: {
+        background: overlay_background
+      }
+    }, box, box_bar);
+  }
+
+};
+
+HoverBox.contextType = StyleContext;
+
+module.exports = HoverBox;
+
+
+/***/ }),
+
+/***/ "./components/HoverBox.less":
+/*!**********************************!*\
+  !*** ./components/HoverBox.less ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+module.exports = {"hover-box-overlay":"lui-hover-box-overlay","hover-box":"lui-hover-box","hover-box-scroll":"lui-hover-box-scroll","hover-box-bar":"lui-hover-box-bar","visible":"lui-visible","hover-box-flat":"lui-hover-box-flat"};
 
 /***/ }),
 
@@ -1312,6 +1635,12 @@ Input = class Input extends Component {
       style.height = 'auto';
       style.whiteSpace = 'normal';
       style.maxHeight = 'auto';
+    }
+    if (this.props.margin_left || this.props.margin_top || this.props.margin_bottom || this.props.margin_right) {
+      style.marginLeft = this.props.margin_left && DIM * 1 / 8 || '0px';
+      style.marginRight = this.props.margin_right && DIM * 1 / 8 || '0px';
+      style.marginBottom = this.props.margin_bottom && DIM * 1 / 8 || '0px';
+      style.marginTop = this.props.margin_top && DIM * 1 / 8 || '0px';
     }
     outer_props = {
       onClick: !IS_TOUCH && this.onClick || void 0,
@@ -2390,6 +2719,8 @@ Color = __webpack_require__(/*! color */ "color");
 
 css = __webpack_require__(/*! ./Style.less */ "./components/Style.less");
 
+__webpack_require__(/*! ./Style_.less */ "./components/Style_.less");
+
 ({createElement, Component, createContext} = __webpack_require__(/*! react */ "react"));
 
 global.h = createElement;
@@ -2488,6 +2819,17 @@ module.exports = {"center":"lui-center","section":"lui-section","noselect":"lui-
 
 /***/ }),
 
+/***/ "./components/Style_.less":
+/*!********************************!*\
+  !*** ./components/Style_.less ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
 /***/ "./components/index.coffee":
 /*!*********************************!*\
   !*** ./components/index.coffee ***!
@@ -2495,7 +2837,7 @@ module.exports = {"center":"lui-center","section":"lui-section","noselect":"lui-
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var AlertDot, AlertOverlay, Bar, BarSeperator, Chip, Input, Menu, MenuTab, Overlay, Section, SquareLoader, Style, StyleContext, generateStyle;
+var AlertDot, AlertOverlay, Bar, BarSeperator, Chip, HoverBox, Input, Menu, MenuTab, Overlay, Section, SquareLoader, Style, StyleContext, generateStyle;
 
 ({Style, StyleContext, generateStyle} = __webpack_require__(/*! ./Style */ "./components/Style.coffee"));
 
@@ -2520,6 +2862,8 @@ SquareLoader = __webpack_require__(/*! ./SquareLoader */ "./components/SquareLoa
 Chip = __webpack_require__(/*! ./Chip */ "./components/Chip.coffee");
 
 BarSeperator = __webpack_require__(/*! ./BarSeperator */ "./components/BarSeperator.coffee");
+
+HoverBox = __webpack_require__(/*! ./HoverBox */ "./components/HoverBox.coffee");
 
 module.exports.Bar = Bar;
 
@@ -2548,6 +2892,8 @@ module.exports.SquareLoader = SquareLoader;
 module.exports.Chip = Chip;
 
 module.exports.BarSeperator = BarSeperator;
+
+module.exports.HoverBox = HoverBox;
 
 
 /***/ }),

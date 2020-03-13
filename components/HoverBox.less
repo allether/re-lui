@@ -1,0 +1,41 @@
+@import './variables.less';
+
+.hover-box-overlay{
+	::-webkit-scrollbar{
+		display: none;
+	}
+	pointer-events: none;
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	transform: translate(0);
+	left: 0;
+	top: 0;
+	transition: opacity .2s ease, background .2s ease;
+
+	.hover-box{
+		overflow: hidden;
+		margin: 0;
+		position: absolute;
+		border-radius: @border-radius;
+		// transform: translate(0,-50%);
+	}
+	.hover-box-scroll{
+		overflow-y: scroll;
+	}
+	.hover-box-bar{
+		z-index: 2;
+		border-radius: @border-radius;
+		position: absolute;
+		transform: translate(-50%,-50%);
+	}
+	&.visible{
+		pointer-events: all;
+	}
+	.hover-box-flat{
+		margin: 0;
+		position: absolute;
+		border-radius: @border-radius;
+		// transform: translate(0,-50%);
+	}
+}

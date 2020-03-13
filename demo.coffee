@@ -87,22 +87,12 @@ class MenuSection extends Component
 			h 'p',{},'menus are a mix of vertical and horizontal bars with a variety of options. `render_hidden` controls whether hidden tabs are rendered into the DOM which is needed for fixed menus to make sure that menu options do not overflow the allowed space'
 			h Menu,
 				vert: no
-				# render_hidden: no
-				# alternate: no
 				hover_reveal_enabled: yes
-				# x: 0
-				# y: 0
 				split_y:-1
 				split_x: 1
 				big: props.big
-				# max_x: window.innerWidth
-				# max_y: window.innerHeight
-				# min_x: 0
-				# min_y: 0
-
 				h MenuTab,
 					vert: yes
-					# reveal: yes
 					content: h Input,
 						type: 'button'
 						i: 'settings'
@@ -119,7 +109,6 @@ class MenuSection extends Component
 							placeholder: 'tab 1 input'
 				h MenuTab,
 					vert: yes
-					# reveal: yes
 					content: h Input,
 						type: 'button'
 						btn_type: 'flat'
@@ -142,7 +131,6 @@ class MenuSection extends Component
 								type: 'button'
 								i: 'chat'
 					h MenuTab,
-						# reveal: yes
 						content: h Input,
 
 							label: 'tab 2.b'
@@ -158,11 +146,8 @@ class MenuSection extends Component
 								label: 'tab 2.a.b'
 								type: 'button'
 								i: 'chat'
-							# placeholder: 'tab 1 input'
 				h MenuTab,
 					vert: no
-					# big: no
-					# reveal: yes
 					content: h Input,
 						type: 'button'
 						label: 'tab 3'
@@ -175,7 +160,6 @@ class MenuSection extends Component
 							placeholder: 'tab 1 input'
 					h MenuTab,
 						vert: yes
-
 						content: h Input,
 							i: 'bookmark'
 							type: 'button'

@@ -14,7 +14,16 @@ var cfg = {
 		rules: [
 			{ test: /\.coffee$/, use: "coffee-loader"},
 			{ test: /\.(xml|html|txt|md|glsl|svg)$/, loader: "raw-loader" },
-			{ test: /\.(less)$/, exclude: /^(https?:)?\/\//,use: [{loader: MiniCssExtractPlugin.loader},{loader:'css-loader',options: {
+			{ test: /_\.(less)$/, exclude: /^(https?:)?\/\//,use: [{loader: MiniCssExtractPlugin.loader},{loader:'css-loader'},{
+			  	loader:'less-loader',
+			  	options: {
+			  		modifyVars: {
+			  			"dim": process.env.DIM+"px"
+			  		}
+			  	}
+			  }]
+			},
+			{ test: /[^_]\.(less)$/, exclude: /^(https?:)?\/\//,use: [{loader: MiniCssExtractPlugin.loader},{loader:'css-loader',options: {
 			    modules: true,
 			    // importLoaders: 1,
 			     localIdentName: 'lui-[local]'//localIdentName: 'lui-[hash:base64:5]'

@@ -6,6 +6,8 @@
 
   css = require('./Style.less');
 
+  require('./Style_.less');
+
   ({createElement, Component, createContext} = require('react'));
 
   global.h = createElement;
@@ -55,7 +57,7 @@
     }
 
     componentDidUpdate(props, state) {
-      if (this.props.style !== props.style || this.props.primary !== props.primary || this.props.secondary !== props.secondary) {
+      if (this.props.style !== props.style || this.props.primary !== props.primary || this.props.secondary !== props.secondary || this.props.secondary_inv !== props.secondary_inv || this.props.primary_inv !== props.primary_inv) {
         this.generate(Style.prototype.ease_linear);
         return this.setState({});
       }

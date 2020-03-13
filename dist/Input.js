@@ -175,7 +175,9 @@
     onEnter(e) {
       var autofill_match_res, base, base1, ref;
       boundMethodCheck(this, Input);
-      if (this.props.type === 'checkbox') {
+      if (this.props.type === 'color') {
+        return this._input.click();
+      } else if (this.props.type === 'checkbox') {
         return this._input.click();
       } else {
         this._input.blur();
@@ -205,6 +207,9 @@
       // log 'ON CLICK'
       e.preventDefault();
       e.stopPropagation();
+      if (this.props.type === 'color') {
+        return this._input.click();
+      }
       if (this.props.type === 'checkbox') {
         if (this.props.onInput) {
           return this.props.onInput(e);
@@ -658,7 +663,7 @@
       if (props.label) {
         label = h('div', {
           style: {
-            color: props.top_label && this.context.primary.color[0] || void 0,
+            // color: props.top_label && @context.primary.color[0] || undefined
             width: this.props.label_width
           },
           className: cn(value && css['label-opaque'], css['label'], props.top_label && css['top-label'])
@@ -847,6 +852,12 @@
         style.whiteSpace = 'normal';
         style.maxHeight = 'auto';
       }
+      if (this.props.margin_left || this.props.margin_top || this.props.margin_bottom || this.props.margin_right) {
+        style.marginLeft = this.props.margin_left && DIM * 1 / 8 || '0px';
+        style.marginRight = this.props.margin_right && DIM * 1 / 8 || '0px';
+        style.marginBottom = this.props.margin_bottom && DIM * 1 / 8 || '0px';
+        style.marginTop = this.props.margin_top && DIM * 1 / 8 || '0px';
+      }
       outer_props = {
         onClick: !IS_TOUCH && this.onClick || void 0,
         htmlFor: input_name,
@@ -855,7 +866,7 @@
         onTouchEnd: IS_TOUCH && this.onTouchEnd || void 0,
         onMouseEnter: !IS_TOUCH && this.onMouseEnter || void 0,
         onMouseLeave: !IS_TOUCH && this.onMouseLeave || void 0,
-        className: cn(IS_TOUCH && (props.type === 'button' || props.type === 'label') && css['noselect'], props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && !this.props.children && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className),
+        className: cn(IS_TOUCH && (props.type === 'button' || props.type === 'label') && css['noselect'], props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && !this.props.children && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className, props.top_label && css['top-label-btn']),
         href: props.href,
         style: style
       };

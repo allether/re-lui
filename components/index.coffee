@@ -10,7 +10,7 @@ AlertOverlay = require './AlertOverlay'
 SquareLoader = require './SquareLoader'
 Chip = require './Chip'
 BarSeperator = require './BarSeperator'
-
+HoverBox = require './HoverBox'
 
 module.exports.Bar = Bar
 module.exports.Input = Input
@@ -26,3 +26,4 @@ module.exports.AlertOverlay = AlertOverlay
 module.exports.SquareLoader = SquareLoader
 module.exports.Chip = Chip
 module.exports.BarSeperator = BarSeperator
+module.exports.HoverBox = HoverBox

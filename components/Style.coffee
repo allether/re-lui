@@ -1,5 +1,6 @@
 Color = require 'color'
 css = require './Style.less'
+require './Style_.less'
 {createElement,Component,createContext} = require 'react'
 global.h = createElement
 global.Component = Component

@@ -773,7 +773,15 @@ class Input extends Component
 			style.maxHeight = 'auto'
 
 
-		
+		if @props.margin_left || @props.margin_top || @props.margin_bottom || @props.margin_right
+			style.marginLeft = @props.margin_left && DIM * 1/8 || '0px'
+			style.marginRight = @props.margin_right && DIM * 1/8 || '0px'
+			style.marginBottom = @props.margin_bottom && DIM * 1/8 || '0px'
+			style.marginTop = @props.margin_top && DIM * 1/8 || '0px'
+
+
+
+
 
 
 		outer_props = 
