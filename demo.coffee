@@ -18,7 +18,7 @@ Bar = require './components/Bar.coffee'
 Chip = require './components/Chip.coffee'
 AlertOverlay = require './components/AlertOverlay.coffee'
 css = require './demo.less'
-lerp_logo = require './lerp-logo-40.svg'
+# lerp_logo = require './lerp-logo-40.svg'
 
 
 

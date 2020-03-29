@@ -678,6 +678,49 @@ pre {
 .outline {
   border: 2px solid rgba(0, 0, 0, 0.5);
 }
+.scrollbar ::-webkit-scrollbar {
+  -webkit-appearance: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 12px;
+  height: 12px;
+}
+.scrollbar ::-webkit-scrollbar-corner {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.scrollbar ::-webkit-scrollbar-thumb {
+  border-radius: 0px;
+  background-color: #7F7F7F;
+  transition: background-color 0.3s ease;
+}
+.scrollbar ::-webkit-scrollbar-thumb:hover {
+  background-color: #8F8F8F;
+}
+.slim-scrollbar::-webkit-scrollbar {
+  -webkit-appearance: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 6px;
+  height: 6px;
+}
+.slim-scrollbar::-webkit-scrollbar-corner {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.slim-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 0px;
+  background-color: #7F7F7F;
+  transition: background-color 0.3s ease;
+}
+.slim-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #8F8F8F;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar::-webkit-scrollbar-corner {
+  display: none;
+}
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  display: none;
+}
 .full {
   width: 100%;
   height: 100%;

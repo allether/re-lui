@@ -25,6 +25,7 @@ body{
 	position: relative;
 	padding: @dim * 1/3;
 	flex-shrink: 0;
+	width: -webkit-fill-available;
 }
 
 .noselect {
@@ -48,6 +49,9 @@ body{
 		width: 100%;
 		margin-top: 8;
 		margin-bottom: 8;
+	}
+	.btn,.bar-btn{
+		width: inherit;
 	}
 }
 
@@ -210,9 +214,10 @@ a{
 	}	
 
 	&.btn-textarea{
-		padding: @padding-size !important;
+		padding: @padding-size;
+		padding-bottom: @padding-size !important;
 		flex-wrap: wrap;
-		height: auto;
+		height: auto !important;
 		min-height: 100px;
 		min-width: 300px;
 		.input-bar{
@@ -227,6 +232,7 @@ a{
 			width: 100%;
 		}
 	}
+
 	&.btn-big{
 		min-height: @dim * 4/3 !important;
 		padding: 0 @padding-size*2;
@@ -246,6 +252,7 @@ a{
 			padding: @padding-size @padding-size*2 !important; 
 		}
 	}
+
 	&.btn-icon-square{
 		padding: 0 !important;
 		width: @dim;
@@ -260,15 +267,17 @@ a{
 	.overlay-input-val{
 		border-radius: @border-radius;
 		margin-right: @margin-size;
-		padding: @padding-size/2;
-		font-size: @padding-size;
+		padding: @padding-size*.8;
+		font-size: @fontsize*.8;
 	}
+
 	.overlay-input-hint{
 		position: absolute;
 		bottom: 0;
 		right: 0;
 		margin: @padding-size;
 	}
+
 	.overlay-input-val-wrap{
 		pointer-events: none;
 		position: absolute;
@@ -277,7 +286,7 @@ a{
 		top: 0;
 		height: 100%;
 		width: 100%;
-		padding: @padding-size;
+		padding: @padding-size*1.45;
 		flex-direction: row;
 		justify-content: flex-start;
 		align-items: flex-start;

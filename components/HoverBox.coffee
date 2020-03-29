@@ -4,11 +4,15 @@ cn = require 'classnames'
 Color = require 'color'
 
 {StyleContext} = require './Style.coffee'
+Math.clamp = (num,min,max)->
+	return Math.min(Math.max(num, min), max)
 
 class HoverBox extends Component
 	constructor: ->
 		super()
-		@state = {}
+		@state = 
+			offset_left: 0
+			offset_top: 0
 
 
 
@@ -19,23 +23,24 @@ class HoverBox extends Component
 
 
 	getBoxPosition: ->
+		overlay_rect = @_overlay.getBoundingClientRect()
+
 		el = @props.getBindElement()
 
 		dim = @props.getSize()
 
 		get_rect = el.getBoundingClientRect()
 	
-		off_x = @props.offset_x || 0
-		off_y = @props.offset_y || 0
-		
-		bounding_rect = 
 
-			top : get_rect.top + off_y
-			bottom : get_rect.bottom + off_y
-			left : get_rect.left + off_x
-			right : get_rect.right + off_x
+		btn = 
+			top : get_rect.top
+			bottom : get_rect.bottom
+			left : get_rect.left
+			right : get_rect.right
 			width: get_rect.width
 			height: get_rect.height
+
+		# log btn
 			
 
 		snap_y = @props.snap_y
@@ -55,101 +60,93 @@ class HoverBox extends Component
 		pos_y = 0
 
 
-		max_y = @props.max_y || window.innerHeight
-		max_x = @props.max_x || window.innerWidth
+		# max_y = @props.max_y || window.innerHeight
+		# max_x = @props.max_x || window.innerWidth
+		pad = 8
+		pad_top = DIM+3.75*2
 
 
-		pad = 4
+		height = Math.min(overlay_rect.bottom-overlay_rect.top-pad-pad_top,dim.height)
+		width = Math.min(overlay_rect.right-overlay_rect.left-pad*2,dim.width)
+
+		# log overlay_rect.right-overlay_rect.left
+
+
+		
 		bar_x = 0
 		bar_y = 0
 		bar_w = 6
 		bar_h = 6
+
+		min_x = overlay_rect.left + pad_top
+		max_x = overlay_rect.right - pad - width
+		min_y = overlay_rect.top + pad
+		max_y = overlay_rect.bottom - pad - height
+
+
+
+	
 		
 		if snap_y > 0
-			pos_y = bounding_rect.bottom + pad
-
-			if pos_y + dim.height > max_y
-				pos_y =  bounding_rect.top - dim.height - pad
-		
+			pos_y = btn.bottom + pad
 		else if snap_y < 0
-			pos_y = bounding_rect.top - dim.height - pad
-			if pos_y < 0
-				pos_y = bounding_rect.bottom + pad
-		
+			pos_y = btn.top - height - pad
+		else if align_y > 0
+			pos_y = btn.top
 		else
-			if align_y > 0
-				pos_y = bounding_rect.top
-				if pos_y + dim.height > max_y
-					pos_y = bounding_rect.bottom - dim.height
-				
-			else
-				pos_y = bounding_rect.bottom - dim.height
-				if pos_y < 0
-					pos_y = bounding_rect.top
+			pos_y = btn.bottom - height
 
-
+		
 		if snap_x > 0
-			pos_x = bounding_rect.right + pad
-			if pos_x + dim.width > max_x
-				pos_x = bounding_rect.left - dim.width - pad
-
+			pos_x = btn.right + pad
 		else if snap_x < 0
-			pos_x = bounding_rect.left - dim.width - pad
-			if pos_x < 0
-				pos_x = bounding_rect.right + pad
-
-		
+			pos_x = btn.left - width - pad
+		else if align_x > 0
+			pos_x = btn.left
 		else
-			if align_x > 0
-				pos_x = bounding_rect.left
-				if pos_x + dim.width > max_x
-					pos_x = bounding_rect.right - dim.width
-			else
-				pos_x = bounding_rect.right - dim.width
-				if pos_x < 0
-					pos_x = bounding_rect.left
+			pos_x = btn.right - width
 
-
-		if pos_x >= bounding_rect.right
-			bar_x = bounding_rect.right + pad
-			bar_y = bounding_rect.top + (bounding_rect.height/2)
+		if pos_x >= btn.right
+			bar_x = btn.right + pad
+			bar_y = btn.top + (btn.height/2)
 			bar_h = 12
 			bar_w = 6
-		else if pos_x+dim.width <= bounding_rect.left
-			bar_x = bounding_rect.left - pad
-			bar_y = bounding_rect.top + (bounding_rect.height/2)
+		else if pos_x+width <= btn.left
+			bar_x = btn.left - pad
+			bar_y = btn.top + (btn.height/2)
 			bar_h = 12
 			bar_w = 6
 		
 
-		else if pos_y >= bounding_rect.bottom
-			bar_x = bounding_rect.left + (bounding_rect.width/2)
-			bar_y = bounding_rect.bottom + pad
+		else if pos_y >= btn.bottom
+			bar_x = btn.left + (btn.width/2)
+			bar_y = btn.bottom + pad
 			bar_h = 6
 			bar_w = 12
 		else
-			bar_x = bounding_rect.left + (bounding_rect.width/2)
-			bar_y = bounding_rect.top - pad
+			bar_x = btn.left + (btn.width/2)
+			bar_y = btn.top - pad
 			bar_h = 6
 			bar_w = 12
 
-		pad = 7.5
+		
+		
+		
+		pos_y = Math.clamp(pos_y,min_y,max_y)-overlay_rect.top
+		pos_x = Math.clamp(pos_x,min_x,max_x)-overlay_rect.left
 
-		height = Math.min(window.innerHeight-pad*2,dim.height)
-		width = Math.min(window.innerWidth-pad*2,dim.width)
 
-
-		pos_y = Math.max(pos_y,pad)
-		pos_y = Math.min(pos_y,window.innerHeight - pad - height)
-		pos_x = Math.max(pos_x,pad)
-		pos_x = Math.min(pos_x,window.innerWidth - pad - width)
+		# pos_y = Math.max(pos_y,pad)
+		# pos_y = Math.min(pos_y,window.innerHeight - pad - height)
+		# pos_x = Math.max(pos_x,pad)
+		# pos_x = Math.min(pos_x,window.innerWidth - pad - width)
 
 
 		return
 			x: pos_x
 			y: pos_y
-			bar_x: bar_x
-			bar_y: bar_y
+			bar_x: bar_x-overlay_rect.left
+			bar_y: bar_y-overlay_rect.top
 			bar_w: bar_w
 			bar_h: bar_h
 			width: width
@@ -160,8 +157,14 @@ class HoverBox extends Component
 	overlayRef: (el)=>
 		@_overlay = el
 
+	componentWillUpdate: ->
+		overlay_rect = @_overlay.getBoundingClientRect()
+
+		@state.offset_left = overlay_rect.left
+		@state.offset_top = overlay_rect.top
 
 	componentDidUpdate: (prev_props,prev_state)->
+
 
 		# log @props.show_delay
 		# if
@@ -248,11 +251,11 @@ class HoverBox extends Component
 					width: pos.width
 					height: pos.height
 					color: @context.primary.color[0]
-				@props.renderContent?()
+				@props.renderContent?(@state.offset_left,@state.offset_top)
 
 		else if @state.visible
 			box = h 'div',
-				className: cn css['hover-box'],css['modal-shadow'],@props.scroll && css['hover-box-scroll']
+				className: cn css['hover-box'],css['modal-shadow'],css['hover-box-scroll']
 				onMouseEnter: @props.box_pointer_events && @onMouseEnter || null
 				onMouseLeave: @props.box_pointer_events && @onMouseLeave || null
 				style:
@@ -263,7 +266,7 @@ class HoverBox extends Component
 					height: pos.height
 					color: @context.primary.color[0]
 					background: @context.primary.inv[0]
-				@props.renderContent?()
+				@props.renderContent?(@state.offset_left,@state.offset_top)
 
 
 		if @props.visible || @state.visible
@@ -276,7 +279,20 @@ class HoverBox extends Component
 					height: pos.bar_h
 					background: @context.secondary.inv[0]
 
-
+		if pos & @props.show_close_btn
+			close_btn = h Input,
+				type: 'button'
+				i: 'close'
+				big: yes
+				onClick: @props.onClickOverlay && @onClickOverlay
+				style:
+					color: 'white'
+					position: 'fixed'
+					background: 'none'
+					left: pos.x+pos.width-DIM-3.75
+					top: pos.y-DIM-3.75-3.75
+				i_style:
+					color: 'white'
 
 		h 'div',
 			ref: @overlayRef
@@ -285,7 +301,8 @@ class HoverBox extends Component
 			style:
 				background: overlay_background
 			box
-			box_bar
+			close_btn
+			# box_bar
 
 
 

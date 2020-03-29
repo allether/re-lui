@@ -31,6 +31,7 @@ body {
   position: relative;
   padding: 10px;
   flex-shrink: 0;
+  width: -webkit-fill-available;
 }
 .lui-noselect {
   -webkit-touch-callout: none;
@@ -59,6 +60,10 @@ body {
   width: 100%;
   margin-top: 8;
   margin-bottom: 8;
+}
+.lui-section-content .lui-btn,
+.lui-section-content .lui-bar-btn {
+  width: inherit;
 }
 .lui-absolute-center {
   position: absolute;
@@ -196,9 +201,10 @@ a {
   margin-left: 0;
 }
 .lui-btn.lui-btn-textarea {
-  padding: 7.5px !important;
+  padding: 7.5px;
+  padding-bottom: 7.5px !important;
   flex-wrap: wrap;
-  height: auto;
+  height: auto !important;
   min-height: 100px;
   min-width: 300px;
 }
@@ -245,8 +251,8 @@ a {
 .lui-btn .lui-overlay-input-val {
   border-radius: 3.75px;
   margin-right: 3.75px;
-  padding: 3.75px;
-  font-size: 7.5px;
+  padding: 6px;
+  font-size: 10.4px;
 }
 .lui-btn .lui-overlay-input-hint {
   position: absolute;
@@ -262,7 +268,7 @@ a {
   top: 0;
   height: 100%;
   width: 100%;
-  padding: 7.5px;
+  padding: 10.875px;
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
@@ -678,6 +684,83 @@ pre {
 .outline {
   border: 2px solid rgba(0, 0, 0, 0.5);
 }
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar::-webkit-scrollbar-corner {
+  display: none;
+}
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  display: none;
+}
+.scrollbar ::-webkit-scrollbar {
+  -webkit-appearance: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 12px;
+  height: 12px;
+}
+.scrollbar ::-webkit-scrollbar-corner {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.scrollbar ::-webkit-scrollbar-thumb {
+  border-radius: 0px;
+  background-color: #7F7F7F;
+  transition: background-color 0.3s ease;
+}
+.scrollbar ::-webkit-scrollbar-thumb:hover {
+  background-color: #8F8F8F;
+}
+.slim-scrollbar::-webkit-scrollbar {
+  -webkit-appearance: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 6px;
+  height: 6px;
+}
+.slim-scrollbar::-webkit-scrollbar-corner {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.slim-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 0px;
+  background-color: #7F7F7F;
+  transition: background-color 0.3s ease;
+}
+.slim-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #8F8F8F;
+}
+.slim-scrollbar ::-webkit-scrollbar {
+  -webkit-appearance: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 6px;
+  height: 6px;
+}
+.slim-scrollbar ::-webkit-scrollbar-corner {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.slim-scrollbar ::-webkit-scrollbar-thumb {
+  border-radius: 0px;
+  background-color: #7F7F7F;
+  transition: background-color 0.3s ease;
+}
+.slim-scrollbar ::-webkit-scrollbar-thumb:hover {
+  background-color: #8F8F8F;
+}
+.thick-scrollbar ::-webkit-scrollbar {
+  -webkit-appearance: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 12px;
+  height: 12px;
+}
+.thick-scrollbar ::-webkit-scrollbar-corner {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.thick-scrollbar ::-webkit-scrollbar-thumb {
+  border-radius: 0px;
+  background-color: #7F7F7F;
+  transition: background-color 0.3s ease;
+}
+.thick-scrollbar ::-webkit-scrollbar-thumb:hover {
+  background-color: #8F8F8F;
+}
 .full {
   width: 100%;
   height: 100%;
@@ -701,6 +784,12 @@ pre {
   font-family: "Open Sans", sans-serif;
   font-weight: 600;
 }
+.mid-reg-fat {
+  font-size: 19.5px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: normal;
+  font-weight: 600;
+}
 .mid-reg {
   font-size: 19.5px;
   font-family: "Open Sans", sans-serif;
@@ -710,6 +799,11 @@ pre {
   font-size: 19.5px;
   font-family: "Open Sans", sans-serif;
   font-weight: 600;
+}
+.reg-reg {
+  font-size: 13px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
 }
 .big-fat {
   font-size: 29.9px;
@@ -784,6 +878,11 @@ pre {
   font-family: "monor", monospace;
   font-size: 13px;
   font-weight: 600;
+}
+.small-reg {
+  font-size: 11.05px;
+  font-weight: normal;
+  font-family: "Open Sans", sans-serif;
 }
 .small-mono {
   font-size: 11.05px;
@@ -1000,15 +1099,25 @@ hr {
   width: 10px;
   margin: 0px 4px;
 }
+.slash {
+  opacity: 0.2;
+  padding: 0px 4px;
+}
+.small-circle {
+  height: 7.5px;
+  width: 7.5px;
+  border-radius: 3.75px;
+}
 .circle {
   height: 10px;
   width: 10px;
   border-radius: 5px;
   margin: 0px 4px;
 }
-.slash {
-  opacity: 0.2;
-  padding: 0px 4px;
+.big-circle {
+  height: 22.5px;
+  width: 22.5px;
+  border-radius: 11.25px;
 }
 .pin-box {
   font-size: 26px;
@@ -1094,6 +1203,21 @@ hr {
   pointer-events: none;
   height: 80px;
 }
+.noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
 .flex-start {
   align-items: flex-start;
 }
@@ -1106,16 +1230,13 @@ hr {
 
 .lui-hover-box-overlay {
   pointer-events: none;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   position: fixed;
   transform: translate(0);
   left: 0;
   top: 0;
   transition: opacity 0.2s ease, background 0.2s ease;
-}
-.lui-hover-box-overlay ::-webkit-scrollbar {
-  display: none;
 }
 .lui-hover-box-overlay .lui-hover-box {
   overflow: hidden;

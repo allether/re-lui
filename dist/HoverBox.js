@@ -11,6 +11,10 @@
 
   ({StyleContext} = require('./Style.coffee'));
 
+  Math.clamp = function(num, min, max) {
+    return Math.min(Math.max(num, min), max);
+  };
+
   HoverBox = class HoverBox extends Component {
     constructor() {
       super();
@@ -20,27 +24,30 @@
       this.onMouseLeave = this.onMouseLeave.bind(this);
       this.onClickOverlay = this.onClickOverlay.bind(this);
       this.setBackdropColor = this.setBackdropColor.bind(this);
-      this.state = {};
+      this.state = {
+        offset_left: 0,
+        offset_top: 0
+      };
     }
 
     onComponentDidMount() {}
 
     // @_overlay
     getBoxPosition() {
-      var align_x, align_y, bar_h, bar_w, bar_x, bar_y, bounding_rect, dim, el, get_rect, height, max_x, max_y, off_x, off_y, pad, pos_x, pos_y, snap_x, snap_y, width;
+      var align_x, align_y, bar_h, bar_w, bar_x, bar_y, btn, dim, el, get_rect, height, max_x, max_y, min_x, min_y, overlay_rect, pad, pad_top, pos_x, pos_y, snap_x, snap_y, width;
+      overlay_rect = this._overlay.getBoundingClientRect();
       el = this.props.getBindElement();
       dim = this.props.getSize();
       get_rect = el.getBoundingClientRect();
-      off_x = this.props.offset_x || 0;
-      off_y = this.props.offset_y || 0;
-      bounding_rect = {
-        top: get_rect.top + off_y,
-        bottom: get_rect.bottom + off_y,
-        left: get_rect.left + off_x,
-        right: get_rect.right + off_x,
+      btn = {
+        top: get_rect.top,
+        bottom: get_rect.bottom,
+        left: get_rect.left,
+        right: get_rect.right,
         width: get_rect.width,
         height: get_rect.height
       };
+      // log btn
       snap_y = this.props.snap_y;
       snap_x = this.props.snap_x;
       if (snap_x && snap_y) {
@@ -53,92 +60,71 @@
       align_y = this.props.align_y;
       pos_x = 0;
       pos_y = 0;
-      max_y = this.props.max_y || window.innerHeight;
-      max_x = this.props.max_x || window.innerWidth;
-      pad = 4;
+      // max_y = @props.max_y || window.innerHeight
+      // max_x = @props.max_x || window.innerWidth
+      pad = 8;
+      pad_top = DIM + 3.75 * 2;
+      height = Math.min(overlay_rect.bottom - overlay_rect.top - pad - pad_top, dim.height);
+      width = Math.min(overlay_rect.right - overlay_rect.left - pad * 2, dim.width);
+      // log overlay_rect.right-overlay_rect.left
       bar_x = 0;
       bar_y = 0;
       bar_w = 6;
       bar_h = 6;
+      min_x = overlay_rect.left + pad_top;
+      max_x = overlay_rect.right - pad - width;
+      min_y = overlay_rect.top + pad;
+      max_y = overlay_rect.bottom - pad - height;
       if (snap_y > 0) {
-        pos_y = bounding_rect.bottom + pad;
-        if (pos_y + dim.height > max_y) {
-          pos_y = bounding_rect.top - dim.height - pad;
-        }
+        pos_y = btn.bottom + pad;
       } else if (snap_y < 0) {
-        pos_y = bounding_rect.top - dim.height - pad;
-        if (pos_y < 0) {
-          pos_y = bounding_rect.bottom + pad;
-        }
+        pos_y = btn.top - height - pad;
+      } else if (align_y > 0) {
+        pos_y = btn.top;
       } else {
-        if (align_y > 0) {
-          pos_y = bounding_rect.top;
-          if (pos_y + dim.height > max_y) {
-            pos_y = bounding_rect.bottom - dim.height;
-          }
-        } else {
-          pos_y = bounding_rect.bottom - dim.height;
-          if (pos_y < 0) {
-            pos_y = bounding_rect.top;
-          }
-        }
+        pos_y = btn.bottom - height;
       }
       if (snap_x > 0) {
-        pos_x = bounding_rect.right + pad;
-        if (pos_x + dim.width > max_x) {
-          pos_x = bounding_rect.left - dim.width - pad;
-        }
+        pos_x = btn.right + pad;
       } else if (snap_x < 0) {
-        pos_x = bounding_rect.left - dim.width - pad;
-        if (pos_x < 0) {
-          pos_x = bounding_rect.right + pad;
-        }
+        pos_x = btn.left - width - pad;
+      } else if (align_x > 0) {
+        pos_x = btn.left;
       } else {
-        if (align_x > 0) {
-          pos_x = bounding_rect.left;
-          if (pos_x + dim.width > max_x) {
-            pos_x = bounding_rect.right - dim.width;
-          }
-        } else {
-          pos_x = bounding_rect.right - dim.width;
-          if (pos_x < 0) {
-            pos_x = bounding_rect.left;
-          }
-        }
+        pos_x = btn.right - width;
       }
-      if (pos_x >= bounding_rect.right) {
-        bar_x = bounding_rect.right + pad;
-        bar_y = bounding_rect.top + (bounding_rect.height / 2);
+      if (pos_x >= btn.right) {
+        bar_x = btn.right + pad;
+        bar_y = btn.top + (btn.height / 2);
         bar_h = 12;
         bar_w = 6;
-      } else if (pos_x + dim.width <= bounding_rect.left) {
-        bar_x = bounding_rect.left - pad;
-        bar_y = bounding_rect.top + (bounding_rect.height / 2);
+      } else if (pos_x + width <= btn.left) {
+        bar_x = btn.left - pad;
+        bar_y = btn.top + (btn.height / 2);
         bar_h = 12;
         bar_w = 6;
-      } else if (pos_y >= bounding_rect.bottom) {
-        bar_x = bounding_rect.left + (bounding_rect.width / 2);
-        bar_y = bounding_rect.bottom + pad;
+      } else if (pos_y >= btn.bottom) {
+        bar_x = btn.left + (btn.width / 2);
+        bar_y = btn.bottom + pad;
         bar_h = 6;
         bar_w = 12;
       } else {
-        bar_x = bounding_rect.left + (bounding_rect.width / 2);
-        bar_y = bounding_rect.top - pad;
+        bar_x = btn.left + (btn.width / 2);
+        bar_y = btn.top - pad;
         bar_h = 6;
         bar_w = 12;
       }
-      pad = 7.5;
-      height = Math.min(window.innerHeight - pad * 2, dim.height);
-      width = Math.min(window.innerWidth - pad * 2, dim.width);
-      pos_y = Math.max(pos_y, pad);
-      pos_y = Math.min(pos_y, window.innerHeight - pad - height);
-      pos_x = Math.max(pos_x, pad);
-      pos_x = Math.min(pos_x, window.innerWidth - pad - width);
+      pos_y = Math.clamp(pos_y, min_y, max_y) - overlay_rect.top;
+      pos_x = Math.clamp(pos_x, min_x, max_x) - overlay_rect.left;
       return {
+        // pos_y = Math.max(pos_y,pad)
+        // pos_y = Math.min(pos_y,window.innerHeight - pad - height)
+        // pos_x = Math.max(pos_x,pad)
+        // pos_x = Math.min(pos_x,window.innerWidth - pad - width)
         x: pos_x,
         y: pos_y,
-        bar_x: bar_x,
-        bar_y: bar_y,
+        bar_x: bar_x - overlay_rect.left,
+        bar_y: bar_y - overlay_rect.top,
         bar_w: bar_w,
         bar_h: bar_h,
         width: width,
@@ -149,6 +135,13 @@
     overlayRef(el) {
       boundMethodCheck(this, HoverBox);
       return this._overlay = el;
+    }
+
+    componentWillUpdate() {
+      var overlay_rect;
+      overlay_rect = this._overlay.getBoundingClientRect();
+      this.state.offset_left = overlay_rect.left;
+      return this.state.offset_top = overlay_rect.top;
     }
 
     componentDidUpdate(prev_props, prev_state) {
@@ -227,7 +220,7 @@
     }
 
     render() {
-      var base, base1, box, box_bar, overlay_background, pos;
+      var base, base1, box, box_bar, close_btn, overlay_background, pos;
       if (this.state.visible || this.props.visible) {
         pos = this.getBoxPosition();
       }
@@ -249,10 +242,10 @@
             height: pos.height,
             color: this.context.primary.color[0]
           }
-        }, typeof (base = this.props).renderContent === "function" ? base.renderContent() : void 0);
+        }, typeof (base = this.props).renderContent === "function" ? base.renderContent(this.state.offset_left, this.state.offset_top) : void 0);
       } else if (this.state.visible) {
         box = h('div', {
-          className: cn(css['hover-box'], css['modal-shadow'], this.props.scroll && css['hover-box-scroll']),
+          className: cn(css['hover-box'], css['modal-shadow'], css['hover-box-scroll']),
           onMouseEnter: this.props.box_pointer_events && this.onMouseEnter || null,
           onMouseLeave: this.props.box_pointer_events && this.onMouseLeave || null,
           style: {
@@ -264,7 +257,7 @@
             color: this.context.primary.color[0],
             background: this.context.primary.inv[0]
           }
-        }, typeof (base1 = this.props).renderContent === "function" ? base1.renderContent() : void 0);
+        }, typeof (base1 = this.props).renderContent === "function" ? base1.renderContent(this.state.offset_left, this.state.offset_top) : void 0);
       }
       if (this.props.visible || this.state.visible) {
         box_bar = h('div', {
@@ -278,6 +271,24 @@
           }
         });
       }
+      if (pos & this.props.show_close_btn) {
+        close_btn = h(Input, {
+          type: 'button',
+          i: 'close',
+          big: true,
+          onClick: this.props.onClickOverlay && this.onClickOverlay,
+          style: {
+            color: 'white',
+            position: 'fixed',
+            background: 'none',
+            left: pos.x + pos.width - DIM - 3.75,
+            top: pos.y - DIM - 3.75 - 3.75
+          },
+          i_style: {
+            color: 'white'
+          }
+        });
+      }
       return h('div', {
         ref: this.overlayRef,
         onClick: this.props.onClickOverlay && this.onClickOverlay,
@@ -285,11 +296,12 @@
         style: {
           background: overlay_background
         }
-      }, box, box_bar);
+      }, box, close_btn);
     }
 
   };
 
+  // box_bar
   HoverBox.contextType = StyleContext;
 
   module.exports = HoverBox;

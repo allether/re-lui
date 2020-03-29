@@ -398,18 +398,6 @@ class Input extends Component
 		
 		return bar_style
 
-	
-	# removeChip: (i)->
-		
-	# 	@forceUpdate()
-
-	# componentDidUpdate: ->
-
-
-	# 	if @props.type == 'date'
-	# 		if @_input.hasAttribute('data-has-picker') && !@_input.hasAttribute('data-has-listener')
-	# 			@_input.addEventListener 'change',@onInput
-	# 			@_input.setAttribute('data-has-listener','true')
 
 	
 	renderChips: (props,state)->
@@ -760,7 +748,7 @@ class Input extends Component
 			wrap_input_style = 
 				width: @props.width	
 
-		if input && props.type == 'text' || props.type == 'email' || props.type == 'phone'
+		if input && props.type == 'text' || props.type == 'email' || props.type == 'phone' || props.type == 'input'
 			input = h 'div',
 				className: css['input-wrap']
 				style:wrap_input_style
