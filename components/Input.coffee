@@ -26,8 +26,11 @@ class Input extends Component
 		@state=
 			value: ''
 			input_files: undefined
-		if props.type == 'color'
-			@state.is_dark = Color(props.value).isDark()
+		if props.type == 'color' && props.value
+			try
+				@state.is_dark = Color(props.value).isDark()
+			catch
+				@state.is_dark = false
 		@list = []
 	onInput: (e)=>
 		# log 'on input',e
@@ -156,8 +159,11 @@ class Input extends Component
 
 
 	componentDidUpdate: (props)->
-		if @props.type == 'color' && props.value != @props.value
-			is_dark = Color(props.value).isDark()
+		if @props.type == 'color' && props.value != @props.value && @props.value
+			try
+				is_dark = Color(props.value).isDark()
+			catch
+				is_dark = false
 			if is_dark != @state.is_dark
 				@setState
 					is_dark: is_dark

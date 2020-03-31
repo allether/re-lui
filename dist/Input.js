@@ -57,8 +57,12 @@
         value: '',
         input_files: void 0
       };
-      if (props.type === 'color') {
-        this.state.is_dark = Color(props.value).isDark();
+      if (props.type === 'color' && props.value) {
+        try {
+          this.state.is_dark = Color(props.value).isDark();
+        } catch (error) {
+          this.state.is_dark = false;
+        }
       }
       this.list = [];
     }
@@ -240,8 +244,12 @@
 
     componentDidUpdate(props) {
       var is_dark;
-      if (this.props.type === 'color' && props.value !== this.props.value) {
-        is_dark = Color(props.value).isDark();
+      if (this.props.type === 'color' && props.value !== this.props.value && this.props.value) {
+        try {
+          is_dark = Color(props.value).isDark();
+        } catch (error) {
+          is_dark = false;
+        }
         if (is_dark !== this.state.is_dark) {
           this.setState({
             is_dark: is_dark

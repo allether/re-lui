@@ -492,6 +492,7 @@ HoverBox = class HoverBox extends Component {
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onClickOverlay = this.onClickOverlay.bind(this);
     this.setBackdropColor = this.setBackdropColor.bind(this);
+    this.refBox = this.refBox.bind(this);
     this.state = {
       offset_left: 0,
       offset_top: 0
@@ -605,7 +606,7 @@ HoverBox = class HoverBox extends Component {
     return this._overlay = el;
   }
 
-  componentWillUpdate() {
+  UNSAFE_componentWillUpdate() {
     var overlay_rect;
     overlay_rect = this._overlay.getBoundingClientRect();
     this.state.offset_left = overlay_rect.left;
@@ -673,8 +674,14 @@ HoverBox = class HoverBox extends Component {
   }
 
   onClickOverlay(e) {
+    var ref;
     boundMethodCheck(this, HoverBox);
     if (e.target === this._overlay) {
+      if ((ref = this._box) != null) {
+        if (typeof ref.onClose === "function") {
+          ref.onClose(e);
+        }
+      }
       return this.props.onClickOverlay(e);
     }
   }
@@ -685,6 +692,11 @@ HoverBox = class HoverBox extends Component {
       return 'none';
     }
     return Color(bg).alpha(alpha).string();
+  }
+
+  refBox(el) {
+    boundMethodCheck(this, HoverBox);
+    return this._box = el;
   }
 
   render() {
@@ -710,7 +722,7 @@ HoverBox = class HoverBox extends Component {
           height: pos.height,
           color: this.context.primary.color[0]
         }
-      }, typeof (base = this.props).renderContent === "function" ? base.renderContent(this.state.offset_left, this.state.offset_top) : void 0);
+      }, typeof (base = this.props).renderContent === "function" ? base.renderContent(this.state.offset_left, this.state.offset_top, this.refBox) : void 0);
     } else if (this.state.visible) {
       box = h('div', {
         className: cn(css['hover-box'], css['modal-shadow'], css['hover-box-scroll']),
@@ -725,7 +737,7 @@ HoverBox = class HoverBox extends Component {
           color: this.context.primary.color[0],
           background: this.context.primary.inv[0]
         }
-      }, typeof (base1 = this.props).renderContent === "function" ? base1.renderContent(this.state.offset_left, this.state.offset_top) : void 0);
+      }, typeof (base1 = this.props).renderContent === "function" ? base1.renderContent(this.state.offset_left, this.state.offset_top, this.refBox) : void 0);
     }
     if (this.props.visible || this.state.visible) {
       box_bar = h('div', {
@@ -759,7 +771,17 @@ HoverBox = class HoverBox extends Component {
     }
     return h('div', {
       ref: this.overlayRef,
-      onClick: this.props.onClickOverlay && this.onClickOverlay,
+      onMouseDown: (e) => {
+        return this.setState({
+          down_target: e.target
+        });
+      },
+      onMouseUp: (e) => {
+        if (e.target !== this.state.down_target) {
+          return;
+        }
+        return this.props.onClickOverlay && this.onClickOverlay(e);
+      },
       className: cn(css['hover-box-overlay'], this.state.visible && this.props.onClickOverlay && css['visible']),
       style: {
         background: overlay_background
@@ -769,7 +791,6 @@ HoverBox = class HoverBox extends Component {
 
 };
 
-// box_bar
 HoverBox.contextType = StyleContext;
 
 module.exports = HoverBox;
@@ -853,8 +874,12 @@ Input = class Input extends Component {
       value: '',
       input_files: void 0
     };
-    if (props.type === 'color') {
-      this.state.is_dark = Color(props.value).isDark();
+    if (props.type === 'color' && props.value) {
+      try {
+        this.state.is_dark = Color(props.value).isDark();
+      } catch (error) {
+        this.state.is_dark = false;
+      }
     }
     this.list = [];
   }
@@ -1036,8 +1061,12 @@ Input = class Input extends Component {
 
   componentDidUpdate(props) {
     var is_dark;
-    if (this.props.type === 'color' && props.value !== this.props.value) {
-      is_dark = Color(props.value).isDark();
+    if (this.props.type === 'color' && props.value !== this.props.value && this.props.value) {
+      try {
+        is_dark = Color(props.value).isDark();
+      } catch (error) {
+        is_dark = false;
+      }
       if (is_dark !== this.state.is_dark) {
         this.setState({
           is_dark: is_dark
@@ -2831,6 +2860,145 @@ module.exports = {"center":"lui-center","section":"lui-section","noselect":"lui-
 
 /***/ }),
 
+/***/ "./components/TriangleLoader.coffee":
+/*!******************************************!*\
+  !*** ./components/TriangleLoader.coffee ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var PATH_H, PATH_W, StyleContext, TriangleLoader,
+  boundMethodCheck = function(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new Error('Bound instance method accessed before binding'); } };
+
+PATH_W = 35.24;
+
+PATH_H = 39;
+
+({StyleContext} = __webpack_require__(/*! ./Style.coffee */ "./components/Style.coffee"));
+
+TriangleLoader = class TriangleLoader extends Component {
+  constructor(props) {
+    super(props);
+    // stopAll: =>
+    // 	clearInterval(@_rotate)
+    // 	clearTimeout(@_stop_timer)
+
+    // 	@_stop_timer = undefined 
+    // 	@_rotate = undefined
+    this.rotate = this.rotate.bind(this);
+    this.svgRef = this.svgRef.bind(this);
+    this.state = {
+      rotation: 120,
+      dir: 1
+    };
+  }
+
+  componentDidMount() {
+    return this.checkState();
+  }
+
+  componentWillUnmount() {
+    return this.stopRotate();
+  }
+
+  checkState() {
+    if (!this.props.is_loading && this._rotate) {
+      this.stopRotate();
+    }
+    if (this.props.is_loading && !this._rotate) {
+      return this.startRotate();
+    }
+  }
+
+  componentDidUpdate(props) {
+    // log @props.is_loading,props.is_loading
+    if (this.props.is_loading !== props.is_loading) {
+      return this.checkState();
+    }
+  }
+
+  startRotate() {
+    this._rotate = setInterval(this.rotate, 400);
+    // log 'START ROTATE'
+    return this.rotate();
+  }
+
+  stopRotate() {
+    clearInterval(this._rotate);
+    return this._rotate = void 0;
+  }
+
+  rotate() {
+    boundMethodCheck(this, TriangleLoader);
+    // log @state.rotation
+    // if !@_svg
+    // 	clearInterval(@_rotate)
+    // 	@_rotate = undefined
+    // 	return false
+    return this.setState({
+      dir: this.state.dir * -1,
+      rotation: this.props.start_rotation + (this.state.rotation + 120 * this.state.dir)
+    });
+  }
+
+  svgRef(el) {
+    boundMethodCheck(this, TriangleLoader);
+    return this._svg = el;
+  }
+
+  render() {
+    var cx, cy, opacity, rot, scale;
+    // log (@state.rotation)
+    scale = (this.props.dim / 35.24) * .4;
+    rot = this.state.rotation;
+    cx = (this.props.dim / 2) / scale - PATH_W / 2;
+    cy = (this.props.dim / 2) / scale - PATH_H / 2;
+    if (this.props.opacity != null) {
+      opacity = this.props.opacity;
+    } else if (this._rotate) {
+      opacity = 1;
+    } else {
+      opacity = .5;
+    }
+    
+    // log @props.is_loading
+    return h('svg', {
+      height: this.props.dim,
+      width: this.props.dim,
+      style: {
+        width: this.props.dim,
+        height: this.props.dim,
+        pointerEvents: 'none',
+        transform: `rotate(${rot}deg)`,
+        transition: 'opacity 0.3s ease, transform 0.3s ease',
+        opacity: opacity
+      },
+      ref: this.svgRef
+    }, h('path', {
+      d: 'M12.8501 2.91051C14.9747 -0.769488 20.2863 -0.769487 22.411 2.91051L34.5007 23.8505C36.6253 27.5305 33.9695 32.1305 29.7202 32.1305H5.54081C1.29151 32.1305 -1.3643 27.5305 0.760348 23.8505L12.8501 2.91051Z',
+      fill: this.props.color || this.context.primary.color[4],
+      // opacity: @props.is_loading && 1 || 0.5
+      transition: 'opacity',
+      // transition: 'transform 0.3s ease'
+      transform: `scale(${scale}) translate(${cx} ${cy}) `
+    }));
+  }
+
+};
+
+TriangleLoader.defaultProps = {
+  color: 'black',
+  dim: 30,
+  start_rotation: 0
+};
+
+TriangleLoader.contextType = StyleContext;
+
+module.exports = TriangleLoader;
+
+
+/***/ }),
+
 /***/ "./components/index.coffee":
 /*!*********************************!*\
   !*** ./components/index.coffee ***!
@@ -2838,7 +3006,7 @@ module.exports = {"center":"lui-center","section":"lui-section","noselect":"lui-
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var AlertDot, AlertOverlay, Bar, BarSeperator, Chip, HoverBox, Input, Menu, MenuTab, Overlay, Section, SquareLoader, Style, StyleContext, generateStyle;
+var AlertDot, AlertOverlay, Bar, BarSeperator, Chip, HoverBox, Input, Menu, MenuTab, Overlay, Section, SquareLoader, Style, StyleContext, TriangleLoader, generateStyle;
 
 ({Style, StyleContext, generateStyle} = __webpack_require__(/*! ./Style */ "./components/Style.coffee"));
 
@@ -2859,6 +3027,8 @@ Overlay = __webpack_require__(/*! ./Overlay */ "./components/Overlay.coffee");
 AlertOverlay = __webpack_require__(/*! ./AlertOverlay */ "./components/AlertOverlay.coffee");
 
 SquareLoader = __webpack_require__(/*! ./SquareLoader */ "./components/SquareLoader.coffee");
+
+TriangleLoader = __webpack_require__(/*! ./TriangleLoader */ "./components/TriangleLoader.coffee");
 
 Chip = __webpack_require__(/*! ./Chip */ "./components/Chip.coffee");
 
@@ -2895,6 +3065,8 @@ module.exports.Chip = Chip;
 module.exports.BarSeperator = BarSeperator;
 
 module.exports.HoverBox = HoverBox;
+
+module.exports.TriangleLoader = TriangleLoader;
 
 
 /***/ }),

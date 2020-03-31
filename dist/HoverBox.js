@@ -24,6 +24,7 @@
       this.onMouseLeave = this.onMouseLeave.bind(this);
       this.onClickOverlay = this.onClickOverlay.bind(this);
       this.setBackdropColor = this.setBackdropColor.bind(this);
+      this.refBox = this.refBox.bind(this);
       this.state = {
         offset_left: 0,
         offset_top: 0
@@ -137,7 +138,7 @@
       return this._overlay = el;
     }
 
-    componentWillUpdate() {
+    UNSAFE_componentWillUpdate() {
       var overlay_rect;
       overlay_rect = this._overlay.getBoundingClientRect();
       this.state.offset_left = overlay_rect.left;
@@ -205,8 +206,14 @@
     }
 
     onClickOverlay(e) {
+      var ref;
       boundMethodCheck(this, HoverBox);
       if (e.target === this._overlay) {
+        if ((ref = this._box) != null) {
+          if (typeof ref.onClose === "function") {
+            ref.onClose(e);
+          }
+        }
         return this.props.onClickOverlay(e);
       }
     }
@@ -217,6 +224,11 @@
         return 'none';
       }
       return Color(bg).alpha(alpha).string();
+    }
+
+    refBox(el) {
+      boundMethodCheck(this, HoverBox);
+      return this._box = el;
     }
 
     render() {
@@ -242,7 +254,7 @@
             height: pos.height,
             color: this.context.primary.color[0]
           }
-        }, typeof (base = this.props).renderContent === "function" ? base.renderContent(this.state.offset_left, this.state.offset_top) : void 0);
+        }, typeof (base = this.props).renderContent === "function" ? base.renderContent(this.state.offset_left, this.state.offset_top, this.refBox) : void 0);
       } else if (this.state.visible) {
         box = h('div', {
           className: cn(css['hover-box'], css['modal-shadow'], css['hover-box-scroll']),
@@ -257,7 +269,7 @@
             color: this.context.primary.color[0],
             background: this.context.primary.inv[0]
           }
-        }, typeof (base1 = this.props).renderContent === "function" ? base1.renderContent(this.state.offset_left, this.state.offset_top) : void 0);
+        }, typeof (base1 = this.props).renderContent === "function" ? base1.renderContent(this.state.offset_left, this.state.offset_top, this.refBox) : void 0);
       }
       if (this.props.visible || this.state.visible) {
         box_bar = h('div', {
@@ -291,7 +303,17 @@
       }
       return h('div', {
         ref: this.overlayRef,
-        onClick: this.props.onClickOverlay && this.onClickOverlay,
+        onMouseDown: (e) => {
+          return this.setState({
+            down_target: e.target
+          });
+        },
+        onMouseUp: (e) => {
+          if (e.target !== this.state.down_target) {
+            return;
+          }
+          return this.props.onClickOverlay && this.onClickOverlay(e);
+        },
         className: cn(css['hover-box-overlay'], this.state.visible && this.props.onClickOverlay && css['visible']),
         style: {
           background: overlay_background
@@ -301,7 +323,6 @@
 
   };
 
-  // box_bar
   HoverBox.contextType = StyleContext;
 
   module.exports = HoverBox;

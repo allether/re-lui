@@ -157,7 +157,7 @@ class HoverBox extends Component
 	overlayRef: (el)=>
 		@_overlay = el
 
-	componentWillUpdate: ->
+	UNSAFE_componentWillUpdate: ->
 		overlay_rect = @_overlay.getBoundingClientRect()
 
 		@state.offset_left = overlay_rect.left
@@ -216,10 +216,11 @@ class HoverBox extends Component
 
 		@resetHideTimer()
 		@forceUpdate()
-		
+	
 
 	onClickOverlay: (e)=>
 		if e.target == @_overlay
+			@_box?.onClose?(e)
 			@props.onClickOverlay(e)
 	
 
@@ -227,6 +228,9 @@ class HoverBox extends Component
 		if bg == 'none'
 			return 'none'
 		return Color(bg).alpha(alpha).string()
+
+	refBox: (el)=>
+		@_box = el
 
 
 	render: ->
@@ -251,7 +255,7 @@ class HoverBox extends Component
 					width: pos.width
 					height: pos.height
 					color: @context.primary.color[0]
-				@props.renderContent?(@state.offset_left,@state.offset_top)
+				@props.renderContent?(@state.offset_left,@state.offset_top,@refBox)
 
 		else if @state.visible
 			box = h 'div',
@@ -266,7 +270,7 @@ class HoverBox extends Component
 					height: pos.height
 					color: @context.primary.color[0]
 					background: @context.primary.inv[0]
-				@props.renderContent?(@state.offset_left,@state.offset_top)
+				@props.renderContent?(@state.offset_left,@state.offset_top,@refBox)
 
 
 		if @props.visible || @state.visible
@@ -296,16 +300,20 @@ class HoverBox extends Component
 
 		h 'div',
 			ref: @overlayRef
-			onClick: @props.onClickOverlay && @onClickOverlay
+			onMouseDown: (e)=>
+				@setState
+					down_target: e.target
+			onMouseUp: (e)=>
+				if e.target != @state.down_target
+					return
+				@props.onClickOverlay && @onClickOverlay(e)
+				
 			className: cn css['hover-box-overlay'],@state.visible && @props.onClickOverlay && css['visible']
 			style:
 				background: overlay_background
 			box
 			close_btn
-			# box_bar
-
 
 
 HoverBox.contextType = StyleContext
-
 module.exports = HoverBox
