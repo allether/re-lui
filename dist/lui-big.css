@@ -180,7 +180,7 @@ a {
 }
 .lui-btn .lui-top-label {
   transition: opacity 0.3s ease;
-  opacity: 0;
+  opacity: 1;
   padding: 0;
   margin: 0;
   position: absolute;
@@ -324,6 +324,24 @@ a {
   opacity: 0;
   z-index: 1;
   -webkit-appearance: none;
+}
+.lui-btn input[type="range"],
+.lui-btn select[type="range"],
+.lui-btn .lui-input[type="range"] {
+  border-radius: 11.25px;
+  height: 11.25px;
+}
+.lui-btn input[type="range"]::-webkit-slider-thumb,
+.lui-btn select[type="range"]::-webkit-slider-thumb,
+.lui-btn .lui-input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  /* Override default look */
+  appearance: none;
+  background: cyan;
+  cursor: grab;
+  height: 22.5px;
+  width: 22.5px;
+  border-radius: 11.25px;
 }
 .lui-btn select {
   min-width: auto;
@@ -895,6 +913,9 @@ pre {
   font-size: 17px;
   font-weight: 600;
   font-family: "monor", monospace;
+}
+.all-caps {
+  text-transform: uppercase;
 }
 .margin-left {
   padding-left: 5.625px;
