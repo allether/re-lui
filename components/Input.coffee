@@ -6,19 +6,21 @@ AlertDot = require './AlertDot.coffee'
 CircleToggle = require './CircleToggle.coffee'
 {StyleContext} = require './Style.coffee'
 
+
 isTouch = require './isTouch.js'
+
 
 IS_TOUCH  = isTouch()
 
 
-# TOUCH_X = 0
 TOUCH_V = 0
 window.addEventListener 'touchmove', (e)->
 	TOUCH_V = Date.now()
-	# log TOUCH_X,TOUCH_Y
+
 
 window.addEventListener 'scroll', (e)->
 	TOUCH_V = Date.now()
+
 
 class Input extends Component
 	constructor: (props)->
@@ -506,7 +508,7 @@ class Input extends Component
 		if props.type == 'checkbox'
 
 			if props.checkbox_type == 'circle'
-				if @props.checked
+				if @props.checked || @props.select
 					if @props.btn_type == 'primary'
 						toggle_circle_fill_color = @context.secondary.true
 					else
@@ -518,7 +520,7 @@ class Input extends Component
 				toggle = h CircleToggle,
 					background: bar_style.background
 					color: toggle_circle_fill_color
-					is_selected: props.checked
+					is_selected: props.checked || props.select
 			else
 				toggle_bar_on_style = 
 					background: @context.secondary.true
@@ -540,7 +542,7 @@ class Input extends Component
 				toggle = h Slide,
 					className: css['toggle']
 					slide: yes
-					pos: if props.checked then 0 else 2
+					pos: if (props.checked || props.select) then 0 else 2
 					h Slide,
 						className: css['toggle-on']
 						style: toggle_bar_on_style
@@ -643,11 +645,19 @@ class Input extends Component
 				onBlur: @onBlur
 				value: value || ''
 
-			if @props.autoheight
+			if props.type == 'range'
+				input_props.style =
+					background: button_style.color
+					borderRadius: DIM*1/8
+
+
+			else if @props.autoheight
 				input_props.style =
 					height: 'auto'
 					whiteSpace: 'normal'
 					maxHeight: 'auto'
+
+
 
 			if props.type == 'date' && !props.placeholder
 				input_props.placeholder = 'mm/dd/yyyy'
@@ -667,6 +677,8 @@ class Input extends Component
 				input = h 'select',input_props,props.options
 			else
 				input = h 'input',input_props
+
+
 
 
 		# log @props.autofill

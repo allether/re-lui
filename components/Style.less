@@ -189,7 +189,7 @@ a{
 	}
 	.top-label{
 		transition: opacity @ease;
-		opacity: 0;
+		opacity: 1;
 		padding: 0;
 		margin: 0;
 		position: absolute;
@@ -339,6 +339,21 @@ a{
 			opacity: 0;
 			z-index: 1;
 			-webkit-appearance: none;
+		}
+		&[type="range"]{
+			border-radius: @border-radius*2;
+			height: @border-radius*2;
+		}
+		&[type="range"]::-webkit-slider-thumb{
+			-webkit-appearance: none; /* Override default look */
+			appearance: none;
+			background: cyan;
+			cursor: grab;
+			height: @border-radius*4;
+			width: @border-radius*4;
+			border-radius: @border-radius*2;
+
+
 		}
 	}
 	select{

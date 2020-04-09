@@ -838,14 +838,12 @@ isTouch = __webpack_require__(/*! ./isTouch.js */ "./components/isTouch.js");
 
 IS_TOUCH = isTouch();
 
-// TOUCH_X = 0
 TOUCH_V = 0;
 
 window.addEventListener('touchmove', function(e) {
   return TOUCH_V = Date.now();
 });
 
-// log TOUCH_X,TOUCH_Y
 window.addEventListener('scroll', function(e) {
   return TOUCH_V = Date.now();
 });
@@ -1402,7 +1400,7 @@ Input = class Input extends Component {
     // input_hidden = false
     if (props.type === 'checkbox') {
       if (props.checkbox_type === 'circle') {
-        if (this.props.checked) {
+        if (this.props.checked || this.props.select) {
           if (this.props.btn_type === 'primary') {
             toggle_circle_fill_color = this.context.secondary.true;
           } else {
@@ -1416,7 +1414,7 @@ Input = class Input extends Component {
         toggle = h(CircleToggle, {
           background: bar_style.background,
           color: toggle_circle_fill_color,
-          is_selected: props.checked
+          is_selected: props.checked || props.select
         });
       } else {
         toggle_bar_on_style = {
@@ -1444,7 +1442,7 @@ Input = class Input extends Component {
         toggle = h(Slide, {
           className: css['toggle'],
           slide: true,
-          pos: props.checked ? 0 : 2
+          pos: (props.checked || props.select) ? 0 : 2
         }, h(Slide, {
           className: css['toggle-on'],
           style: toggle_bar_on_style,
@@ -1548,7 +1546,12 @@ Input = class Input extends Component {
         onBlur: this.onBlur,
         value: value || ''
       };
-      if (this.props.autoheight) {
+      if (props.type === 'range') {
+        input_props.style = {
+          background: button_style.color,
+          borderRadius: DIM * 1 / 8
+        };
+      } else if (this.props.autoheight) {
         input_props.style = {
           height: 'auto',
           whiteSpace: 'normal',
