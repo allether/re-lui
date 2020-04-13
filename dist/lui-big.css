@@ -328,8 +328,8 @@ a {
 .lui-btn input[type="range"],
 .lui-btn select[type="range"],
 .lui-btn .lui-input[type="range"] {
-  border-radius: 11.25px;
-  height: 11.25px;
+  border-radius: 5.625px;
+  height: 5.625px;
 }
 .lui-btn input[type="range"]::-webkit-slider-thumb,
 .lui-btn select[type="range"]::-webkit-slider-thumb,
@@ -337,7 +337,8 @@ a {
   -webkit-appearance: none;
   /* Override default look */
   appearance: none;
-  background: cyan;
+  background: white;
+  border: 3px solid black;
   cursor: grab;
   height: 22.5px;
   width: 22.5px;

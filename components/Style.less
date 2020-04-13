@@ -341,13 +341,14 @@ a{
 			-webkit-appearance: none;
 		}
 		&[type="range"]{
-			border-radius: @border-radius*2;
-			height: @border-radius*2;
+			border-radius: @border-radius;
+			height: @border-radius;
 		}
 		&[type="range"]::-webkit-slider-thumb{
 			-webkit-appearance: none; /* Override default look */
 			appearance: none;
-			background: cyan;
+			background: white;
+			border: 3px solid black;
 			cursor: grab;
 			height: @border-radius*4;
 			width: @border-radius*4;

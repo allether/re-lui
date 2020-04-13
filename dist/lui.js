@@ -725,7 +725,7 @@ HoverBox = class HoverBox extends Component {
       }, typeof (base = this.props).renderContent === "function" ? base.renderContent(this.state.offset_left, this.state.offset_top, this.refBox) : void 0);
     } else if (this.state.visible) {
       box = h('div', {
-        className: cn(css['hover-box'], css['modal-shadow'], css['hover-box-scroll']),
+        className: cn(css['hover-box'], css['modal-shadow'], this.props.scroll && css['hover-box-scroll']),
         onMouseEnter: this.props.box_pointer_events && this.onMouseEnter || null,
         onMouseLeave: this.props.box_pointer_events && this.onMouseLeave || null,
         style: {

@@ -259,7 +259,7 @@ class HoverBox extends Component
 
 		else if @state.visible
 			box = h 'div',
-				className: cn css['hover-box'],css['modal-shadow'],css['hover-box-scroll']
+				className: cn css['hover-box'],css['modal-shadow'],@props.scroll && css['hover-box-scroll']
 				onMouseEnter: @props.box_pointer_events && @onMouseEnter || null
 				onMouseLeave: @props.box_pointer_events && @onMouseLeave || null
 				style:
