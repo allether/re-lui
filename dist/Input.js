@@ -858,6 +858,7 @@
         style.marginBottom = this.props.margin_bottom && DIM * 1 / 8 || '0px';
         style.marginTop = this.props.margin_top && DIM * 1 / 8 || '0px';
       }
+      // log "FULL",@props.full
       outer_props = {
         onClick: !IS_TOUCH && this.onClick || void 0,
         htmlFor: input_name,
@@ -866,7 +867,7 @@
         onTouchEnd: IS_TOUCH && this.onTouchEnd || void 0,
         onMouseEnter: !IS_TOUCH && this.onMouseEnter || void 0,
         onMouseLeave: !IS_TOUCH && this.onMouseLeave || void 0,
-        className: cn(IS_TOUCH && (props.type === 'button' || props.type === 'label') && css['noselect'], props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && !this.props.children && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className, props.top_label && css['top-label-btn']),
+        className: cn(IS_TOUCH && (props.type === 'button' || props.type === 'label') && css['noselect'], props.hint && css['trans_fixed'], props.type === 'textarea' && css['btn-textarea'], props.big && css['btn-big'], css['btn'], !label && icon && !this.props.children && props.type === 'button' && css['btn-icon-square'], props.disabled && css['disabled'], props.type === 'select' && css['type-select'], props.className, props.top_label && css['top-label-btn'], props.full && css['input-full-w']),
         href: props.href,
         style: style
       };
