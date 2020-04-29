@@ -27,6 +27,8 @@ step_mix = (a,b,count,step_fn)->
 	c2 = Color(b)
 	for i in [0...count]
 		steps.push Color(c).mix(c2,step_fn(i,count)).hex()
+	steps["-1"] = Color(c).mix(c2,-0.07).hex()
+	
 	return steps
 
 

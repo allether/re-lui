@@ -35,6 +35,7 @@
     for (i = j = 0, ref = count; (0 <= ref ? j < ref : j > ref); i = 0 <= ref ? ++j : --j) {
       steps.push(Color(c).mix(c2, step_fn(i, count)).hex());
     }
+    steps["-1"] = Color(c).mix(c2, -0.07).hex();
     return steps;
   };
 
