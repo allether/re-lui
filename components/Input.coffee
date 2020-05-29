@@ -45,9 +45,19 @@ class Input extends Component
 				@setState 
 					input_files: input_files
 			else if @props.type == 'list'
-				if @state.list_chip_value
-					@props.onInput(@state.list_chip_value+','+e.target.value)
-					return
+
+				chips = @props.chips || []
+				
+				if e.target.value[e.target.value.length-1] == ','
+					chips.push(e.target.value.substring(0,e.target.value.length-2))
+					# @state.
+				else if !chips.length
+					chips.push e.target.value
+				else
+					chips[chips.length-1] = e.target.value
+				
+				@props.onInput(chips)
+				return
 			@props.onInput(e)
 		if @props.onInputValue?
 			@props.onInputValue(e.target.value)
@@ -107,6 +117,8 @@ class Input extends Component
 		# log e.key
 		if e.key == 'Enter' || (e.key == 'Tab' && @props.autofill?)
 			@onEnter(e)
+		
+
 	
 	onEnter: (e)=>
 		if @props.type == 'color'
@@ -288,25 +300,20 @@ class Input extends Component
 		return btn_style
 
 
-	getChipStyle: (props,state,offset)->
-		offset = offset || 0
-		value = if props.value? then props.value else state.value
-		select = props.select
-		focus = state.focus
+	getChipStyle: ()->
 
 		btn_style = {}
 
-		if props.btn_type == 'primary'
+		if @props.btn_type == 'primary'
 			btn_style.color = @context.secondary.color[0]
 			btn_style.background = @context.secondary.inv[2]
 		
 	
-		else if props.btn_type == 'flat'
+		else if @props.btn_type == 'flat'
 			
 			btn_style.color = @context.primary.color[0]
 			btn_style.background = @context.primary.inv[2]
 				
-		
 		else
 			
 			btn_style.color = @context.primary.inv[0]
@@ -408,26 +415,21 @@ class Input extends Component
 
 
 	
-	renderChips: (props,state)->
-		value = if props.value? then props.value else state.value
-		if !value
-			value = ''
+	renderChips: ()->
 
-		chips = value.split(',') || []
-		@state.list_value = chips.pop() || ''
-		chip_style = @getChipStyle(props,state,1)
-		items = chips.map (item,i)=>
+		if @props.chips?.length
+			chips = @props.chips.slice(0,@props.chips.length-1)
+		else
+			chips = []
+		 
+		return chips.map (item,i)=>
 			if @props.chipRenderer
 				item = @props.chipRenderer(item)
 			h 'div',
 				key: 'chip-'+i
 				className: css['chip']
-				# onClick: @removeChip.bind(@,i)
-				style: chip_style
+				style: @getChipStyle()
 				item
-		@state.list_chip_value = chips.join(',')
-
-		return items
 
 
 	render: ->
@@ -599,9 +601,8 @@ class Input extends Component
 
 
 		else if props.type == 'list'
-			chips = @renderChips(props,state)
-			# log @state.list_value
-			value = @state.list_value
+			chips = @renderChips()
+			value = @state.chip_input_value
 
 		else if props.type == 'file'
 			if @state.input_files && @state.input_files.length

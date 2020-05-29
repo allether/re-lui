@@ -883,7 +883,7 @@ Input = class Input extends Component {
   }
 
   onInput(e) {
-    var file, input_files, j, len, ref;
+    var chips, file, input_files, j, len, ref;
     boundMethodCheck(this, Input);
     // log 'on input',e
     if (this.props.onInput) {
@@ -899,10 +899,16 @@ Input = class Input extends Component {
           input_files: input_files
         });
       } else if (this.props.type === 'list') {
-        if (this.state.list_chip_value) {
-          this.props.onInput(this.state.list_chip_value + ',' + e.target.value);
-          return;
+        chips = this.props.chips || [];
+        if (e.target.value[e.target.value.length - 1] === ',') {
+          chips.push(e.target.value.substring(0, e.target.value.length - 2));
+        } else if (!chips.length) {
+          chips.push(e.target.value);
+        } else {
+          chips[chips.length - 1] = e.target.value;
         }
+        this.props.onInput(chips);
+        return;
       }
       this.props.onInput(e);
     }
@@ -1182,17 +1188,13 @@ Input = class Input extends Component {
     return btn_style;
   }
 
-  getChipStyle(props, state, offset) {
-    var btn_style, focus, select, value;
-    offset = offset || 0;
-    value = props.value != null ? props.value : state.value;
-    select = props.select;
-    focus = state.focus;
+  getChipStyle() {
+    var btn_style;
     btn_style = {};
-    if (props.btn_type === 'primary') {
+    if (this.props.btn_type === 'primary') {
       btn_style.color = this.context.secondary.color[0];
       btn_style.background = this.context.secondary.inv[2];
-    } else if (props.btn_type === 'flat') {
+    } else if (this.props.btn_type === 'flat') {
       btn_style.color = this.context.primary.color[0];
       btn_style.background = this.context.primary.inv[2];
     } else {
@@ -1293,28 +1295,23 @@ Input = class Input extends Component {
     return bar_style;
   }
 
-  renderChips(props, state) {
-    var chip_style, chips, items, value;
-    value = props.value != null ? props.value : state.value;
-    if (!value) {
-      value = '';
+  renderChips() {
+    var chips, ref;
+    if ((ref = this.props.chips) != null ? ref.length : void 0) {
+      chips = this.props.chips.slice(0, this.props.chips.length - 1);
+    } else {
+      chips = [];
     }
-    chips = value.split(',') || [];
-    this.state.list_value = chips.pop() || '';
-    chip_style = this.getChipStyle(props, state, 1);
-    items = chips.map((item, i) => {
+    return chips.map((item, i) => {
       if (this.props.chipRenderer) {
         item = this.props.chipRenderer(item);
       }
       return h('div', {
         key: 'chip-' + i,
         className: css['chip'],
-        // onClick: @removeChip.bind(@,i)
-        style: chip_style
+        style: this.getChipStyle()
       }, item);
     });
-    this.state.list_chip_value = chips.join(',');
-    return items;
   }
 
   render() {
@@ -1500,9 +1497,8 @@ Input = class Input extends Component {
         }
       }, props.value));
     } else if (props.type === 'list') {
-      chips = this.renderChips(props, state);
-      // log @state.list_value
-      value = this.state.list_value;
+      chips = this.renderChips();
+      value = this.state.chip_input_value;
     } else if (props.type === 'file') {
       if (this.state.input_files && this.state.input_files.length) {
         label2 = value && h('div', {

@@ -281,6 +281,7 @@ class Demo extends Component
 	constructor: (props)->
 		super(props)
 		@state = 
+			list_chips: []
 			test:true
 			btn_select: false
 			bar_big: yes
@@ -343,9 +344,10 @@ class Demo extends Component
 		@setState()
 
 
-	onListInput: (value)=>
+	onListInput: (list_chips)=>
+		log list_chips
 		@setState
-			list_value: value
+			list_chips: list_chips
 
 
 	showOverlay: =>
@@ -585,12 +587,14 @@ class Demo extends Component
 					h Input,
 						btn_type: 'primary'
 						type: 'list'
-						value: state.list_value
+						chips: state.list_chips
 						onInput: @onListInput
 						placeholder: 'comma seperated list'
 					h Input,
 						type: 'list'
 						placeholder: 'comma seperated list'
+						chips: state.list_chips
+						onInput: @onListInput
 					
 					h Chip,
 						btn_type: 'primary'
