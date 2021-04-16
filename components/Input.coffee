@@ -570,7 +570,15 @@ class Input extends Component
 				onClick: @props.onIconClick
 				className: cn( props.i_class || 'material-icons',!@props.label && css['label'])
 				style: icon_style
-				props.i 
+				props.i
+
+		if props.icon_img
+			icon_img = h 'img',
+				onClick: @props.onIconClick
+				style:
+					height: 40
+					width: 40
+				src: props.icon_img
 
 
 		if props.label
@@ -825,6 +833,7 @@ class Input extends Component
 			toggle
 			chips
 			icon
+			icon_img
 			label
 			bar
 			input

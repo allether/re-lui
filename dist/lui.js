@@ -1356,7 +1356,7 @@ Input = class Input extends Component {
   }
 
   renderInput() {
-    var autofill_buttons, autofill_match_res, bar, bar_style, button_style, chips, color_circle, enter_hint, focus, hint_label, icon, icon_style, input, input_hidden, input_name, input_props, input_val_style, label, label2, outer_props, overlay_autofill_buttons, overlay_icon, overlay_input, overlay_input_text, props, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, toggle_circle_fill_color, value, wrap_input_style;
+    var autofill_buttons, autofill_match_res, bar, bar_style, button_style, chips, color_circle, enter_hint, focus, hint_label, icon, icon_img, icon_style, input, input_hidden, input_name, input_props, input_val_style, label, label2, outer_props, overlay_autofill_buttons, overlay_icon, overlay_input, overlay_input_text, props, select, state, style, toggle, toggle_bar_off_style, toggle_bar_on_style, toggle_bar_style, toggle_circle_fill_color, value, wrap_input_style;
     // log 'render input'
     input_name = this.props.name;
     props = this.props;
@@ -1468,6 +1468,16 @@ Input = class Input extends Component {
         className: cn(props.i_class || 'material-icons', !this.props.label && css['label']),
         style: icon_style
       }, props.i);
+    }
+    if (props.icon_img) {
+      icon_img = h('img', {
+        onClick: this.props.onIconClick,
+        style: {
+          height: 40,
+          width: 40
+        },
+        src: props.icon_img
+      });
     }
     if (props.label) {
       label = h('div', {
@@ -1693,7 +1703,7 @@ Input = class Input extends Component {
         className: css['hint-label']
       }, this.props.hint);
     }
-    return h(props.href && 'a' || 'label', outer_props, toggle, chips, icon, label, bar, input, color_circle, label2, overlay_icon, overlay_autofill_buttons, props.children, hint_label);
+    return h(props.href && 'a' || 'label', outer_props, toggle, chips, icon, icon_img, label, bar, input, color_circle, label2, overlay_icon, overlay_autofill_buttons, props.children, hint_label);
   }
 
 };
